@@ -131,6 +131,7 @@ AuraFarmBot/
 | `/aura4aura @user [amount]` | 50/50 aura gambling | None |
 | `/auraboard` | View leaderboard | None |
 | `/aura [@user]` | Check aura balance | None |
+| `/help` | Show all commands and usage | None |
 
 ---
 

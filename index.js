@@ -242,6 +242,52 @@ bot.command('auraboard', async (ctx) => {
   });
 });
 
+// /help command
+bot.command('help', async (ctx) => {
+  await handleCommand(ctx, async (ctx) => {
+    const helpMessage = `
+🤖 **AURABOT HELP - GET THAT BAG!** 🤖
+
+💀 **YO! Here's how to use this ABSOLUTELY BASED bot:**
+
+🌾 **/aurafarm**
+• Farm aura every 24 hours with RNG
+• 70% chance: +20 to +50 aura (W)
+• 20% chance: -10 to -25 aura (L)  
+• 10% chance: +100 JACKPOT or -50 IMPLOSION!
+• Example: \`/aurafarm\`
+
+🎰 **/aura4aura @user [amount]**
+• 50/50 aura gambling casino - PURE DEGENERACY!
+• Both players need enough aura to match bet
+• Winner takes ALL the wagered aura
+• Example: \`/aura4aura @friend 25\`
+
+💫 **/aura [@user]**
+• Check your aura balance or someone else's
+• See if you're GIGACHAD or BETA energy
+• Example: \`/aura\` or \`/aura @someone\`
+
+📊 **/auraboard**
+• View top 5 AURA LEGENDS (highest)
+• See top 5 CURSED CHAMPIONS (lowest)
+• Example: \`/auraboard\`
+
+❓ **/help**
+• Shows this menu (you're here now, genius!)
+
+💀 **PRO TIPS:**
+• Farm daily to stack that aura bag! 💸
+• Gamble responsibly... or don't, I'm not your mom! 🎰
+• React to messages for daily bonus aura! 📱
+• Touch grass occasionally! 🌱
+
+**LET'S GET THIS AURA! NO CAP! 🚀**`;
+
+    await ctx.reply(helpMessage);
+  });
+});
+
 // /aura command
 bot.command('aura', async (ctx) => {
   await handleCommand(ctx, async (ctx) => {
@@ -277,6 +323,70 @@ bot.command('aura', async (ctx) => {
       `${user.aura >= 0 ? '✨ Radiating positive energy!' : '💀 Cursed with negative vibes...'}`
     );
   });
+});
+
+// Inline mode for @botname suggestions
+bot.on('inline_query', async (ctx) => {
+  try {
+    const query = ctx.inlineQuery.query.toLowerCase();
+    
+    const results = [
+      {
+        type: 'article',
+        id: '1',
+        title: '🌾 /aurafarm',
+        description: 'Farm aura with RNG (24h cooldown)',
+        input_message_content: {
+          message_text: 'Use /aurafarm to farm some aura! 🌾✨'
+        }
+      },
+      {
+        type: 'article', 
+        id: '2',
+        title: '🎰 /aura4aura @user [amount]',
+        description: '50/50 aura gambling casino',
+        input_message_content: {
+          message_text: 'Challenge someone: /aura4aura @username [amount] 🎰💀'
+        }
+      },
+      {
+        type: 'article',
+        id: '3', 
+        title: '💫 /aura [@user]',
+        description: 'Check aura balance',
+        input_message_content: {
+          message_text: 'Check aura: /aura or /aura @username 💫'
+        }
+      },
+      {
+        type: 'article',
+        id: '4',
+        title: '📊 /auraboard', 
+        description: 'View leaderboard',
+        input_message_content: {
+          message_text: 'See the rankings: /auraboard 📊🏆'
+        }
+      },
+      {
+        type: 'article',
+        id: '5',
+        title: '❓ /help', 
+        description: 'Show all commands and usage',
+        input_message_content: {
+          message_text: 'Get help: /help 📖💀'
+        }
+      }
+    ];
+    
+    // Filter results based on query
+    const filteredResults = query ? 
+      results.filter(r => r.title.toLowerCase().includes(query) || r.description.toLowerCase().includes(query)) : 
+      results;
+    
+    await ctx.answerInlineQuery(filteredResults, { cache_time: 60 });
+  } catch (error) {
+    console.error('Inline query error:', error);
+  }
 });
 
 // Reaction tracking
