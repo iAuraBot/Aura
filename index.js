@@ -127,7 +127,7 @@ bot.command('aurafarm', async (ctx) => {
     const sign = auraChange > 0 ? '+' : '';
     
     await ctx.reply(
-      `🌾 **AURA FARM RESULT** 🌾\n\n` +
+      `🌾 **AURA FARM SUCCESSFUL** 🌾\n\n` +
       `${flavorText}\n\n` +
       `${formatUsername(ctx.from)} ${sign}${auraChange} aura\n` +
       `💫 Total Aura: ${updatedUser.aura}`
