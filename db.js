@@ -66,11 +66,25 @@ async function getUser(userId, username = null) {
  */
 async function updateAura(userId, amount) {
   try {
+    // First get current aura
+    const { data: currentUser, error: fetchError } = await supabase
+      .from('aura')
+      .select('aura')
+      .eq('user_id', userId)
+      .single();
+
+    if (fetchError) {
+      console.error('Error fetching current aura:', fetchError);
+      throw fetchError;
+    }
+
+    // Calculate new aura value
+    const newAura = currentUser.aura + amount;
+
+    // Update with new value
     const { data, error } = await supabase
       .from('aura')
-      .update({ 
-        aura: supabase.sql`aura + ${amount}`
-      })
+      .update({ aura: newAura })
       .eq('user_id', userId)
       .select()
       .single();
@@ -122,11 +136,25 @@ async function updateLastFarm(userId) {
  */
 async function updateReactions(userId) {
   try {
+    // First get current reactions count
+    const { data: currentUser, error: fetchError } = await supabase
+      .from('aura')
+      .select('reactions_today')
+      .eq('user_id', userId)
+      .single();
+
+    if (fetchError) {
+      console.error('Error fetching current reactions:', fetchError);
+      throw fetchError;
+    }
+
+    // Increment reactions count
+    const newReactions = currentUser.reactions_today + 1;
+
+    // Update with new value
     const { data, error } = await supabase
       .from('aura')
-      .update({ 
-        reactions_today: supabase.sql`reactions_today + 1`
-      })
+      .update({ reactions_today: newReactions })
       .eq('user_id', userId)
       .select()
       .single();
