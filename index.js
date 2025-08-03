@@ -8,48 +8,48 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 
 // Flavor text arrays
 const POSITIVE_FLAVORS = [
-  '✨ The cosmos smiles upon you!',
-  '🌟 Stellar vibes detected!',
-  '⚡ Pure aura energy flows through you!',
-  '🔮 The mystical forces favor you!',
-  '💫 Your aura radiates magnificence!',
-  '🌈 Rainbow energy blesses your path!',
-  '👑 You are touched by divine aura!',
-  '🦄 Unicorn magic enhances your being!'
+  '💀 SHEESH! This farm is absolutely BUSSIN fr fr!',
+  '🔥 W FARM! Your aura is straight up GIGACHAD energy!',
+  '💯 NO CAP this is some SIGMA MALE farming!',
+  '⚡ FR FR you just got that RIZZ boost!',
+  '🗿 BASED FARM! Your aura game is UNMATCHED!',
+  '💸 STONKS! Your aura portfolio going BRRRR!',
+  '👑 ALPHA ENERGY detected! This farm HITS DIFFERENT!',
+  '🚀 TO THE MOON! Your aura just went PARABOLIC!'
 ];
 
 const NEGATIVE_FLAVORS = [
-  '💀 The vibes have betrayed you...',
-  '🌩️ Dark clouds gather around your aura...',
-  '💔 The cosmic forces turn their back...',
-  '⚫ A shadow falls upon your spirit...',
-  '🕳️ The void whispers your name...',
-  '💸 Your aura leaks into the ether...',
-  '🔥 Burned by the fires of misfortune...',
-  '❄️ Frozen by the chill of bad luck...'
+  '💀 L + RATIO! Your farm just got COOKED!',
+  '😭 SKILL ISSUE! Time to touch grass fr!',
+  '🤡 CRINGE FARM! Your aura said "nah fam"!',
+  '💩 MID FARMING! This is some BETA behavior!',
+  '🚫 COPE + SEETHE! Your aura game is WEAK!',
+  '🗿 OHIO MOMENT! Your farm was SUS as hell!',
+  '📉 STONKS DOWN! Your aura portfolio CRASHED!',
+  '💸 FANUM TAXED! Someone stole your vibe!'
 ];
 
 const JACKPOT_FLAVORS = [
-  '🎰 JACKPOT! The universe rewards your patience!',
-  '💎 LEGENDARY! You\'ve struck aura gold!',
-  '🌟 COSMIC JACKPOT! The stars align perfectly!',
-  '🎉 MEGA WIN! Your aura explodes with power!'
+  '🎰 GYATTTT! JACKPOT! You just hit the AURA LOTTERY!',
+  '💎 LEGENDARY PULL! This is some GIGACHAD luck!',
+  '🚀 ABSOLUTELY NUCLEAR! Your rizz just ASCENDED!',
+  '🎉 HOLY SIGMA! This farm is UTTERLY BONKERS!'
 ];
 
 const IMPLOSION_FLAVORS = [
-  '💥 AURA IMPLOSION! Reality collapses around you!',
-  '🌪️ VORTEX OF DOOM! Your aura gets sucked into the void!',
-  '⚡ CRITICAL FAILURE! The cosmos reject your essence!',
-  '🕳️ BLACK HOLE! Your aura vanishes into nothingness!'
+  '💥 CRITICAL DAMAGE! You just got ABSOLUTELY REKT!',
+  '🌪️ EMOTIONAL DAMAGE! Your aura said BYE BYE!',
+  '⚡ BRUH MOMENT! This is a CERTIFIED OHIO CLASSIC!',
+  '🕳️ GET RATIO\'D BY THE UNIVERSE! Touch grass NOW!'
 ];
 
 const DUEL_WIN_FLAVORS = [
-  '⚔️ {winner} dominated {loser} in an epic aura duel!',
-  '🏆 {winner} drained {loser}\'s essence! Victory tastes sweet!',
-  '💀 {winner} obliterated {loser}\'s aura defenses!',
-  '⚡ {winner} struck down {loser} with pure aura power!',
-  '🔥 {winner} burned through {loser}\'s weak aura!',
-  '🌟 {winner} outshined {loser} completely!'
+  '⚔️ {winner} absolutely MOGGED {loser}! NO MERCY!',
+  '🏆 {winner} said "GET REKT" and FANUM TAXED {loser}!',
+  '💀 {winner} just RATIO\'D {loser} into the SHADOW REALM!',
+  '⚡ {winner} hit {loser} with that SIGMA GRINDSET!',
+  '🔥 {winner} COOKED {loser} like it\'s THANKSGIVING!',
+  '🗿 {winner} just ENDED {loser}\'s whole career! SHEESH!'
 ];
 
 // Utility functions
@@ -74,7 +74,7 @@ async function handleCommand(ctx, commandFn) {
     await commandFn(ctx);
   } catch (error) {
     console.error('Command error:', error);
-    await ctx.reply('🔥 Oops! The aura servers are having a moment. Try again in a bit!');
+    await ctx.reply('💀 BRUH! The aura servers just got REKT! This is a certified OHIO moment! Try again fr fr! 🤡');
   }
 }
 
@@ -92,7 +92,7 @@ bot.command('aurafarm', async (ctx) => {
     // Check cooldown
     const farmCheck = db.canUserFarm(user);
     if (!farmCheck.canFarm) {
-      await ctx.reply(`⏰ You can farm again in ${farmCheck.timeLeft}! Patience, young grasshopper.`);
+      await ctx.reply(`⏰ YO CHILL! Farm cooldown active for ${farmCheck.timeLeft}! Stop being so THIRSTY for aura! 💀`);
       return;
     }
     
@@ -144,7 +144,7 @@ bot.command('aura4aura', async (ctx) => {
     // Parse mentioned user
     const mentionMatch = message.match(/@(\w+)/);
     if (!mentionMatch) {
-      await ctx.reply('⚔️ **AURA DUEL** ⚔️\n\nUsage: `/aura4aura @username`\nChallenge someone to an epic best-of-3 dice duel!');
+      await ctx.reply('⚔️ **AURA DUEL** ⚔️\n\nUsage: `/aura4aura @username`\nCHALLENGE SOMEONE TO GET ABSOLUTELY MOGGED! 💀\nBest of 3 dice - winner takes NO PRISONERS!');
       return;
     }
     
@@ -203,7 +203,7 @@ bot.command('aura4aura', async (ctx) => {
       await db.updateAura(challengerId, -15);
     } else {
       // Draw
-      rollResults += `🤝 **EPIC DRAW!** 🤝\n\nBoth warriors proved equally matched! No aura was exchanged.`;
+      rollResults += `🤝 **ABSOLUTE STALEMATE!** 🤝\n\nBoth of y'all are MID! No aura exchanged cause nobody got MOGGED! 💀`;
       await ctx.reply(rollResults);
       return;
     }
