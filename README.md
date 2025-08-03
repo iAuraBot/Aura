@@ -12,11 +12,12 @@ A mystical Telegram bot that rewards or removes aura points through RNG-based fa
   - 10% chance: +100 jackpot or -50 implosion
 - Mystical flavor text for each outcome
 
-### ⚔️ Aura Duels (`/aura4aura @user`)
-- **Best of 3 dice rolls** (1-10)
-- Winner steals **+15 aura** from loser
-- Epic battle commentary with meme flavor text
-- Unlimited duels (no cooldown)
+### 🎰 Aura Casino (`/aura4aura @user [amount]`)
+- **50/50 gambling system** with custom wagers
+- Both players must have enough aura to match the bet
+- Winner takes the full wager amount from loser
+- Pure RNG with BRAINROT flavor text
+- Unlimited gambling (no cooldown)
 
 ### 📊 Leaderboard (`/auraboard`)
 - **Top 5 Aura Legends** (highest aura)
@@ -91,9 +92,9 @@ npm start
 - 🎰 JACKPOT! The universe rewards your patience!
 - 💎 LEGENDARY! You've struck aura gold!
 
-**Duels:**
-- ⚔️ {winner} dominated {loser} in an epic aura duel!
-- 🏆 {winner} drained {loser}'s essence! Victory tastes sweet!
+**Casino Wins:**
+- ⚔️ {winner} absolutely MOGGED {loser}! NO MERCY!
+- 🏆 {winner} said "GET REKT" and FANUM TAXED {loser}!
 
 ## 📁 File Structure
 
@@ -127,7 +128,7 @@ AuraFarmBot/
 | Command | Description | Cooldown |
 |---------|-------------|----------|
 | `/aurafarm` | Farm aura with RNG | 24 hours |
-| `/aura4aura @user` | Challenge to duel | None |
+| `/aura4aura @user [amount]` | 50/50 aura gambling | None |
 | `/auraboard` | View leaderboard | None |
 | `/aura [@user]` | Check aura balance | None |
 

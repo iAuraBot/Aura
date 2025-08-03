@@ -57,9 +57,7 @@ function getRandomElement(array) {
   return array[Math.floor(Math.random() * array.length)];
 }
 
-function rollDice() {
-  return Math.floor(Math.random() * 10) + 1;
-}
+// Removed rollDice() - no longer needed for 50/50 gambling system
 
 function formatUsername(user) {
   if (user.username) {
@@ -141,14 +139,22 @@ bot.command('aura4aura', async (ctx) => {
     const message = ctx.message.text;
     const challenger = ctx.from;
     
-    // Parse mentioned user
+    // Parse command: /aura4aura @username amount
+    const parts = message.split(' ');
     const mentionMatch = message.match(/@(\w+)/);
-    if (!mentionMatch) {
-      await ctx.reply('⚔️ **AURA DUEL** ⚔️\n\nUsage: `/aura4aura @username`\nCHALLENGE SOMEONE TO GET ABSOLUTELY MOGGED! 💀\nBest of 3 dice - winner takes NO PRISONERS!');
+    
+    if (!mentionMatch || parts.length < 3) {
+      await ctx.reply('🎰 **AURA CASINO** 🎰\n\nUsage: `/aura4aura @username [amount]`\nCHALLENGE SOMEONE TO A 50/50 AURA GAMBLE! 💀\nBoth players must have enough aura to match the wager!\n\nExample: `/aura4aura @friend 25`');
       return;
     }
     
     const targetUsername = mentionMatch[1];
+    const wagerAmount = parseInt(parts[2]);
+    
+    if (isNaN(wagerAmount) || wagerAmount <= 0) {
+      await ctx.reply('💀 BRUH! Enter a valid positive number for the wager! Stop being SUS! 🤡');
+      return;
+    }
     
     // Get both users
     const challengerId = challenger.id.toString();
@@ -159,62 +165,54 @@ bot.command('aura4aura', async (ctx) => {
     const targetId = `target_${targetUsername}`;
     const targetUser = await db.getUser(targetId, targetUsername);
     
-    // Best of 3 dice rolls
-    const challengerRolls = [rollDice(), rollDice(), rollDice()];
-    const targetRolls = [rollDice(), rollDice(), rollDice()];
-    
-    let challengerWins = 0;
-    let targetWins = 0;
-    
-    let rollResults = '🎲 **DICE BATTLE RESULTS** 🎲\n\n';
-    
-    for (let i = 0; i < 3; i++) {
-      const cRoll = challengerRolls[i];
-      const tRoll = targetRolls[i];
-      
-      rollResults += `Round ${i + 1}: ${formatUsername(challenger)} rolled ${cRoll} vs @${targetUsername} rolled ${tRoll}\n`;
-      
-      if (cRoll > tRoll) {
-        challengerWins++;
-        rollResults += `✅ ${formatUsername(challenger)} wins this round!\n\n`;
-      } else if (tRoll > cRoll) {
-        targetWins++;
-        rollResults += `✅ @${targetUsername} wins this round!\n\n`;
-      } else {
-        rollResults += `🤝 Draw this round!\n\n`;
-      }
+    // Check if both users have enough aura
+    if (challengerUser.aura < wagerAmount) {
+      await ctx.reply(`💸 BROKE BOY ALERT! ${formatUsername(challenger)} doesn't have ${wagerAmount} aura to wager! Current aura: ${challengerUser.aura} 💀`);
+      return;
     }
     
-    // Determine winner
-    let winner, loser, winnerName, loserName;
-    if (challengerWins > targetWins) {
-      winner = challengerUser;
-      loser = targetUser;
+    if (targetUser.aura < wagerAmount) {
+      await ctx.reply(`💸 TARGET IS BROKE! @${targetUsername} doesn't have ${wagerAmount} aura to match the wager! Their aura: ${targetUser.aura} 😭`);
+      return;
+    }
+    
+    // 50/50 random chance
+    const challengerWins = Math.random() < 0.5;
+    
+    let winnerName, loserName, winnerUser, loserUser;
+    
+    if (challengerWins) {
       winnerName = formatUsername(challenger);
       loserName = `@${targetUsername}`;
-      await db.updateAura(challengerId, 15);
-      await db.updateAura(targetId, -15);
-    } else if (targetWins > challengerWins) {
-      winner = targetUser;
-      loser = challengerUser;
+      winnerUser = challengerUser;
+      loserUser = targetUser;
+      
+      // Transfer aura
+      await db.updateAura(challengerId, wagerAmount);
+      await db.updateAura(targetId, -wagerAmount);
+    } else {
       winnerName = `@${targetUsername}`;
       loserName = formatUsername(challenger);
-      await db.updateAura(targetId, 15);
-      await db.updateAura(challengerId, -15);
-    } else {
-      // Draw
-      rollResults += `🤝 **ABSOLUTE STALEMATE!** 🤝\n\nBoth of y'all are MID! No aura exchanged cause nobody got MOGGED! 💀`;
-      await ctx.reply(rollResults);
-      return;
+      winnerUser = targetUser;
+      loserUser = challengerUser;
+      
+      // Transfer aura
+      await db.updateAura(targetId, wagerAmount);
+      await db.updateAura(challengerId, -wagerAmount);
     }
     
     const flavorText = getRandomElement(DUEL_WIN_FLAVORS)
       .replace('{winner}', winnerName)
       .replace('{loser}', loserName);
     
-    const finalResult = `🏆 **DUEL COMPLETE** 🏆\n\n${flavorText}\n\n💫 ${winnerName} gains +15 aura\n💀 ${loserName} loses -15 aura`;
-    
-    await ctx.reply(rollResults + finalResult);
+    await ctx.reply(
+      `🎰 **AURA CASINO RESULT** 🎰\n\n` +
+      `💰 **Wager:** ${wagerAmount} aura\n\n` +
+      `${flavorText}\n\n` +
+      `💫 ${winnerName} wins +${wagerAmount} aura\n` +
+      `💀 ${loserName} loses -${wagerAmount} aura\n\n` +
+      `🏦 Final balances will be updated!`
+    );
   });
 });
 
