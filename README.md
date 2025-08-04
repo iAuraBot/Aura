@@ -6,6 +6,7 @@ A mystical Telegram bot that rewards or removes aura points through RNG-based fa
 
 ### ✨ Aura Farming (`/aurafarm`)
 - **24-hour cooldown per chat** - farm once per day in each group!
+- **First-time farmers get guaranteed positive aura** (no discouragement!)
 - **RNG-based rewards:**
   - 70% chance: +20 to +50 aura
   - 20% chance: -10 to -25 aura  
@@ -31,10 +32,10 @@ A mystical Telegram bot that rewards or removes aura points through RNG-based fa
 - Shows which chat the balance is for
 
 ### ✨ Aura Blessing (`/bless @user [amount]`)
-- **Give your aura** to another user - spread the love!
+- **Give your aura** to another user - GIGACHAD generosity!
 - **Transfer system** - costs you aura to bless others
-- **Wholesome interaction** with positive flavor text
-- Great way to **help new users** get started
+- **BRAINROT positive interaction** with based flavor text
+- Great way to **help new users** get that bag started
 
 ### 🎉 Daily Reaction Bonus
 - Automatic tracking of message reactions

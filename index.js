@@ -102,11 +102,18 @@ bot.command('aurafarm', async (ctx) => {
       return;
     }
     
+    // Check if this is their first farm (newbie protection)
+    const isFirstTime = user.aura === 0 && user.last_farm === null;
+    
     // RNG farming logic
     const roll = Math.random() * 100;
     let auraChange, flavorText;
     
-    if (roll < 70) {
+    if (isFirstTime) {
+      // First time farmers get guaranteed positive vibes!
+      auraChange = Math.floor(Math.random() * 31) + 20; // 20-50 guaranteed
+      flavorText = getRandomElement(POSITIVE_FLAVORS);
+    } else if (roll < 70) {
       // 70% chance: +20 to +50 aura
       auraChange = Math.floor(Math.random() * 31) + 20; // 20-50
       flavorText = getRandomElement(POSITIVE_FLAVORS);
@@ -132,11 +139,13 @@ bot.command('aurafarm', async (ctx) => {
     const updatedUser = await db.getUser(userId, chatId, username);
     const sign = auraChange > 0 ? '+' : '';
     
+    const welcomeMessage = isFirstTime ? '\n🌱 **WELCOME TO THE AURA FARM!** First time bonus! 🌱' : '';
+    
     await ctx.reply(
       `✨ **AURA FARM SUCCESSFUL** ✨\n\n` +
       `${flavorText}\n\n` +
       `${formatUsername(ctx.from)} ${sign}${auraChange} aura\n` +
-      `💫 Total Aura: ${updatedUser.aura} (in this chat)`
+      `💫 Total Aura: ${updatedUser.aura} (in this chat)${welcomeMessage}`
     );
   });
 });
@@ -272,6 +281,7 @@ bot.command('help', async (ctx) => {
 
 ✨ **/aurafarm**
 • Farm aura every 24 hours with RNG
+• First time guaranteed POSITIVE vibes! 🌱
 • 70% chance: +20 to +50 aura (W)
 • 20% chance: -10 to -25 aura (L)  
 • 10% chance: +100 JACKPOT or -50 IMPLOSION!
@@ -294,8 +304,8 @@ bot.command('help', async (ctx) => {
 • Example: \`/auraboard\`
 
 ✨ **/bless @user [amount]**
-• Give your aura to another user - WHOLESOME VIBES!
-• Transfers aura from you to them
+• Give your aura to another user - GIGACHAD GENEROSITY!
+• Transfers aura from you to them - SIGMA SHARING!
 • Example: \`/bless @friend 25\`
 
 ❓ **/help**
@@ -326,7 +336,7 @@ bot.command('bless', async (ctx) => {
     const mentionMatch = message.match(/@(\w+)/);
     
     if (!mentionMatch || parts.length < 3) {
-      await ctx.reply('✨ **AURA BLESSING** ✨\n\nUsage: `/bless @username [amount]`\nShare your aura with others! 💫\nSpread those POSITIVE VIBES!\n\nExample: `/bless @friend 10`');
+      await ctx.reply('✨ **AURA BLESSING** ✨\n\nUsage: `/bless @username [amount]`\nShare your aura bag with the HOMIES! 💀\nSpread that GIGACHAD ENERGY!\n\nExample: `/bless @friend 10`');
       return;
     }
     
@@ -334,7 +344,7 @@ bot.command('bless', async (ctx) => {
     const blessAmount = parseInt(parts[2]);
     
     if (isNaN(blessAmount) || blessAmount <= 0) {
-      await ctx.reply('💀 BRUH! Enter a valid positive number for the blessing! Keep it WHOLESOME! ✨');
+      await ctx.reply('💀 BRUH! Enter a valid positive number for the blessing! No SUS amounts! ✨');
       return;
     }
     
@@ -347,13 +357,13 @@ bot.command('bless', async (ctx) => {
     
     // Check if giver has enough aura
     if (giverUser.aura < blessAmount) {
-      await ctx.reply(`💸 BLESSING FAILED! ${formatUsername(giver)} doesn't have ${blessAmount} aura to give! Current aura: ${giverUser.aura} 💀\n\nGet that bag first before being GENEROUS! 🌱`);
+      await ctx.reply(`💸 BLESSING FAILED! ${formatUsername(giver)} doesn't have ${blessAmount} aura to give! Current aura: ${giverUser.aura} 💀\n\nGet that bag first before being a GIGACHAD! 🌱`);
       return;
     }
     
     // Can't bless yourself
     if (giverId === targetId || giver.username?.toLowerCase() === targetUsername.toLowerCase()) {
-      await ctx.reply('🤡 NICE TRY! You can\'t bless yourself, NARCISSIST! Touch grass and make some friends! 💀');
+      await ctx.reply('🤡 NICE TRY! You can\'t bless yourself, NARCISSIST! This is some OHIO behavior! Touch grass and find some HOMIES! 💀');
       return;
     }
     
@@ -362,14 +372,14 @@ bot.command('bless', async (ctx) => {
     await db.updateAura(targetId, chatId, blessAmount);
     
     const blessings = [
-      '✨ Blessed with POSITIVE VIBES! ✨',
-      '🌟 The aura gods smile upon this blessing! 🌟',
-      '💫 WHOLESOME ENERGY TRANSFER COMPLETE! 💫',
-      '🙏 Blessed be this GENEROUS SPIRIT! 🙏',
-      '✨ GOOD KARMA FLOWS THROUGH THE CHAT! ✨',
-      '💝 This blessing is PURE GIGACHAD ENERGY! 💝',
-      '🌈 Rainbow blessings rain down! 🌈',
-      '👑 ROYAL GENEROSITY DETECTED! 👑'
+      '💀 SHEESH! This blessing is absolutely BUSSIN! FR FR!',
+      '🗿 GIGACHAD GENEROSITY! Your aura game is UNMATCHED!',
+      '🔥 W BLESSING! This is some SIGMA MALE sharing!',
+      '💯 NO CAP! That blessing just HIT DIFFERENT!',
+      '🚀 BASED ENERGY TRANSFER! Your rizz is CONTAGIOUS!',
+      '💸 FANUM BLESSING! Someone just got BLESSED not TAXED!',
+      '⚡ ABSOLUTELY NUCLEAR blessing! This chat is BLESSED!',
+      '👑 ALPHA GENEROSITY! This blessing is UTTERLY BONKERS!'
     ];
     
     const blessing = getRandomElement(blessings);
@@ -378,7 +388,7 @@ bot.command('bless', async (ctx) => {
       `✨ **AURA BLESSING SUCCESSFUL** ✨\n\n` +
       `${blessing}\n\n` +
       `${formatUsername(giver)} blessed @${targetUsername} with ${blessAmount} aura! 🙏\n\n` +
-      `💫 May good vibes multiply! 🌟`
+      `🗿 RESPECT THE GENEROSITY! This is how we BUILD COMMUNITY! 💀`
     );
   });
 });
