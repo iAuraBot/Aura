@@ -125,7 +125,7 @@ bot.command('aurafarm', async (ctx) => {
     const sign = auraChange > 0 ? '+' : '';
     
     await ctx.reply(
-      `🌾 **AURA FARM SUCCESSFUL** 🌾\n\n` +
+      `✨ **AURA FARM SUCCESSFUL** ✨\n\n` +
       `${flavorText}\n\n` +
       `${formatUsername(ctx.from)} ${sign}${auraChange} aura\n` +
       `💫 Total Aura: ${updatedUser.aura}`
@@ -242,15 +242,20 @@ bot.command('auraboard', async (ctx) => {
   });
 });
 
-// /help command
+// /help command (only responds when bot is mentioned or in DM)
 bot.command('help', async (ctx) => {
+  // Only respond in DMs or when bot is mentioned
+  if (ctx.chat.type !== 'private' && !ctx.message.text.includes(`@${ctx.botInfo.username}`)) {
+    return; // Ignore /help if not mentioned in group chats
+  }
+  
   await handleCommand(ctx, async (ctx) => {
     const helpMessage = `
 🤖 **AURABOT HELP - GET THAT BAG!** 🤖
 
 💀 **YO! Here's how to use this ABSOLUTELY BASED bot:**
 
-🌾 **/aurafarm**
+✨ **/aurafarm**
 • Farm aura every 24 hours with RNG
 • 70% chance: +20 to +50 aura (W)
 • 20% chance: -10 to -25 aura (L)  
@@ -334,10 +339,10 @@ bot.on('inline_query', async (ctx) => {
       {
         type: 'article',
         id: '1',
-        title: '🌾 /aurafarm',
+        title: '✨ /aurafarm',
         description: 'Farm aura with RNG (24h cooldown)',
         input_message_content: {
-          message_text: 'Use /aurafarm to farm some aura! 🌾✨'
+          message_text: 'Use /aurafarm to farm some aura! ✨💫'
         }
       },
       {

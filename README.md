@@ -4,7 +4,7 @@ A mystical Telegram bot that rewards or removes aura points through RNG-based fa
 
 ## ✨ Features
 
-### 🌾 Aura Farming (`/aurafarm`)
+### ✨ Aura Farming (`/aurafarm`)
 - **24-hour cooldown** between farms
 - **RNG-based rewards:**
   - 70% chance: +20 to +50 aura
