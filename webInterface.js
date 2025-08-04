@@ -42,7 +42,12 @@ function setupWebInterface(app) {
           * { margin: 0; padding: 0; box-sizing: border-box; }
           body {
             font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a3d2e 0%, #2d5d43 25%, #4a7c59 50%, #76b947 75%, #9fff7a 100%);
+            background: 
+              linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)),
+              url('/assets/aurafarmbot.png') center center;
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -58,31 +63,36 @@ function setupWebInterface(app) {
             z-index: 2;
             max-width: 1400px;
             margin: 0 auto;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
           }
           .bot-icon {
             width: 120px;
             height: 120px;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 40px;
             font-size: 4rem;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
           }
           h1 { 
             font-size: 4rem; 
             margin-bottom: 20px; 
             font-weight: 800;
-            background: linear-gradient(45deg, #ffd700, #ff6b6b, #4ecdc4);
+            background: linear-gradient(45deg, #ffd700, #ffeb3b, #ff9800);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: none;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
             line-height: 1.1;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.7));
           }
           .subtitle {
             font-size: 2.5rem;
@@ -142,13 +152,14 @@ function setupWebInterface(app) {
             margin: 40px 0;
           }
           .stat-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(15px);
             border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             padding: 30px 20px;
             text-align: center;
             transition: transform 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
           }
           .stat-card:hover {
             transform: translateY(-5px);
@@ -171,17 +182,19 @@ function setupWebInterface(app) {
             margin: 40px 0;
           }
           .feature-card {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(15px);
             border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 25px;
             text-align: left;
             transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
           }
           .feature-card:hover {
             transform: translateY(-3px);
-            background: rgba(255, 255, 255, 0.12);
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.3);
           }
           .feature-emoji {
             font-size: 2rem;
@@ -325,7 +338,7 @@ function setupWebInterface(app) {
             </div>
           </div>
 
-          <div style="margin-top: 60px; text-align: center; padding: 40px; background: rgba(255, 255, 255, 0.1); border-radius: 20px; backdrop-filter: blur(10px);">
+          <div style="margin-top: 60px; text-align: center; padding: 40px; background: rgba(0, 0, 0, 0.4); border-radius: 20px; backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);">
             <h3 style="font-size: 1.8rem; margin-bottom: 20px; color: #ffd700;">🔥 Ready to Add Maximum Chaos to Your Community? 🔥</h3>
             <p style="font-size: 1.2rem; margin-bottom: 30px; opacity: 0.9;">
               Join thousands of users already farming aura and having unhinged AI conversations!
@@ -591,7 +604,12 @@ function setupWebInterface(app) {
             * { margin: 0; padding: 0; box-sizing: border-box; }
             body { 
               font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-              background: linear-gradient(135deg, #0f1f1a 0%, #1a3d2e 25%, #2d5d43 50%, #4a7c59 75%, #5a8b3a 100%);
+              background: 
+                linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)),
+                url('/assets/aurafarmbot.png') center center;
+              background-size: cover;
+              background-attachment: fixed;
+              background-repeat: no-repeat;
               color: #efeff1;
               min-height: 100vh;
             }

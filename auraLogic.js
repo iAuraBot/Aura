@@ -49,6 +49,15 @@ const DUEL_WIN_FLAVORS = [
 ];
 
 const BLESSING_FLAVORS = [
+  '🚀 BASED ENERGY TRANSFER! Your rizz is CONTAGIOUS!',
+  '✨ BLESSING AURA ACTIVATED! This is SIGMA BEHAVIOR!',
+  '💎 GIGACHAD GENEROSITY! The universe RESPECTS this move!',
+  '🔥 WHOLESOME CHAOS! Your aura just went NUCLEAR!',
+  '🌟 COSMIC BLESSING! The multiverse APPROVES!',
+  '💫 LEGENDARY SHARE! This is some ASCENDED energy!'
+];
+
+const BLESSING_FLAVORS = [
   '💀 SHEESH! This blessing is absolutely BUSSIN! FR FR!',
   '🗿 GIGACHAD GENEROSITY! Your aura game is UNMATCHED!',
   '🔥 W BLESSING! This is some SIGMA MALE sharing!',
@@ -180,9 +189,16 @@ async function auraDuel(challengerUserId, challengerUsername, targetUsername, ba
   // Get challenger data
   const challengerUser = await db.getUser(challengerUserId, chatId, platform, challengerUsername);
   
-  // Get target data (use username-based ID for consistency)
-  const targetId = `username_${targetUsername.toLowerCase()}`;
-  const targetUser = await db.getUser(targetId, chatId, platform, targetUsername);
+  // Get target data - FIXED: Find actual user by username, don't create fake username-based IDs
+  const targetUser = await findUserByUsername(targetUsername, chatId, platform);
+  if (!targetUser) {
+    return {
+      success: false,
+      type: 'user_not_found',
+      message: `💀 TARGET NOT FOUND! @${targetUsername} hasn't farmed any aura yet! Tell them to start with /aurafarm! 🔥`
+    };
+  }
+  const targetId = targetUser.user_id.split('_').pop(); // Extract real user ID from composite key
 
   // Check if both users have enough aura
   if (challengerUser.aura < battleAmount) {
@@ -242,38 +258,20 @@ async function checkAura(userId, chatId, platform, username, mentionedUsername =
   let targetUser, targetUsername, displayName;
   
   if (mentionedUsername) {
-    // Check mentioned user's aura (use consistent username-based ID)
-    const targetId = `username_${mentionedUsername.toLowerCase()}`;
-    targetUser = await db.getUser(targetId, chatId, platform, mentionedUsername);
+    // Check mentioned user's aura - FIXED: Find actual user by username
+    targetUser = await findUserByUsername(mentionedUsername, chatId, platform);
+    if (!targetUser) {
+      return {
+        success: false,
+        type: 'user_not_found',
+        message: `💀 @${mentionedUsername} hasn't farmed any aura yet! Tell them to start with /aurafarm! 🔥`
+      };
+    }
     targetUsername = mentionedUsername;
     displayName = `@${mentionedUsername}`;
   } else {
-    // Check own aura - try BOTH real ID and username-based ID, merge if needed
-    const realId = userId;
-    const usernameId = `username_${username?.toLowerCase()}`;
-    
-    // Try real ID first
-    targetUser = await db.getUser(realId, chatId, platform, username);
-    
-    // Also check if they have a username-based record with higher aura
-    if (username) {
-      try {
-        const usernameUser = await db.getUser(usernameId, chatId, platform, username);
-        
-        // If username-based record has higher aura, use that and merge
-        if (usernameUser.aura > targetUser.aura) {
-          // Transfer the higher aura to the real ID record
-          const auraDiff = usernameUser.aura - targetUser.aura;
-          await db.updateAura(realId, chatId, auraDiff, platform);
-          targetUser = await db.getUser(realId, chatId, platform, username);
-          
-          // Clean up the old username-based record by setting it to 0
-          await db.updateAura(usernameId, chatId, -usernameUser.aura, platform);
-        }
-      } catch (error) {
-        // Username-based record doesn't exist, that's fine
-      }
-    }
+    // Check own aura - FIXED: Only use real user ID
+    targetUser = await db.getUser(userId, chatId, platform, username);
     
     displayName = formatUsername(username, platform);
   }
@@ -340,9 +338,16 @@ async function blessUser(giverUserId, giverUsername, targetUsername, blessAmount
   // Get giver data
   const giverUser = await db.getUser(giverUserId, chatId, platform, giverUsername);
   
-  // Get target data
-  const targetId = `username_${targetUsername.toLowerCase()}`;
-  const targetUser = await db.getUser(targetId, chatId, platform, targetUsername);
+  // Get target data - FIXED: Find actual user by username, don't create fake username-based IDs
+  const targetUser = await findUserByUsername(targetUsername, chatId, platform);
+  if (!targetUser) {
+    return {
+      success: false,
+      type: 'user_not_found',
+      message: `💀 BLESSING FAILED! @${targetUsername} hasn't farmed any aura yet! Tell them to start with /aurafarm first! 🔥`
+    };
+  }
+  const targetId = targetUser.user_id.split('_').pop(); // Extract real user ID from composite key
   
   // Check if giver has enough aura
   if (giverUser.aura < blessAmount) {
@@ -379,6 +384,30 @@ async function blessUser(giverUserId, giverUsername, targetUsername, blessAmount
   };
 }
 
+// FIXED: Helper function to find user by username without creating fake IDs
+async function findUserByUsername(username, chatId, platform) {
+  try {
+    const { data: userData, error } = await db.supabase
+      .from('aura')
+      .select('*')
+      .eq('username', username)
+      .eq('platform', platform)
+      .ilike('user_id', `${platform}_${chatId}_%`)
+      .not('user_id', 'like', '%username_%') // Exclude fake username-based IDs
+      .order('aura', { ascending: false }) // Get highest aura if multiple exist
+      .limit(1)
+      .single();
+
+    if (userData && !error) {
+      return userData;
+    }
+    return null;
+  } catch (error) {
+    console.error('Error finding user by username:', error);
+    return null;
+  }
+}
+
 module.exports = {
   farmAura,
   auraDuel,
@@ -387,6 +416,7 @@ module.exports = {
   blessUser,
   formatUsername,
   getRandomElement,
+  findUserByUsername,
   POSITIVE_FLAVORS,
   NEGATIVE_FLAVORS,
   JACKPOT_FLAVORS,
