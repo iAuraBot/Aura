@@ -305,21 +305,21 @@ function setupWebInterface(app) {
                 </div>
               </div>
               <div class="feature-card">
-                <span class="feature-emoji">🎮</span>
-                <div class="feature-title">Twitch</div>
-                <div class="feature-desc">
-                  <strong>Commands:</strong> !aurafarm, !aura4aura, !bless<br>
-                  <strong>AI Chat:</strong> @aurafarmbot tell me something wild<br>
-                  <strong>Works in:</strong> Any channel with bot enabled
-                </div>
-              </div>
-              <div class="feature-card">
                 <span class="feature-emoji">𝕏</span>
                 <div class="feature-title">X (Twitter)</div>
                 <div class="feature-desc">
                   <strong>AI Chat:</strong> @AuraFarmBot thoughts on aura?<br>
                   <strong>Smart Throttling:</strong> 40% reply chance<br>
                   <strong>Daily Limit:</strong> Max 50 replies/day
+                </div>
+              </div>
+              <div class="feature-card">
+                <span class="feature-emoji">🎮</span>
+                <div class="feature-title">Twitch</div>
+                <div class="feature-desc">
+                  <strong>Commands:</strong> !aurafarm, !aura4aura, !bless<br>
+                  <strong>AI Chat:</strong> @aurafarmbot tell me something wild<br>
+                  <strong>Works in:</strong> Any channel with bot enabled
                 </div>
               </div>
             </div>
@@ -331,22 +331,22 @@ function setupWebInterface(app) {
               Join thousands of users already farming aura and having unhinged AI conversations!
             </p>
             <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px;">
-              <a href="/auth/streamer" class="btn" style="font-size: 1.1rem; padding: 20px 40px;">🚀 Add to Twitch</a>
-              <a href="https://t.me/iAuraFarmBot" target="_blank" class="btn btn-secondary" style="font-size: 1.1rem; padding: 20px 40px;">📱 Try on Telegram</a>
               <a href="https://x.com/AuraFarmBot" target="_blank" class="btn btn-secondary" style="font-size: 1.1rem; padding: 20px 40px;">🐦 Follow on X</a>
+              <a href="https://t.me/iAuraFarmBot" target="_blank" class="btn btn-secondary" style="font-size: 1.1rem; padding: 20px 40px;">📱 Try on Telegram</a>
+              <a href="/auth/streamer" class="btn" style="font-size: 1.1rem; padding: 20px 40px;">🚀 Add to Twitch</a>
             </div>
             
             <div style="border-top: 1px solid rgba(255, 255, 255, 0.2); padding-top: 30px;">
               <h4 style="font-size: 1.4rem; margin-bottom: 20px; color: #ffd700;">🔗 Official Bot Channels</h4>
               <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
-                <a href="https://www.twitch.tv/iaurafarmbot" target="_blank" style="display: flex; align-items: center; justify-content: center; width: 80px; height: 80px; padding: 15px; background: rgba(145, 70, 255, 0.2); border: 1px solid rgba(145, 70, 255, 0.4); border-radius: 15px; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);" onmouseover="this.style.background='rgba(145, 70, 255, 0.4)'; this.style.transform='translateY(-3px)'" onmouseout="this.style.background='rgba(145, 70, 255, 0.2)'; this.style.transform='translateY(0)'">
-                  <img src="/assets/twitch.png" alt="Twitch" style="width: 50px; height: 50px; object-fit: contain;">
+                <a href="https://x.com/AuraFarmBot" target="_blank" style="display: flex; align-items: center; justify-content: center; width: 80px; height: 80px; padding: 15px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 15px; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);" onmouseover="this.style.background='rgba(0, 0, 0, 0.7)'; this.style.transform='translateY(-3px)'" onmouseout="this.style.background='rgba(0, 0, 0, 0.4)'; this.style.transform='translateY(0)'">
+                  <img src="/assets/x.png" alt="X (Twitter)" style="width: 50px; height: 50px; object-fit: contain;">
                 </a>
                 <a href="https://t.me/iAuraFarmBot" target="_blank" style="display: flex; align-items: center; justify-content: center; width: 80px; height: 80px; padding: 15px; background: rgba(0, 136, 204, 0.2); border: 1px solid rgba(0, 136, 204, 0.4); border-radius: 15px; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);" onmouseover="this.style.background='rgba(0, 136, 204, 0.4)'; this.style.transform='translateY(-3px)'" onmouseout="this.style.background='rgba(0, 136, 204, 0.2)'; this.style.transform='translateY(0)'">
                   <img src="/assets/telegram.png" alt="Telegram" style="width: 50px; height: 50px; object-fit: contain;">
                 </a>
-                <a href="https://x.com/AuraFarmBot" target="_blank" style="display: flex; align-items: center; justify-content: center; width: 80px; height: 80px; padding: 15px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 15px; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);" onmouseover="this.style.background='rgba(0, 0, 0, 0.7)'; this.style.transform='translateY(-3px)'" onmouseout="this.style.background='rgba(0, 0, 0, 0.4)'; this.style.transform='translateY(0)'">
-                  <img src="/assets/x.png" alt="X (Twitter)" style="width: 50px; height: 50px; object-fit: contain;">
+                <a href="https://www.twitch.tv/iaurafarmbot" target="_blank" style="display: flex; align-items: center; justify-content: center; width: 80px; height: 80px; padding: 15px; background: rgba(145, 70, 255, 0.2); border: 1px solid rgba(145, 70, 255, 0.4); border-radius: 15px; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);" onmouseover="this.style.background='rgba(145, 70, 255, 0.4)'; this.style.transform='translateY(-3px)'" onmouseout="this.style.background='rgba(145, 70, 255, 0.2)'; this.style.transform='translateY(0)'">
+                  <img src="/assets/twitch.png" alt="Twitch" style="width: 50px; height: 50px; object-fit: contain;">
                 </a>
               </div>
             </div>
@@ -355,14 +355,14 @@ function setupWebInterface(app) {
         
         <!-- Floating Social Media Bar -->
         <div class="floating-social" style="position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 1000;">
-          <a href="https://www.twitch.tv/iaurafarmbot" target="_blank" title="Watch Live on Twitch" style="display: flex; align-items: center; justify-content: center; width: 55px; height: 55px; padding: 8px; background: rgba(145, 70, 255, 0.9); border-radius: 50%; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-            <img src="/assets/twitch.png" alt="Twitch" style="width: 35px; height: 35px; object-fit: contain;">
+          <a href="https://x.com/AuraFarmBot" target="_blank" title="Follow on X" style="display: flex; align-items: center; justify-content: center; width: 55px; height: 55px; padding: 8px; background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 50%; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+            <img src="/assets/x.png" alt="X (Twitter)" style="width: 35px; height: 35px; object-fit: contain;">
           </a>
           <a href="https://t.me/iAuraFarmBot" target="_blank" title="Chat on Telegram" style="display: flex; align-items: center; justify-content: center; width: 55px; height: 55px; padding: 8px; background: rgba(0, 136, 204, 0.9); border-radius: 50%; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
             <img src="/assets/telegram.png" alt="Telegram" style="width: 35px; height: 35px; object-fit: contain;">
           </a>
-          <a href="https://x.com/AuraFarmBot" target="_blank" title="Follow on X" style="display: flex; align-items: center; justify-content: center; width: 55px; height: 55px; padding: 8px; background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 50%; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-            <img src="/assets/x.png" alt="X (Twitter)" style="width: 35px; height: 35px; object-fit: contain;">
+          <a href="https://www.twitch.tv/iaurafarmbot" target="_blank" title="Watch Live on Twitch" style="display: flex; align-items: center; justify-content: center; width: 55px; height: 55px; padding: 8px; background: rgba(145, 70, 255, 0.9); border-radius: 50%; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+            <img src="/assets/twitch.png" alt="Twitch" style="width: 35px; height: 35px; object-fit: contain;">
           </a>
         </div>
       </body>
