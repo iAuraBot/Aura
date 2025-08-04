@@ -23,6 +23,7 @@ function setupWebInterface(app) {
 
   // Serve static files
   app.use(express.static('public'));
+  app.use('/assets', express.static('assets'));
   app.use(express.urlencoded({ extended: true }));
 
   // Landing page - Add bot to channel
@@ -195,12 +196,14 @@ function setupWebInterface(app) {
             opacity: 0.8;
             line-height: 1.4;
           }
-          @media (max-width: 768px) {
+                      @media (max-width: 768px) {
             .container { padding: 40px 20px; }
             h1 { font-size: 2.5rem; }
             .subtitle { font-size: 1.8rem; }
             .description { font-size: 1.1rem; }
             .cta-buttons { flex-direction: column; align-items: center; }
+            .floating-social { position: fixed; bottom: 10px; right: 10px; }
+            .floating-social a { width: 40px; height: 40px; }
           }
         </style>
       </head>
@@ -259,11 +262,11 @@ function setupWebInterface(app) {
               <div class="feature-title">Aura 4 Aura Duels</div>
               <div class="feature-desc">1v1 showdowns with custom stakes for maximum brainrot energy</div>
             </div>
-            <div class="feature-card">
-              <span class="feature-emoji">🐦</span>
-              <div class="feature-title">Smart Twitter Replies</div>
-              <div class="feature-desc">40% reply chance with throttling. Max 50/day on Free API tier</div>
-            </div>
+                          <div class="feature-card">
+                <span class="feature-emoji">𝕏</span>
+                <div class="feature-title">Smart X (Twitter) Replies</div>
+                <div class="feature-desc">40% reply chance with throttling. Max 50/day on Free API tier</div>
+              </div>
             <div class="feature-card">
               <span class="feature-emoji">📊</span>
               <div class="feature-title">Leaderboards</div>
@@ -308,10 +311,10 @@ function setupWebInterface(app) {
                 </div>
               </div>
               <div class="feature-card">
-                <span class="feature-emoji">🐦</span>
-                <div class="feature-title">Twitter</div>
+                <span class="feature-emoji">𝕏</span>
+                <div class="feature-title">X (Twitter)</div>
                 <div class="feature-desc">
-                  <strong>AI Chat:</strong> @aurafarmbot thoughts on aura?<br>
+                  <strong>AI Chat:</strong> @AuraFarmBot thoughts on aura?<br>
                   <strong>Smart Throttling:</strong> 40% reply chance<br>
                   <strong>Daily Limit:</strong> Max 50 replies/day
                 </div>
@@ -324,12 +327,40 @@ function setupWebInterface(app) {
             <p style="font-size: 1.2rem; margin-bottom: 30px; opacity: 0.9;">
               Join thousands of users already farming aura and having unhinged AI conversations!
             </p>
-            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px;">
               <a href="/auth/streamer" class="btn" style="font-size: 1.1rem; padding: 20px 40px;">🚀 Add to Twitch</a>
               <a href="https://t.me/iAuraFarmBot" target="_blank" class="btn btn-secondary" style="font-size: 1.1rem; padding: 20px 40px;">📱 Try on Telegram</a>
-              <a href="https://twitter.com/iAuraFarmBot" target="_blank" class="btn btn-secondary" style="font-size: 1.1rem; padding: 20px 40px;">🐦 Follow on Twitter</a>
+              <a href="https://x.com/AuraFarmBot" target="_blank" class="btn btn-secondary" style="font-size: 1.1rem; padding: 20px 40px;">🐦 Follow on X</a>
+            </div>
+            
+            <div style="border-top: 1px solid rgba(255, 255, 255, 0.2); padding-top: 30px;">
+              <h4 style="font-size: 1.4rem; margin-bottom: 20px; color: #ffd700;">🔗 Official Bot Channels</h4>
+              <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                <a href="https://www.twitch.tv/iaurafarmbot" target="_blank" style="display: flex; align-items: center; justify-content: center; width: 80px; height: 80px; padding: 15px; background: rgba(145, 70, 255, 0.2); border: 1px solid rgba(145, 70, 255, 0.4); border-radius: 15px; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);" onmouseover="this.style.background='rgba(145, 70, 255, 0.4)'; this.style.transform='translateY(-3px)'" onmouseout="this.style.background='rgba(145, 70, 255, 0.2)'; this.style.transform='translateY(0)'">
+                  <img src="/assets/twitch.png" alt="Twitch" style="width: 50px; height: 50px; object-fit: contain;">
+                </a>
+                <a href="https://t.me/iAuraFarmBot" target="_blank" style="display: flex; align-items: center; justify-content: center; width: 80px; height: 80px; padding: 15px; background: rgba(0, 136, 204, 0.2); border: 1px solid rgba(0, 136, 204, 0.4); border-radius: 15px; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);" onmouseover="this.style.background='rgba(0, 136, 204, 0.4)'; this.style.transform='translateY(-3px)'" onmouseout="this.style.background='rgba(0, 136, 204, 0.2)'; this.style.transform='translateY(0)'">
+                  <img src="/assets/telegram.png" alt="Telegram" style="width: 50px; height: 50px; object-fit: contain;">
+                </a>
+                <a href="https://x.com/AuraFarmBot" target="_blank" style="display: flex; align-items: center; justify-content: center; width: 80px; height: 80px; padding: 15px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 15px; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);" onmouseover="this.style.background='rgba(0, 0, 0, 0.7)'; this.style.transform='translateY(-3px)'" onmouseout="this.style.background='rgba(0, 0, 0, 0.4)'; this.style.transform='translateY(0)'">
+                  <img src="/assets/x.png" alt="X (Twitter)" style="width: 50px; height: 50px; object-fit: contain;">
+                </a>
+              </div>
             </div>
           </div>
+        </div>
+        
+        <!-- Floating Social Media Bar -->
+        <div class="floating-social" style="position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 1000;">
+          <a href="https://www.twitch.tv/iaurafarmbot" target="_blank" title="Watch Live on Twitch" style="display: flex; align-items: center; justify-content: center; width: 55px; height: 55px; padding: 8px; background: rgba(145, 70, 255, 0.9); border-radius: 50%; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+            <img src="/assets/twitch.png" alt="Twitch" style="width: 35px; height: 35px; object-fit: contain;">
+          </a>
+          <a href="https://t.me/iAuraFarmBot" target="_blank" title="Chat on Telegram" style="display: flex; align-items: center; justify-content: center; width: 55px; height: 55px; padding: 8px; background: rgba(0, 136, 204, 0.9); border-radius: 50%; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+            <img src="/assets/telegram.png" alt="Telegram" style="width: 35px; height: 35px; object-fit: contain;">
+          </a>
+          <a href="https://x.com/AuraFarmBot" target="_blank" title="Follow on X" style="display: flex; align-items: center; justify-content: center; width: 55px; height: 55px; padding: 8px; background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 50%; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+            <img src="/assets/x.png" alt="X (Twitter)" style="width: 35px; height: 35px; object-fit: contain;">
+          </a>
         </div>
       </body>
       </html>
@@ -511,7 +542,7 @@ function setupWebInterface(app) {
               <p><code>@aurafarmbot [message]</code> - Chat with Claude AI</p>
               <p style="font-size: 0.9rem; color: #adadb8; margin-top: 5px;">Just mention the bot to have chaotic brainrot conversations!</p>
               <h3>Multi-Platform Support:</h3>
-              <p style="font-size: 0.9rem; color: #adadb8;">Also works on <strong>Telegram</strong> (/commands) and <strong>Twitter</strong> (@mentions)</p>
+              <p style="font-size: 0.9rem; color: #adadb8;">Also works on <strong>Telegram</strong> (/commands) and <strong>X (Twitter)</strong> (@mentions)</p>
             </div>
             
             <a href="/dashboard" class="btn">⚙️ Customize Settings</a>
@@ -896,7 +927,7 @@ function setupWebInterface(app) {
                   </div>
                   <div style="margin-top: 20px; padding: 15px; background: rgba(255, 215, 0, 0.1); border-radius: 8px; border: 1px solid rgba(255, 215, 0, 0.3);">
                     <p style="margin: 0; font-size: 0.9rem; color: #ffd700;"><strong>Multi-Platform:</strong></p>
-                    <p style="margin: 5px 0 0 0; font-size: 0.8rem; color: #adadb8;">Also works on Telegram (/commands) and Twitter (@mentions with smart throttling)</p>
+                    <p style="margin: 5px 0 0 0; font-size: 0.8rem; color: #adadb8;">Also works on Telegram (/commands) and X (Twitter) (@mentions with smart throttling)</p>
                   </div>
                   
                   <div class="settings-toggle">
