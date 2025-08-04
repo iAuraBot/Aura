@@ -21,7 +21,7 @@ function initializeOAuth() {
   // Generate OAuth URL
   app.get('/auth/twitch', (req, res) => {
     const state = crypto.randomBytes(16).toString('hex');
-    const scopes = 'chat:read chat:write';
+    const scopes = 'chat:read chat:edit'; // FIXED: chat:edit is the correct scope for sending messages
     
     // Store state for verification
     oauthStates.set(state, { timestamp: Date.now() });
@@ -138,8 +138,9 @@ function initializeOAuth() {
     });
   });
 
-  // Start server
+  // Start server - Railway provides PORT dynamically
   const port = process.env.PORT || 3080;
+  console.log(`🔍 Using port: ${port} (Railway PORT: ${process.env.PORT})`);
   server = app.listen(port, '0.0.0.0', () => {
     console.log(`🔐 OAuth server running on port ${port}`);
     console.log(`🌍 OAuth URL: https://aura-production-877f.up.railway.app/auth/twitch`);
