@@ -47,11 +47,13 @@ function setupWebInterface(app) {
             overflow-x: hidden;
           }
           .container {
-            max-width: 800px;
-            padding: 60px 40px;
+            width: 100%;
+            padding: 60px 80px;
             text-align: center;
             position: relative;
             z-index: 2;
+            max-width: 1400px;
+            margin: 0 auto;
           }
           .bot-icon {
             width: 120px;
@@ -514,9 +516,9 @@ function setupWebInterface(app) {
             }
             .header .join-btn:hover { background: #772ce8; }
             .main-content {
-              padding: 40px;
-              max-width: 1200px;
-              margin: 0 auto;
+              padding: 40px 80px;
+              width: 100%;
+              margin: 0;
             }
             .metrics-grid {
               display: grid;

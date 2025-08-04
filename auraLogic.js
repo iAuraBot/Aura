@@ -171,7 +171,7 @@ async function farmAura(userId, chatId, platform, username, channelLogin = null)
     flavorText,
     isFirstTime,
     welcomeMessage,
-    message: `✨ **AURA FARM SUCCESSFUL** ✨\n\n${flavorText}\n\n${formatUsername(username, platform)} ${sign}${auraChange} aura\n💫 Total Aura: ${updatedUser.aura} (${platform} - ${chatId})${welcomeMessage}`
+          message: `✨ **AURA FARM SUCCESSFUL** ✨\n\n${flavorText}\n\n${formatUsername(username, platform)} ${sign}${auraChange} aura\n💫 Total: ${updatedUser.aura}${welcomeMessage}`
   };
 }
 
@@ -296,7 +296,7 @@ async function checkAura(userId, chatId, platform, username, mentionedUsername =
     displayName,
     auraEmoji,
     statusText,
-    message: `${auraEmoji} **AURA CHECK** ${auraEmoji}\n\n${displayName} has **${targetUser.aura}** aura points\n💬 Platform: ${platform.toUpperCase()}\n💬 Chat: ${chatId}\n\n${statusText}`
+    message: `${auraEmoji} **AURA CHECK** ${auraEmoji}\n\n${displayName} has **${targetUser.aura}** aura\n\n${statusText}`
   };
 }
 
@@ -308,13 +308,11 @@ async function getLeaderboard(chatId, platform, chatTitle = 'This Chat') {
     return {
       success: true,
       type: 'empty_leaderboard',
-      message: `📊 **AURA LEADERBOARD** 📊\n💬 Platform: ${platform.toUpperCase()}\n💬 Chat: ${chatTitle}\n\n💀 No aura farmers in this chat yet!\nBe the first to farm! 🔥`
+      message: `📊 **AURA LEADERBOARD** 📊\n\n💀 No aura farmers in this chat yet!\nBe the first to farm! 🔥`
     };
   }
 
-  let message = '📊 **AURA LEADERBOARD** 📊\n';
-  message += `💬 Platform: ${platform.toUpperCase()}\n`;
-  message += `💬 Chat: ${chatTitle}\n\n`;
+  let message = '📊 **AURA LEADERBOARD** 📊\n\n';
 
   allUsers.forEach((user, index) => {
     const position = index + 1;

@@ -197,7 +197,7 @@ async function handleAuraDuel(channel, chatId, userId, username, args) {
   }
 
   if (args.length < 2) {
-    await sayInChannel(channel, '💀 **really goin aura 4 aura huh?** 💀\n\nUsage: `!aura4aura @username [amount]`\nSTART BEEF WITH SOMEONE IN A 1V1 AURA SHOWDOWN! 🔥\nBoth users gotta have enough aura to match the stakes!\n\nExample: `!aura4aura @friend 25`');
+    await sayInChannel(channel, '💀 **really goin aura 4 aura huh?** 💀\n\n`!aura4aura @user [amount]` - 50/50 showdown\n\nExample: `!aura4aura @friend 25`');
     return;
   }
 
@@ -205,7 +205,7 @@ async function handleAuraDuel(channel, chatId, userId, username, args) {
   const battleAmount = parseInt(args[1]);
 
   if (isNaN(battleAmount) || battleAmount <= 0) {
-    await sayInChannel(channel, '💀 BRUH! Enter a valid positive number for the stakes! No SUS amounts! 💀');
+    await sayInChannel(channel, '💀 Enter a valid amount! Stop being SUS!');
     return;
   }
 
@@ -231,7 +231,7 @@ async function handleBless(channel, chatId, userId, username, args) {
   const blessAmount = parseInt(args[1]);
 
   if (isNaN(blessAmount) || blessAmount <= 0) {
-    await sayInChannel(channel, '💀 BRUH! Enter a valid positive number for the blessing! No SUS amounts! ✨');
+    await sayInChannel(channel, '💀 Enter a valid blessing amount!');
     return;
   }
 
@@ -254,7 +254,7 @@ async function handleHelp(channel) {
 • 10% chance: +100 JACKPOT or -50 IMPLOSION!
 
 🎰 **!aura4aura @user [amount]**
-    • 50/50 aura 4 aura action - PURE CHAOS!
+    • 50/50 aura showdowns
 • Both players need enough aura to match bet
     • Winner takes ALL the aura on the line
 • Example: \`!aura4aura @friend 25\`
@@ -279,7 +279,7 @@ async function handleHelp(channel) {
 💀 **PRO TIPS:**
 • Each channel has its own aura ecosystem! 🏘️
 • Farm daily to stack that aura bag! 💸
-    • Start beef wisely... or don't, I'm not your mom! 💀
+    • Start beef at your own risk! 💀
 
 **LET'S GET THIS AURA! NO CAP! 🚀**`;
 
