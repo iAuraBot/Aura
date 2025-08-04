@@ -679,6 +679,7 @@ async function setFamilyFriendlySetting(platform, channelId, channelName, family
 }
 
 module.exports = { 
+  supabase, // Export the supabase client for direct queries
   getUser, 
   updateAura, 
   updateLastFarm, 
