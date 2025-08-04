@@ -378,23 +378,64 @@ async function blessUser(giverUserId, giverUsername, targetUsername, blessAmount
 // FIXED: Helper function to find user by username without creating fake IDs
 async function findUserByUsername(username, chatId, platform) {
   try {
-    const { data: userData, error } = await db.supabase
+    console.log(`🔍 Looking for user: username="${username}", chatId="${chatId}", platform="${platform}"`);
+    
+    // First try exact username match (case-sensitive)
+    let { data: userData, error } = await db.supabase
       .from('aura')
       .select('*')
       .eq('username', username)
       .eq('platform', platform)
       .ilike('user_id', `${platform}_${chatId}_%`)
       .not('user_id', 'like', '%username_%') // Exclude fake username-based IDs
-      .order('aura', { ascending: false }) // Get highest aura if multiple exist
-      .limit(1)
-      .single();
+      .order('aura', { ascending: false });
 
-    if (userData && !error) {
-      return userData;
+    console.log(`📊 Exact match results: ${userData ? userData.length : 0} users found`);
+    
+    // If no exact match, try case-insensitive
+    if (!userData || userData.length === 0) {
+      console.log(`🔄 Trying case-insensitive search for "${username}"`);
+      const result = await db.supabase
+        .from('aura')
+        .select('*')
+        .ilike('username', username) // Case-insensitive
+        .eq('platform', platform)
+        .ilike('user_id', `${platform}_${chatId}_%`)
+        .not('user_id', 'like', '%username_%')
+        .order('aura', { ascending: false });
+      
+      userData = result.data;
+      error = result.error;
+      console.log(`📊 Case-insensitive results: ${userData ? userData.length : 0} users found`);
     }
-    return null;
+
+    // If still no match, debug what users actually exist in this chat
+    if (!userData || userData.length === 0) {
+      console.log(`🔍 DEBUG: Checking all users in chat ${chatId} on platform ${platform}`);
+      const debugResult = await db.supabase
+        .from('aura')
+        .select('user_id, username, aura')
+        .eq('platform', platform)
+        .ilike('user_id', `${platform}_${chatId}_%`)
+        .not('user_id', 'like', '%username_%')
+        .order('aura', { ascending: false });
+      
+      console.log(`📋 All users in this chat:`, debugResult.data);
+      console.log(`❌ Target "${username}" not found among these users`);
+      return null;
+    }
+
+    if (error) {
+      console.error('❌ Database error in findUserByUsername:', error);
+      return null;
+    }
+
+    const foundUser = userData[0]; // Get the first (highest aura) match
+    console.log(`✅ Found user: ${foundUser.username} (${foundUser.user_id}) with ${foundUser.aura} aura`);
+    return foundUser;
+    
   } catch (error) {
-    console.error('Error finding user by username:', error);
+    console.error('💥 Exception in findUserByUsername:', error);
     return null;
   }
 }
