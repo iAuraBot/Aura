@@ -22,7 +22,9 @@ ON conversation_history (created_at DESC);
 ALTER TABLE conversation_history ENABLE ROW LEVEL SECURITY;
 
 -- Create policy to allow all operations (adjust as needed for your security requirements)
-CREATE POLICY IF NOT EXISTS "Allow all operations on conversation_history" 
+-- Drop existing policy if it exists, then create new one
+DROP POLICY IF EXISTS "Allow all operations on conversation_history" ON conversation_history;
+CREATE POLICY "Allow all operations on conversation_history" 
 ON conversation_history FOR ALL 
 TO public 
 USING (true) 
