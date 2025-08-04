@@ -139,7 +139,7 @@ bot.command('aurafarm', async (ctx) => {
     const updatedUser = await db.getUser(userId, chatId, username);
     const sign = auraChange > 0 ? '+' : '';
     
-    const welcomeMessage = isFirstTime ? '\n🌱 **WELCOME TO THE AURA FARM!** First time bonus! 🌱' : '';
+          const welcomeMessage = isFirstTime ? '\n💀 **WELCOME TO THE CHAOS!** Newbie protection activated! 🔥' : '';
     
     await ctx.reply(
       `✨ **AURA FARM SUCCESSFUL** ✨\n\n` +
@@ -281,7 +281,7 @@ bot.command('help', async (ctx) => {
 
 ✨ **/aurafarm**
 • Farm aura every 24 hours with RNG
-• First time guaranteed POSITIVE vibes! 🌱
+• First time guaranteed NO L! Newbie protection! 💀
 • 70% chance: +20 to +50 aura (W)
 • 20% chance: -10 to -25 aura (L)  
 • 10% chance: +100 JACKPOT or -50 IMPLOSION!
@@ -379,8 +379,8 @@ bot.command('bless', async (ctx) => {
       '🔥 W BLESSING! This is some SIGMA MALE sharing!',
       '💯 NO CAP! That blessing just HIT DIFFERENT!',
       '🚀 BASED ENERGY TRANSFER! Your rizz is CONTAGIOUS!',
-      '💸 FANUM BLESSING! Someone just got BLESSED not TAXED!',
-      '⚡ ABSOLUTELY NUCLEAR blessing! This chat is BLESSED!',
+      '💸 REVERSE FANUM TAX! Someone just got BLESSED not REKT!',
+      '⚡ ABSOLUTELY NUCLEAR! This chat is about to EXPLODE!',
       '👑 ALPHA GENEROSITY! This blessing is UTTERLY BONKERS!'
     ];
     
@@ -389,8 +389,8 @@ bot.command('bless', async (ctx) => {
     await ctx.reply(
       `✨ **AURA BLESSING SUCCESSFUL** ✨\n\n` +
       `${blessing}\n\n` +
-      `${formatUsername(giver)} blessed @${targetUsername} with ${blessAmount} aura! 🙏\n\n` +
-      `🗿 RESPECT THE GENEROSITY! This is how we BUILD COMMUNITY! 💀`
+      `${formatUsername(giver)} just FANUM TAXED @${targetUsername} with ${blessAmount} aura! 💀\n\n` +
+      `🗿 ABSOLUTE SIGMA BEHAVIOR! This chat is about to get CHAOTIC! 🔥`
     );
   });
 });
@@ -457,7 +457,7 @@ bot.command('aura', async (ctx) => {
       `${auraEmoji} **AURA CHECK** ${auraEmoji}\n\n` +
       `${displayName} has **${user.aura}** aura points\n` +
       `💬 In: ${ctx.chat.title || 'This Chat'}\n\n` +
-      `${user.aura >= 0 ? '✨ Radiating positive energy!' : '💀 Cursed with negative vibes...'}`
+      `${user.aura >= 0 ? '🗿 Living that SIGMA GRINDSET life!' : '💀 Caught in the BRAINROT CYCLE...'}`
     );
   });
 });
@@ -510,7 +510,7 @@ bot.on('inline_query', async (ctx) => {
         title: '✨ /bless @user [amount]',
         description: 'Give aura to another user',
         input_message_content: {
-          message_text: 'Spread good vibes: /bless @username [amount] ✨🙏'
+          message_text: 'FANUM TAX others: /bless @username [amount] 💀🔥'
         }
       },
       {
