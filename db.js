@@ -9,16 +9,20 @@ const supabase = createClient(
 /**
  * Get user from database or create if doesn't exist
  * @param {string} userId - Telegram user ID or username-based ID
+ * @param {string} chatId - Chat ID for separate ecosystems
  * @param {string} username - Telegram username (optional)
  * @returns {Object} User data
  */
-async function getUser(userId, username = null) {
+async function getUser(userId, chatId, username = null) {
   try {
-    // First try to get existing user by exact ID
+    // Create composite key for chat-specific user
+    const compositeKey = `${chatId}_${userId}`;
+    
+    // First try to get existing user by composite key
     const { data: existingUser, error: fetchError } = await supabase
       .from('aura')
       .select('*')
-      .eq('user_id', userId)
+      .eq('user_id', compositeKey)
       .single();
 
     if (existingUser && !fetchError) {
@@ -27,28 +31,22 @@ async function getUser(userId, username = null) {
         await supabase
           .from('aura')
           .update({ username })
-          .eq('user_id', userId);
+          .eq('user_id', compositeKey);
         existingUser.username = username;
       }
       return existingUser;
     }
 
-    // If this is a username-based lookup, also try to find by username
+    // If this is a username-based lookup, also try to find by username in this chat
     if (userId.startsWith('username_') && username) {
       const { data: userByUsername, error: usernameError } = await supabase
         .from('aura')
         .select('*')
         .eq('username', username)
+        .eq('user_id', compositeKey)
         .single();
 
       if (userByUsername && !usernameError) {
-        // Found existing user by username - update their user_id to the new format
-        await supabase
-          .from('aura')
-          .update({ user_id: userId })
-          .eq('username', username);
-        
-        userByUsername.user_id = userId;
         return userByUsername;
       }
     }
@@ -57,7 +55,7 @@ async function getUser(userId, username = null) {
     const { data: newUser, error: insertError } = await supabase
       .from('aura')
       .insert({
-        user_id: userId,
+        user_id: compositeKey,
         username: username || 'Unknown',
         aura: 0,
         last_farm: null,
@@ -81,16 +79,19 @@ async function getUser(userId, username = null) {
 /**
  * Update user's aura points
  * @param {string} userId - Telegram user ID
+ * @param {string} chatId - Chat ID for separate ecosystems
  * @param {number} amount - Amount to add/subtract (can be negative)
  * @returns {Object} Updated user data
  */
-async function updateAura(userId, amount) {
+async function updateAura(userId, chatId, amount) {
   try {
+    const compositeKey = `${chatId}_${userId}`;
+    
     // First get current aura
     const { data: currentUser, error: fetchError } = await supabase
       .from('aura')
       .select('aura')
-      .eq('user_id', userId)
+      .eq('user_id', compositeKey)
       .single();
 
     if (fetchError) {
@@ -105,7 +106,7 @@ async function updateAura(userId, amount) {
     const { data, error } = await supabase
       .from('aura')
       .update({ aura: newAura })
-      .eq('user_id', userId)
+      .eq('user_id', compositeKey)
       .select()
       .single();
 
@@ -124,16 +125,19 @@ async function updateAura(userId, amount) {
 /**
  * Update last farm timestamp
  * @param {string} userId - Telegram user ID
+ * @param {string} chatId - Chat ID for separate ecosystems
  * @returns {Object} Updated user data
  */
-async function updateLastFarm(userId) {
+async function updateLastFarm(userId, chatId) {
   try {
+    const compositeKey = `${chatId}_${userId}`;
+    
     const { data, error } = await supabase
       .from('aura')
       .update({ 
         last_farm: new Date().toISOString()
       })
-      .eq('user_id', userId)
+      .eq('user_id', compositeKey)
       .select()
       .single();
 
@@ -152,15 +156,18 @@ async function updateLastFarm(userId) {
 /**
  * Increment user's daily reactions count
  * @param {string} userId - Telegram user ID
+ * @param {string} chatId - Chat ID for separate ecosystems
  * @returns {Object} Updated user data
  */
-async function updateReactions(userId) {
+async function updateReactions(userId, chatId) {
   try {
+    const compositeKey = `${chatId}_${userId}`;
+    
     // First get current reactions count
     const { data: currentUser, error: fetchError } = await supabase
       .from('aura')
       .select('reactions_today')
-      .eq('user_id', userId)
+      .eq('user_id', compositeKey)
       .single();
 
     if (fetchError) {
@@ -175,7 +182,7 @@ async function updateReactions(userId) {
     const { data, error } = await supabase
       .from('aura')
       .update({ reactions_today: newReactions })
-      .eq('user_id', userId)
+      .eq('user_id', compositeKey)
       .select()
       .single();
 
@@ -192,30 +199,32 @@ async function updateReactions(userId) {
 }
 
 /**
- * Get top aura users (leaderboard) with deduplication
+ * Get top aura users (leaderboard) for specific chat
+ * @param {string} chatId - Chat ID for separate ecosystems
  * @param {number} limit - Number of users to return
  * @param {boolean} ascending - Sort order (true for lowest, false for highest)
  * @returns {Array} Array of user data
  */
-async function getTopUsers(limit = 5, ascending = false) {
+async function getTopUsers(chatId, limit = 10, ascending = false) {
   try {
-    // Get all users first to deduplicate
-    const { data: allUsers, error } = await supabase
+    // Get users from this specific chat only
+    const { data: chatUsers, error } = await supabase
       .from('aura')
       .select('user_id, username, aura')
+      .like('user_id', `${chatId}_%`)
       .order('aura', { ascending });
 
     if (error) {
-      console.error('Error getting users:', error);
+      console.error('Error getting chat users:', error);
       throw error;
     }
 
-    if (!allUsers) return [];
+    if (!chatUsers) return [];
 
-    // Deduplicate by username, keeping the best record
+    // Simple deduplication by username for this chat
     const userMap = new Map();
     
-    allUsers.forEach(user => {
+    chatUsers.forEach(user => {
       const username = user.username?.toLowerCase();
       if (!username || username === 'unknown') return;
       
@@ -223,9 +232,9 @@ async function getTopUsers(limit = 5, ascending = false) {
       if (!existing) {
         userMap.set(username, user);
       } else {
-        // Keep the record with real Telegram ID (no prefix) or higher aura
-        const isRealId = !user.user_id.includes('_');
-        const existingIsRealId = !existing.user_id.includes('_');
+        // Keep the record with higher aura or real ID
+        const isRealId = !user.user_id.split('_')[1].includes('username_');
+        const existingIsRealId = !existing.user_id.split('_')[1].includes('username_');
         
         if (isRealId && !existingIsRealId) {
           userMap.set(username, user);
@@ -249,14 +258,16 @@ async function getTopUsers(limit = 5, ascending = false) {
 }
 
 /**
- * Get user with most reactions today
+ * Get user with most reactions today for specific chat
+ * @param {string} chatId - Chat ID for separate ecosystems
  * @returns {Object|null} User with most reactions or null
  */
-async function getMostReactiveUser() {
+async function getMostReactiveUser(chatId) {
   try {
     const { data, error } = await supabase
       .from('aura')
       .select('user_id, username, reactions_today')
+      .like('user_id', `${chatId}_%`)
       .gt('reactions_today', 0)
       .order('reactions_today', { ascending: false })
       .limit(1)
@@ -275,15 +286,16 @@ async function getMostReactiveUser() {
 }
 
 /**
- * Reset all users' daily reactions to 0
+ * Reset all users' daily reactions to 0 for specific chat
+ * @param {string} chatId - Chat ID for separate ecosystems
  * @returns {boolean} Success status
  */
-async function resetDailyReactions() {
+async function resetDailyReactions(chatId) {
   try {
     const { error } = await supabase
       .from('aura')
       .update({ reactions_today: 0 })
-      .neq('user_id', ''); // Update all rows
+      .like('user_id', `${chatId}_%`);
 
     if (error) {
       console.error('Error resetting daily reactions:', error);

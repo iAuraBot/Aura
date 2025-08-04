@@ -1,33 +1,34 @@
 # 🌟 AuraFarmBot
 
-A mystical Telegram bot that rewards or removes aura points through RNG-based farming, epic duels, and social interactions in group chats. Built with Node.js, Telegraf, and Supabase for persistent data storage.
+A mystical Telegram bot that rewards or removes aura points through RNG-based farming, epic duels, and social interactions in group chats. Each chat has its own separate aura ecosystem - your aura balance and cooldowns are independent per chat! Built with Node.js, Telegraf, and Supabase for persistent data storage.
 
 ## ✨ Features
 
 ### ✨ Aura Farming (`/aurafarm`)
-- **24-hour cooldown** between farms
+- **24-hour cooldown per chat** - farm once per day in each group!
 - **RNG-based rewards:**
   - 70% chance: +20 to +50 aura
   - 20% chance: -10 to -25 aura  
   - 10% chance: +100 jackpot or -50 implosion
-- Mystical flavor text for each outcome
+- BRAINROT flavor text for each outcome
 
 ### 🎰 Aura Casino (`/aura4aura @user [amount]`)
 - **50/50 gambling system** with custom wagers
-- Both players must have enough aura to match the bet
+- Both players must have enough aura in this chat to match the bet
 - Winner takes the full wager amount from loser
 - Pure RNG with BRAINROT flavor text
 - Unlimited gambling (no cooldown)
 
 ### 📊 Leaderboard (`/auraboard`)
-- **Top 10 users** ranked by aura (highest to lowest)
+- **Top 10 users** in this specific chat ranked by aura
 - **Medal system** for top 3 positions
-- **Real-time rankings** from Supabase
+- **Chat-specific rankings** - each group has its own leaderboard
 
 ### 💫 Aura Check (`/aura` or `/aura @user`)
-- Check your own or someone else's aura balance
+- Check your own or someone else's aura balance in this chat
 - Dynamic emoji based on aura level
 - Positive/negative energy indicators
+- Shows which chat the balance is for
 
 ### 🎉 Daily Reaction Bonus
 - Automatic tracking of message reactions
