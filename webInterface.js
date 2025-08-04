@@ -226,9 +226,9 @@ function setupWebInterface(app) {
       <body>
         <div class="container">
           <div class="bot-icon">
-            <img src="/assets/aurafarmbot.png" alt="AuraFarmBot" style="width: 120px; height: 120px; border-radius: 20px; object-fit: cover;">
+            <img src="/assets/aurafarmbot.png" alt="AuraFarmBot" style="width: 160px; height: 160px; border-radius: 20px; object-fit: cover;">
           </div>
-                      <h2 class="subtitle">unhinged AI-powered bot that brings brainrot energy to Telegram, Twitch, and X! Farm aura, battle friends, and have chaotic conversations with AI</h2>
+                      <h2 class="subtitle">unhinged AI-powered bot that brings brainrot energy to Telegram, Twitch, and X! Farm aura, battle friends, and have chaotic conversations</h2>
 
           
           <div class="cta-buttons">
