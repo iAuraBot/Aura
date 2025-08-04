@@ -156,13 +156,13 @@ bot.command('aura4aura', async (ctx) => {
       return;
     }
     
-    // Get both users
+    // Get challenger user (real ID)
     const challengerId = challenger.id.toString();
     const challengerUser = await db.getUser(challengerId, challenger.username);
     
-    // For demo purposes, we'll simulate the target user
-    // In a real bot, you'd need to find the actual user ID from username
-    const targetId = `target_${targetUsername}`;
+    // For target user, we need to use username as ID since we can't get real Telegram ID from mention
+    // This will create consistent user records based on username
+    const targetId = `username_${targetUsername.toLowerCase()}`;
     const targetUser = await db.getUser(targetId, targetUsername);
     
     // Check if both users have enough aura
@@ -302,11 +302,11 @@ bot.command('aura', async (ctx) => {
     let targetId, targetUsername;
     
     if (mentionMatch) {
-      // Check mentioned user's aura
+      // Check mentioned user's aura (use consistent username-based ID)
       targetUsername = mentionMatch[1];
-      targetId = `target_${targetUsername}`; // Simulated for demo
+      targetId = `username_${targetUsername.toLowerCase()}`;
     } else {
-      // Check own aura
+      // Check own aura (use real Telegram ID)
       targetId = ctx.from.id.toString();
       targetUsername = ctx.from.username;
     }

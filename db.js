@@ -8,13 +8,13 @@ const supabase = createClient(
 
 /**
  * Get user from database or create if doesn't exist
- * @param {string} userId - Telegram user ID
+ * @param {string} userId - Telegram user ID or username-based ID
  * @param {string} username - Telegram username (optional)
  * @returns {Object} User data
  */
 async function getUser(userId, username = null) {
   try {
-    // First try to get existing user
+    // First try to get existing user by exact ID
     const { data: existingUser, error: fetchError } = await supabase
       .from('aura')
       .select('*')
@@ -31,6 +31,26 @@ async function getUser(userId, username = null) {
         existingUser.username = username;
       }
       return existingUser;
+    }
+
+    // If this is a username-based lookup, also try to find by username
+    if (userId.startsWith('username_') && username) {
+      const { data: userByUsername, error: usernameError } = await supabase
+        .from('aura')
+        .select('*')
+        .eq('username', username)
+        .single();
+
+      if (userByUsername && !usernameError) {
+        // Found existing user by username - update their user_id to the new format
+        await supabase
+          .from('aura')
+          .update({ user_id: userId })
+          .eq('username', username);
+        
+        userByUsername.user_id = userId;
+        return userByUsername;
+      }
     }
 
     // Create new user if doesn't exist
