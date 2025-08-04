@@ -146,36 +146,78 @@ async function updateAura(userId, chatId, amount, platform = 'telegram') {
   try {
     const compositeKey = `${platform}_${chatId}_${userId}`;
     
-    // Use Supabase client consistently
-    // First get current aura
-    const { data: currentUser, error: fetchError } = await supabase
-      .from('aura')
-      .select('aura')
-      .eq('user_id', compositeKey)
-      .single();
+    // Use Supabase client with retry logic for timing issues
+    let retries = 3;
+    while (retries > 0) {
+      try {
+        // First get current aura
+        const { data: currentUser, error: fetchError } = await supabase
+          .from('aura')
+          .select('aura')
+          .eq('user_id', compositeKey)
+          .single();
 
-    if (fetchError) {
-      console.error('Error fetching current aura:', fetchError);
-      throw fetchError;
+        if (fetchError) {
+          // If user not found, try to create them first
+          if (fetchError.code === 'PGRST116') {
+            console.log(`User ${compositeKey} not found, creating...`);
+            await getUser(userId, chatId, platform, 'Unknown');
+            // Retry the fetch after creating
+            const { data: newUser, error: retryError } = await supabase
+              .from('aura')
+              .select('aura')
+              .eq('user_id', compositeKey)
+              .single();
+            
+            if (retryError) {
+              console.error('Error fetching user after creation:', retryError);
+              throw retryError;
+            }
+            
+            const newAura = newUser.aura + amount;
+            const { data: updatedData, error: updateError } = await supabase
+              .from('aura')
+              .update({ aura: newAura })
+              .eq('user_id', compositeKey)
+              .select()
+              .single();
+
+            if (updateError) {
+              console.error('Error updating aura after creation:', updateError);
+              throw updateError;
+            }
+
+            return updatedData;
+          }
+          
+          console.error('Error fetching current aura:', fetchError);
+          throw fetchError;
+        }
+
+        // Calculate new aura value
+        const newAura = currentUser.aura + amount;
+
+        // Update with new value
+        const { data, error } = await supabase
+          .from('aura')
+          .update({ aura: newAura })
+          .eq('user_id', compositeKey)
+          .select()
+          .single();
+
+        if (error) {
+          console.error('Error updating aura:', error);
+          throw error;
+        }
+
+        return data;
+      } catch (retryError) {
+        retries--;
+        if (retries === 0) throw retryError;
+        console.log(`Retrying updateAura, ${retries} attempts left...`);
+        await new Promise(resolve => setTimeout(resolve, 200));
+      }
     }
-
-    // Calculate new aura value
-    const newAura = currentUser.aura + amount;
-
-    // Update with new value
-    const { data, error } = await supabase
-      .from('aura')
-      .update({ aura: newAura })
-      .eq('user_id', compositeKey)
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Error updating aura:', error);
-      throw error;
-    }
-
-    return data;
   } catch (error) {
     console.error('Error in updateAura:', error);
     throw error;
