@@ -5,6 +5,7 @@ const { createClient } = require('@supabase/supabase-js');
 const db = require('./db');
 const auraLogic = require('./auraLogic');
 const twitchBot = require('./twitchBot');
+const oauth = require('./oauth');
 
 // Initialize Supabase client for cron job
 const supabase = createClient(
@@ -15,6 +16,9 @@ const supabase = createClient(
 // Initialize bots
 const bot = new Telegraf(process.env.BOT_TOKEN);
 console.log('🤖 Telegram bot initialized!');
+
+// Initialize OAuth server for secure Twitch authentication
+const oauthServer = oauth.initializeOAuth();
 
 // Initialize Twitch bot (optional)
 const twitchClient = twitchBot.initializeTwitchBot();
@@ -374,11 +378,13 @@ bot.launch().then(() => {
 
 // Graceful shutdown
 process.once('SIGINT', () => {
-  console.log('Received SIGINT, shutting down gracefully...');
+  console.log('💀 Received SIGINT, shutting down gracefully...');
+  oauth.stopOAuth();
   bot.stop('SIGINT');
 });
 
 process.once('SIGTERM', () => {
-  console.log('Received SIGTERM, shutting down gracefully...');
+  console.log('💀 Received SIGTERM, shutting down gracefully...');
+  oauth.stopOAuth();
   bot.stop('SIGTERM');
 });

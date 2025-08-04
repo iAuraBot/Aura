@@ -16,13 +16,26 @@ SUPABASE_KEY=your_supabase_anon_key_here
 ```
 
 ### 🎮 **TWITCH BOT (Optional)**
+
+#### **METHOD 1: SECURE OAUTH (RECOMMENDED)**
+```env
+# Your Twitch application credentials (from dev.twitch.tv)
+TWITCH_CLIENT_ID=your_client_id_here
+TWITCH_CLIENT_SECRET=your_client_secret_here
+TWITCH_REDIRECT_URI=https://your-railway-domain.up.railway.app/auth/twitch/callback
+
+# These will be set after OAuth authorization:
+TWITCH_BOT_USERNAME=your_bot_username
+TWITCH_OAUTH_TOKEN=oauth:your_secure_token_here
+TWITCH_CHANNELS=your_channel,another_channel
+```
+
+#### **METHOD 2: SIMPLE TOKEN (LESS SECURE)**
 ```env
 # Your Twitch bot's username
 TWITCH_BOT_USERNAME=your_twitch_bot_username
 
-# OAuth token (get from https://twitchtokengenerator.com/)
-# Select "Bot Chat Token" and authorize with your bot account
-# CRITICAL: Must include "oauth:" prefix and use chat:read + chat:write scopes
+# OAuth token (from third-party generator - not recommended for production)
 TWITCH_OAUTH_TOKEN=oauth:your_twitch_token_here
 
 # Comma-separated list of channels to join (without # symbol)
