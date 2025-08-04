@@ -3,6 +3,8 @@ const { Telegraf } = require('telegraf');
 const cron = require('node-cron');
 const { createClient } = require('@supabase/supabase-js');
 const db = require('./db');
+const auraLogic = require('./auraLogic');
+const twitchBot = require('./twitchBot');
 
 // Initialize Supabase client for cron job
 const supabase = createClient(
@@ -10,71 +12,14 @@ const supabase = createClient(
   process.env.SUPABASE_KEY
 );
 
-// Initialize bot
+// Initialize bots
 const bot = new Telegraf(process.env.BOT_TOKEN);
+console.log('🤖 Telegram bot initialized!');
 
-// Flavor text arrays
-const POSITIVE_FLAVORS = [
-  '💀 SHEESH! This farm is absolutely BUSSIN fr fr!',
-  '🔥 W FARM! Your aura is straight up GIGACHAD energy!',
-  '💯 NO CAP this is some SIGMA MALE farming!',
-  '⚡ FR FR you just got that RIZZ boost!',
-  '🗿 BASED FARM! Your aura game is UNMATCHED!',
-  '💸 STONKS! Your aura portfolio going BRRRR!',
-  '👑 ALPHA ENERGY detected! This farm HITS DIFFERENT!',
-  '🚀 TO THE MOON! Your aura just went PARABOLIC!'
-];
+// Initialize Twitch bot (optional)
+const twitchClient = twitchBot.initializeTwitchBot();
 
-const NEGATIVE_FLAVORS = [
-  '💀 L + RATIO! Your farm just got COOKED!',
-  '😭 SKILL ISSUE! Time to touch grass fr!',
-  '🤡 CRINGE FARM! Your aura said "nah fam"!',
-  '💩 MID FARMING! This is some BETA behavior!',
-  '🚫 COPE + SEETHE! Your aura game is WEAK!',
-  '🗿 OHIO MOMENT! Your farm was SUS as hell!',
-  '📉 STONKS DOWN! Your aura portfolio CRASHED!',
-  '💸 FANUM TAXED! Someone stole your vibe!',
-  '🍴 GET FANUM TAXED! Your aura got STOLEN!',
-  '💸 FANUM TAX MOMENT! The universe just ROBBED you!'
-];
-
-const JACKPOT_FLAVORS = [
-  '🎰 GYATTTT! JACKPOT! You just hit the AURA LOTTERY!',
-  '💎 LEGENDARY PULL! This is some GIGACHAD luck!',
-  '🚀 ABSOLUTELY NUCLEAR! Your rizz just ASCENDED!',
-  '🎉 HOLY SIGMA! This farm is UTTERLY BONKERS!'
-];
-
-const IMPLOSION_FLAVORS = [
-  '💥 CRITICAL DAMAGE! You just got ABSOLUTELY REKT!',
-  '🌪️ EMOTIONAL DAMAGE! Your aura said BYE BYE!',
-  '⚡ BRUH MOMENT! This is a CERTIFIED OHIO CLASSIC!',
-  '🕳️ GET RATIO\'D BY THE UNIVERSE! Touch grass NOW!',
-  '💸 ULTIMATE FANUM TAX! The universe just CLEANED YOU OUT!'
-];
-
-const DUEL_WIN_FLAVORS = [
-  '⚔️ {winner} absolutely MOGGED {loser}! NO MERCY!',
-  '🏆 {winner} said "GET REKT" and FANUM TAXED {loser}!',
-  '💀 {winner} just RATIO\'D {loser} into the SHADOW REALM!',
-  '⚡ {winner} FLEXED that SIGMA GRINDSET on {loser}!',
-  '🔥 {winner} COOKED {loser} like it\'s THANKSGIVING!',
-  '🗿 {winner} just ENDED {loser}\'s whole career! SHEESH!'
-];
-
-// Utility functions
-function getRandomElement(array) {
-  return array[Math.floor(Math.random() * array.length)];
-}
-
-// Removed rollDice() - no longer needed for 50/50 gambling system
-
-function formatUsername(user) {
-  if (user.username) {
-    return `@${user.username}`;
-  }
-  return user.first_name || user.id.toString();
-}
+// Multi-platform bot setup complete! 🔥💀
 
 // Error handling wrapper
 async function handleCommand(ctx, commandFn) {
@@ -88,72 +33,19 @@ async function handleCommand(ctx, commandFn) {
 
 // Commands
 
-// /aurafarm command
+// /aurafarm command - MULTI-PLATFORM SIGMA GRINDSET! 🔥
 bot.command('aurafarm', async (ctx) => {
   await handleCommand(ctx, async (ctx) => {
     const userId = ctx.from.id.toString();
     const chatId = ctx.chat.id.toString();
     const username = ctx.from.username;
     
-    // Get or create user for this chat
-    const user = await db.getUser(userId, chatId, username);
-    
-    // Check cooldown
-    const farmCheck = db.canUserFarm(user);
-    if (!farmCheck.canFarm) {
-      await ctx.reply(`⏰ YO CHILL! Farm cooldown active for ${farmCheck.timeLeft}! Stop being so THIRSTY for aura! 💀`);
-      return;
-    }
-    
-    // Check if this is their first farm (newbie protection)
-    const isFirstTime = user.aura === 0 && user.last_farm === null;
-    
-    // RNG farming logic
-    const roll = Math.random() * 100;
-    let auraChange, flavorText;
-    
-    if (isFirstTime) {
-      // First time farmers get guaranteed W (no L)!
-      auraChange = Math.floor(Math.random() * 31) + 20; // 20-50 guaranteed
-      flavorText = getRandomElement(POSITIVE_FLAVORS);
-    } else if (roll < 70) {
-      // 70% chance: +20 to +50 aura
-      auraChange = Math.floor(Math.random() * 31) + 20; // 20-50
-      flavorText = getRandomElement(POSITIVE_FLAVORS);
-    } else if (roll < 90) {
-      // 20% chance: -10 to -25 aura
-      auraChange = -(Math.floor(Math.random() * 16) + 10); // -10 to -25
-      flavorText = getRandomElement(NEGATIVE_FLAVORS);
-    } else {
-      // 10% chance: jackpot (+100) or implosion (-50)
-      if (Math.random() < 0.5) {
-        auraChange = 100;
-        flavorText = getRandomElement(JACKPOT_FLAVORS);
-      } else {
-        auraChange = -50;
-        flavorText = getRandomElement(IMPLOSION_FLAVORS);
-      }
-    }
-    
-    // Update database with chat-specific user
-    await db.updateAura(userId, chatId, auraChange);
-    await db.updateLastFarm(userId, chatId);
-    
-    const updatedUser = await db.getUser(userId, chatId, username);
-    const sign = auraChange > 0 ? '+' : '';
-    
-          const welcomeMessage = isFirstTime ? '\n💀 **WELCOME TO THE CHAOS!** Newbie protection activated! 🔥' : '';
-    
-    await ctx.reply(
-      `✨ **AURA FARM SUCCESSFUL** ✨\n\n` +
-      `${flavorText}\n\n` +
-      `${formatUsername(ctx.from)} ${sign}${auraChange} aura\n` +
-      `💫 Total Aura: ${updatedUser.aura} (in this chat)${welcomeMessage}`
-    );
+    const result = await auraLogic.farmAura(userId, chatId, 'telegram', username);
+    await ctx.reply(result.message);
   });
 });
 
-// /aura4aura command
+// /aura4aura command - MULTI-PLATFORM GAMBLING! 🎰💀
 bot.command('aura4aura', async (ctx) => {
   await handleCommand(ctx, async (ctx) => {
     const message = ctx.message.text;
@@ -176,96 +68,23 @@ bot.command('aura4aura', async (ctx) => {
       return;
     }
     
-    // Get challenger user (real ID)
-    const challengerId = challenger.id.toString();
+    const userId = challenger.id.toString();
     const chatId = ctx.chat.id.toString();
-    const challengerUser = await db.getUser(challengerId, chatId, challenger.username);
+    const username = challenger.username;
     
-    // For target user, we need to use username as ID since we can't get real Telegram ID from mention
-    // This will create consistent user records based on username
-    const targetId = `username_${targetUsername.toLowerCase()}`;
-    const targetUser = await db.getUser(targetId, chatId, targetUsername);
-    
-    // Check if both users have enough aura
-    if (challengerUser.aura < wagerAmount) {
-              await ctx.reply(`💸 BROKE BOY ALERT! ${formatUsername(challenger)} got FANUM TAXED and can't afford ${wagerAmount} aura! Current aura: ${challengerUser.aura} 💀`);
-      return;
-    }
-    
-    if (targetUser.aura < wagerAmount) {
-              await ctx.reply(`💸 TARGET IS BROKE! @${targetUsername} got FANUM TAXED and can't match ${wagerAmount} aura! Their aura: ${targetUser.aura} 😭`);
-      return;
-    }
-    
-    // 50/50 random chance
-    const challengerWins = Math.random() < 0.5;
-    
-    let winnerName, loserName, winnerUser, loserUser;
-    
-    if (challengerWins) {
-      winnerName = formatUsername(challenger);
-      loserName = `@${targetUsername}`;
-      winnerUser = challengerUser;
-      loserUser = targetUser;
-      
-      // Transfer aura
-      await db.updateAura(challengerId, chatId, wagerAmount);
-      await db.updateAura(targetId, chatId, -wagerAmount);
-    } else {
-      winnerName = `@${targetUsername}`;
-      loserName = formatUsername(challenger);
-      winnerUser = targetUser;
-      loserUser = challengerUser;
-      
-      // Transfer aura
-      await db.updateAura(targetId, chatId, wagerAmount);
-      await db.updateAura(challengerId, chatId, -wagerAmount);
-    }
-    
-    const flavorText = getRandomElement(DUEL_WIN_FLAVORS)
-      .replace('{winner}', winnerName)
-      .replace('{loser}', loserName);
-    
-    await ctx.reply(
-      `🎰 **AURA CASINO RESULT** 🎰\n\n` +
-      `💰 **Wager:** ${wagerAmount} aura\n\n` +
-      `${flavorText}\n\n` +
-      `💫 ${winnerName} wins +${wagerAmount} aura\n` +
-      `💀 ${loserName} loses -${wagerAmount} aura\n\n` +
-      `🏦 Final balances will be updated!`
-    );
+    const result = await auraLogic.auraDuel(userId, username, targetUsername, wagerAmount, chatId, 'telegram');
+    await ctx.reply(result.message);
   });
 });
 
-// /auraboard command
+// /auraboard command - MULTI-PLATFORM LEADERBOARD! 📊💀
 bot.command('auraboard', async (ctx) => {
   await handleCommand(ctx, async (ctx) => {
     const chatId = ctx.chat.id.toString();
-    const allUsers = await db.getTopUsers(chatId, 10, false); // Top 10 users for this chat
+    const chatTitle = ctx.chat.title || 'This Chat';
     
-    let message = '📊 **AURA LEADERBOARD** 📊\n';
-    message += `💬 Chat: ${ctx.chat.title || 'This Chat'}\n\n`;
-    
-    if (allUsers.length === 0) {
-              message += '💀 No aura farmers in this chat yet!\nBe the first to `/aurafarm`! 🔥';
-    } else {
-      allUsers.forEach((user, index) => {
-        const position = index + 1;
-        let emoji;
-        
-        // Different emojis based on position and aura
-        if (position === 1) emoji = '🥇';
-        else if (position === 2) emoji = '🥈';
-        else if (position === 3) emoji = '🥉';
-        else if (user.aura >= 0) emoji = '💫';
-        else emoji = '💀';
-        
-        const username = user.username || 'Unknown';
-        message += `${emoji} ${position}. @${username}: ${user.aura} aura\n`;
-      });
-    }
-    
-    await ctx.reply(message);
+    const result = await auraLogic.getLeaderboard(chatId, 'telegram', chatTitle);
+    await ctx.reply(result.message);
   });
 });
 
@@ -327,7 +146,7 @@ bot.command('help', async (ctx) => {
   });
 });
 
-// /bless command
+// /bless command - MULTI-PLATFORM GENEROSITY! ✨💀
 bot.command('bless', async (ctx) => {
   await handleCommand(ctx, async (ctx) => {
     const message = ctx.message.text;
@@ -351,117 +170,27 @@ bot.command('bless', async (ctx) => {
       return;
     }
     
-    // Get both users
-    const giverId = giver.id.toString();
-    const giverUser = await db.getUser(giverId, chatId, giver.username);
+    const userId = giver.id.toString();
+    const username = giver.username;
     
-    const targetId = `username_${targetUsername.toLowerCase()}`;
-    const targetUser = await db.getUser(targetId, chatId, targetUsername);
-    
-    // Check if giver has enough aura
-    if (giverUser.aura < blessAmount) {
-      await ctx.reply(`💸 BLESSING FAILED! ${formatUsername(giver)} got FANUM TAXED and can't afford ${blessAmount} aura! Current aura: ${giverUser.aura} 💀\n\nStack that aura before claiming GIGACHAD status! 💀`);
-      return;
-    }
-    
-    // Can't bless yourself
-    if (giverId === targetId || giver.username?.toLowerCase() === targetUsername.toLowerCase()) {
-      await ctx.reply('🤡 NICE TRY! You can\'t bless yourself, NARCISSIST! This is some OHIO behavior! Touch grass and find some HOMIES! 💀');
-      return;
-    }
-    
-
-    
-    // Transfer aura
-    await db.updateAura(giverId, chatId, -blessAmount);
-    await db.updateAura(targetId, chatId, blessAmount);
-    
-    const blessings = [
-      '💀 SHEESH! This blessing is absolutely BUSSIN! FR FR!',
-      '🗿 GIGACHAD GENEROSITY! Your aura game is UNMATCHED!',
-      '🔥 W BLESSING! This is some SIGMA MALE sharing!',
-      '💯 NO CAP! That blessing just HIT DIFFERENT!',
-      '🚀 BASED ENERGY TRANSFER! Your rizz is CONTAGIOUS!',
-      '💸 W GENEROSITY! Someone just got BLESSED not REKT!',
-      '⚡ ABSOLUTELY NUCLEAR! This chat is about to EXPLODE!',
-      '👑 ALPHA GENEROSITY! This blessing is UTTERLY BONKERS!'
-    ];
-    
-    const blessing = getRandomElement(blessings);
-    
-    await ctx.reply(
-      `✨ **AURA BLESSING SUCCESSFUL** ✨\n\n` +
-      `${blessing}\n\n` +
-      `${formatUsername(giver)} just BLESSED @${targetUsername} with ${blessAmount} aura! 💸\n\n` +
-      `🗿 ABSOLUTE SIGMA BEHAVIOR! This chat is about to get CHAOTIC! 🔥`
-    );
+    const result = await auraLogic.blessUser(userId, username, targetUsername, blessAmount, chatId, 'telegram');
+    await ctx.reply(result.message);
   });
 });
 
-// /aura command
+// /aura command - MULTI-PLATFORM AURA CHECK! 💫💀
 bot.command('aura', async (ctx) => {
   await handleCommand(ctx, async (ctx) => {
     const message = ctx.message.text;
     const mentionMatch = message.match(/@(\w+)/);
-    
-    let targetId, targetUsername;
-    
+    const userId = ctx.from.id.toString();
     const chatId = ctx.chat.id.toString();
+    const username = ctx.from.username;
     
-    let user;
+    const mentionedUsername = mentionMatch ? mentionMatch[1] : null;
     
-    if (mentionMatch) {
-      // Check mentioned user's aura (use consistent username-based ID)
-      targetUsername = mentionMatch[1];
-      targetId = `username_${targetUsername.toLowerCase()}`;
-      user = await db.getUser(targetId, chatId, targetUsername);
-    } else {
-      // Check own aura - try BOTH real ID and username-based ID, merge if needed
-      const realId = ctx.from.id.toString();
-      const usernameId = `username_${ctx.from.username?.toLowerCase()}`;
-      targetUsername = ctx.from.username;
-      
-      // Try real ID first
-      user = await db.getUser(realId, chatId, targetUsername);
-      
-      // Also check if they have a username-based record with higher aura
-      if (ctx.from.username) {
-        try {
-          const usernameUser = await db.getUser(usernameId, chatId, targetUsername);
-          
-          // If username-based record has higher aura, use that and merge
-          if (usernameUser.aura > user.aura) {
-            // Transfer the higher aura to the real ID record
-            const auraDiff = usernameUser.aura - user.aura;
-            await db.updateAura(realId, chatId, auraDiff);
-            user = await db.getUser(realId, chatId, targetUsername);
-            
-            // Clean up the old username-based record by setting it to 0
-            await db.updateAura(usernameId, chatId, -usernameUser.aura);
-          }
-        } catch (error) {
-          // Username-based record doesn't exist, that's fine
-        }
-      }
-      
-      targetId = realId;
-    }
-    
-    let auraEmoji;
-    if (user.aura >= 100) auraEmoji = '✨';
-    else if (user.aura >= 50) auraEmoji = '🌟';
-    else if (user.aura >= 0) auraEmoji = '💫';
-    else if (user.aura >= -50) auraEmoji = '🌑';
-    else auraEmoji = '💀';
-    
-    const displayName = mentionMatch ? `@${targetUsername}` : formatUsername(ctx.from);
-    
-    await ctx.reply(
-      `${auraEmoji} **AURA CHECK** ${auraEmoji}\n\n` +
-      `${displayName} has **${user.aura}** aura points\n` +
-      `💬 In: ${ctx.chat.title || 'This Chat'}\n\n` +
-      `${user.aura >= 0 ? '🗿 Living that SIGMA GRINDSET life!' : '💀 Caught in the BRAINROT CYCLE...'}`
-    );
+    const result = await auraLogic.checkAura(userId, chatId, 'telegram', username, mentionedUsername);
+    await ctx.reply(result.message);
   });
 });
 
@@ -538,28 +267,28 @@ bot.on('inline_query', async (ctx) => {
   }
 });
 
-// Reaction tracking
+// Reaction tracking - TELEGRAM ONLY! 💫
 bot.on('message_reaction', async (ctx) => {
   try {
     const userId = ctx.from?.id?.toString();
     const chatId = ctx.chat?.id?.toString();
     if (userId && chatId) {
-      await db.updateReactions(userId, chatId);
+      await db.updateReactions(userId, chatId, 'telegram');
     }
   } catch (error) {
     console.error('Reaction tracking error:', error);
   }
 });
 
-// Daily reset cron job (runs at midnight UTC)
+// Daily reset cron job - MULTI-PLATFORM! 🕛💀
 cron.schedule('0 0 * * *', async () => {
   try {
-    console.log('Running daily reset for all chats...');
+    console.log('🔄 Running daily reset for ALL platforms and chats...');
     
-    // Get all distinct chat IDs from the database
+    // Get all distinct platform-chat combinations from the database
     const { data: allUsers, error } = await supabase
       .from('aura')
-      .select('user_id')
+      .select('user_id, platform')
       .neq('user_id', '');
     
     if (error) {
@@ -567,42 +296,52 @@ cron.schedule('0 0 * * *', async () => {
       return;
     }
     
-    // Extract unique chat IDs
-    const chatIds = new Set();
+    // Extract unique platform-chat combinations
+    const platformChats = new Set();
     allUsers.forEach(user => {
-      const chatId = user.user_id.split('_')[0];
-      if (chatId) chatIds.add(chatId);
+      const [platform, chatId] = user.user_id.split('_');
+      if (platform && chatId) {
+        platformChats.add(`${platform}_${chatId}`);
+      }
     });
     
-    // Process each chat separately
-    for (const chatId of chatIds) {
+    // Process each platform-chat combination separately
+    for (const platformChat of platformChats) {
+      const [platform, chatId] = platformChat.split('_');
+      
       try {
-        // Get most reactive user for this chat
-        const mostReactiveUser = await db.getMostReactiveUser(chatId);
+        // Get most reactive user for this platform-chat
+        const mostReactiveUser = await db.getMostReactiveUser(chatId, platform);
         
         if (mostReactiveUser && mostReactiveUser.reactions_today > 0) {
-          // Award bonus aura in this chat
-          const userId = mostReactiveUser.user_id.split('_')[1]; // Extract user ID from composite key
-          await db.updateAura(userId, chatId, 25);
-          console.log(`Daily reaction winner in chat ${chatId}: @${mostReactiveUser.username} (+25 aura)`);
+          // Extract user ID from composite key (platform_chatId_userId)
+          const userId = mostReactiveUser.user_id.split('_')[2];
+          await db.updateAura(userId, chatId, 25, platform);
+          console.log(`🏆 Daily reaction winner in ${platform} chat ${chatId}: @${mostReactiveUser.username} (+25 aura)`);
           
-          // Broadcast to specific chat
+          // Broadcast to specific platform-chat
           try {
-            await bot.telegram.sendMessage(chatId, `🎉 **DAILY REACTION CHAMPION** 🎉\n\n@${mostReactiveUser.username} wins +25 aura for being the most reactive today! 💀🔥`);
+            if (platform === 'telegram') {
+              await bot.telegram.sendMessage(chatId, `🎉 **DAILY REACTION CHAMPION** 🎉\n\n@${mostReactiveUser.username} wins +25 aura for being the most reactive today! 💀🔥`);
+            } else if (platform === 'twitch') {
+              await twitchBot.sendDailyReactionWinner(chatId, mostReactiveUser.username, 25);
+            }
           } catch (broadcastError) {
-            console.error(`Failed to broadcast to chat ${chatId}:`, broadcastError);
+            console.error(`❌ Failed to broadcast to ${platform} chat ${chatId}:`, broadcastError);
           }
         }
         
-        // Reset reactions for this chat
-        await db.resetDailyReactions(chatId);
-        console.log(`Daily reactions reset completed for chat ${chatId}`);
+        // Reset reactions for this platform-chat
+        await db.resetDailyReactions(chatId, platform);
+        console.log(`✅ Daily reactions reset completed for ${platform} chat ${chatId}`);
       } catch (chatError) {
-        console.error(`Error processing chat ${chatId}:`, chatError);
+        console.error(`❌ Error processing ${platform} chat ${chatId}:`, chatError);
       }
     }
+    
+    console.log('🎯 Daily reset completed for all platforms!');
   } catch (error) {
-    console.error('Daily reset error:', error);
+    console.error('❌ Daily reset error:', error);
   }
 });
 
@@ -614,14 +353,22 @@ bot.catch((err, ctx) => {
 
 // Start bot
 bot.launch().then(() => {
-  console.log('🚀 AuraFarmBot is running!');
-  console.log('Available commands:');
-  console.log('  /aurafarm - Farm aura (24h cooldown)');
-  console.log('  /aura4aura @user - Challenge to duel');
-  console.log('  /auraboard - View leaderboard');
-  console.log('  /aura [@user] - Check aura balance');
+  console.log('🚀💀 MULTI-PLATFORM AURAFARMBOT IS RUNNING! 💀🚀');
+  console.log('');
+  console.log('📱 TELEGRAM PLATFORM ACTIVE!');
+  console.log('🎮 TWITCH PLATFORM:', twitchClient ? 'ACTIVE! 🔥' : 'DISABLED (missing credentials)');
+  console.log('');
+  console.log('🗿 AVAILABLE COMMANDS (both platforms):');
+  console.log('  📱 /aurafarm (!aurafarm) - Farm aura (24h cooldown)');
+  console.log('  🎰 /aura4aura (!aura4aura) @user [amount] - Challenge to duel');
+  console.log('  📊 /auraboard (!auraboard) - View leaderboard');
+  console.log('  💫 /aura (!aura) [@user] - Check aura balance');
+  console.log('  ✨ /bless (!bless) @user [amount] - Give aura to others');
+  console.log('  ❓ /help (!help) - Show command list');
+  console.log('');
+  console.log('💀 EACH PLATFORM HAS SEPARATE AURA ECOSYSTEMS! 💀');
 }).catch(error => {
-  console.error('Failed to start bot:', error);
+  console.error('❌ Failed to start Telegram bot:', error);
   process.exit(1);
 });
 

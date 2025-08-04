@@ -8,15 +8,16 @@ const supabase = createClient(
 
 /**
  * Get user from database or create if doesn't exist
- * @param {string} userId - Telegram user ID or username-based ID
+ * @param {string} userId - User ID (Telegram ID or Twitch username)
  * @param {string} chatId - Chat ID for separate ecosystems
- * @param {string} username - Telegram username (optional)
+ * @param {string} platform - Platform ('telegram' or 'twitch')
+ * @param {string} username - Username (optional)
  * @returns {Object} User data
  */
-async function getUser(userId, chatId, username = null) {
+async function getUser(userId, chatId, platform = 'telegram', username = null) {
   try {
-    // Create composite key for chat-specific user
-    const compositeKey = `${chatId}_${userId}`;
+    // Create composite key for platform-chat-specific user
+    const compositeKey = `${platform}_${chatId}_${userId}`;
     
     // First try to get existing user by composite key
     const { data: existingUser, error: fetchError } = await supabase
@@ -37,13 +38,13 @@ async function getUser(userId, chatId, username = null) {
       return existingUser;
     }
 
-    // If this is a username-based lookup, also try to find by username in this chat
+    // If this is a username-based lookup, also try to find by username in this chat/platform
     if (userId.startsWith('username_') && username) {
       const { data: userByUsername, error: usernameError } = await supabase
         .from('aura')
         .select('*')
         .eq('username', username)
-        .eq('user_id', compositeKey)
+        .ilike('user_id', `${platform}_${chatId}_%`)
         .single();
 
       if (userByUsername && !usernameError) {
@@ -57,6 +58,7 @@ async function getUser(userId, chatId, username = null) {
       .insert({
         user_id: compositeKey,
         username: username || 'Unknown',
+        platform: platform,
         aura: 0,
         last_farm: null,
         reactions_today: 0
@@ -78,14 +80,15 @@ async function getUser(userId, chatId, username = null) {
 
 /**
  * Update user's aura points
- * @param {string} userId - Telegram user ID
+ * @param {string} userId - User ID
  * @param {string} chatId - Chat ID for separate ecosystems
  * @param {number} amount - Amount to add/subtract (can be negative)
+ * @param {string} platform - Platform ('telegram' or 'twitch')
  * @returns {Object} Updated user data
  */
-async function updateAura(userId, chatId, amount) {
+async function updateAura(userId, chatId, amount, platform = 'telegram') {
   try {
-    const compositeKey = `${chatId}_${userId}`;
+    const compositeKey = `${platform}_${chatId}_${userId}`;
     
     // First get current aura
     const { data: currentUser, error: fetchError } = await supabase
@@ -124,13 +127,14 @@ async function updateAura(userId, chatId, amount) {
 
 /**
  * Update last farm timestamp
- * @param {string} userId - Telegram user ID
+ * @param {string} userId - User ID
  * @param {string} chatId - Chat ID for separate ecosystems
+ * @param {string} platform - Platform ('telegram' or 'twitch')
  * @returns {Object} Updated user data
  */
-async function updateLastFarm(userId, chatId) {
+async function updateLastFarm(userId, chatId, platform = 'telegram') {
   try {
-    const compositeKey = `${chatId}_${userId}`;
+    const compositeKey = `${platform}_${chatId}_${userId}`;
     
     const { data, error } = await supabase
       .from('aura')
@@ -155,13 +159,14 @@ async function updateLastFarm(userId, chatId) {
 
 /**
  * Increment user's daily reactions count
- * @param {string} userId - Telegram user ID
+ * @param {string} userId - User ID
  * @param {string} chatId - Chat ID for separate ecosystems
+ * @param {string} platform - Platform ('telegram' or 'twitch')
  * @returns {Object} Updated user data
  */
-async function updateReactions(userId, chatId) {
+async function updateReactions(userId, chatId, platform = 'telegram') {
   try {
-    const compositeKey = `${chatId}_${userId}`;
+    const compositeKey = `${platform}_${chatId}_${userId}`;
     
     // First get current reactions count
     const { data: currentUser, error: fetchError } = await supabase
@@ -199,19 +204,20 @@ async function updateReactions(userId, chatId) {
 }
 
 /**
- * Get top aura users (leaderboard) for specific chat
+ * Get top aura users (leaderboard) for specific chat and platform
  * @param {string} chatId - Chat ID for separate ecosystems
+ * @param {string} platform - Platform ('telegram' or 'twitch')
  * @param {number} limit - Number of users to return
  * @param {boolean} ascending - Sort order (true for lowest, false for highest)
  * @returns {Array} Array of user data
  */
-async function getTopUsers(chatId, limit = 10, ascending = false) {
+async function getTopUsers(chatId, platform = 'telegram', limit = 10, ascending = false) {
   try {
-    // Get users from this specific chat only
+    // Get users from this specific chat and platform only
     const { data: chatUsers, error } = await supabase
       .from('aura')
-      .select('user_id, username, aura')
-      .like('user_id', `${chatId}_%`)
+      .select('user_id, username, aura, platform')
+      .like('user_id', `${platform}_${chatId}_%`)
       .order('aura', { ascending });
 
     if (error) {
@@ -258,16 +264,17 @@ async function getTopUsers(chatId, limit = 10, ascending = false) {
 }
 
 /**
- * Get user with most reactions today for specific chat
+ * Get user with most reactions today for specific chat and platform
  * @param {string} chatId - Chat ID for separate ecosystems
+ * @param {string} platform - Platform ('telegram' or 'twitch')
  * @returns {Object|null} User with most reactions or null
  */
-async function getMostReactiveUser(chatId) {
+async function getMostReactiveUser(chatId, platform = 'telegram') {
   try {
     const { data, error } = await supabase
       .from('aura')
-      .select('user_id, username, reactions_today')
-      .like('user_id', `${chatId}_%`)
+      .select('user_id, username, reactions_today, platform')
+      .like('user_id', `${platform}_${chatId}_%`)
       .gt('reactions_today', 0)
       .order('reactions_today', { ascending: false })
       .limit(1)
@@ -286,16 +293,17 @@ async function getMostReactiveUser(chatId) {
 }
 
 /**
- * Reset all users' daily reactions to 0 for specific chat
+ * Reset all users' daily reactions to 0 for specific chat and platform
  * @param {string} chatId - Chat ID for separate ecosystems
+ * @param {string} platform - Platform ('telegram' or 'twitch')
  * @returns {boolean} Success status
  */
-async function resetDailyReactions(chatId) {
+async function resetDailyReactions(chatId, platform = 'telegram') {
   try {
     const { error } = await supabase
       .from('aura')
       .update({ reactions_today: 0 })
-      .like('user_id', `${chatId}_%`);
+      .like('user_id', `${platform}_${chatId}_%`);
 
     if (error) {
       console.error('Error resetting daily reactions:', error);
