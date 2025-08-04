@@ -227,7 +227,7 @@ function setupWebInterface(app) {
         <div class="container">
           <div class="bot-icon">💀🔥</div>
           <h1>iAuraFarmBot</h1>
-          <h2 class="subtitle">Multi-Platform Chaos Engine</h2>
+                      <h2 class="subtitle">unhinged AI-powered bot that brings brainrot energy to Telegram, Twitch, and X! Farm aura, battle friends, and have chaotic conversations with AI</h2>
           <p class="description">
             The most unhinged AI-powered bot that brings brainrot energy to Telegram, Twitch, and Twitter! 
             Farm aura, battle friends, and have chaotic conversations with Claude AI across all platforms.
@@ -309,7 +309,7 @@ function setupWebInterface(app) {
             <h2 style="font-size: 2.5rem; margin-bottom: 30px; color: #ffd700;">How to Use</h2>
             <div class="features-grid">
               <div class="feature-card">
-                <span class="feature-emoji">📱</span>
+                <img src="/assets/telegram.png" alt="Telegram" style="width: 48px; height: 48px; margin-bottom: 15px; display: block;">
                 <div class="feature-title">Telegram</div>
                 <div class="feature-desc">
                   <strong>Commands:</strong> /aurafarm, /aura4aura, /bless<br>
@@ -318,7 +318,7 @@ function setupWebInterface(app) {
                 </div>
               </div>
               <div class="feature-card">
-                <span class="feature-emoji">𝕏</span>
+                <img src="/assets/x.png" alt="X (Twitter)" style="width: 48px; height: 48px; margin-bottom: 15px; display: block;">
                 <div class="feature-title">X (Twitter)</div>
                 <div class="feature-desc">
                   <strong>AI Chat:</strong> @AuraFarmBot thoughts on aura?<br>
@@ -327,7 +327,7 @@ function setupWebInterface(app) {
                 </div>
               </div>
               <div class="feature-card">
-                <span class="feature-emoji">🎮</span>
+                <img src="/assets/twitch.png" alt="Twitch" style="width: 48px; height: 48px; margin-bottom: 15px; display: block;">
                 <div class="feature-title">Twitch</div>
                 <div class="feature-desc">
                   <strong>Commands:</strong> !aurafarm, !aura4aura, !bless<br>
@@ -339,17 +339,7 @@ function setupWebInterface(app) {
           </div>
 
           <div style="margin-top: 60px; text-align: center; padding: 40px; background: rgba(0, 0, 0, 0.4); border-radius: 20px; backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);">
-            <h3 style="font-size: 1.8rem; margin-bottom: 20px; color: #ffd700;">🔥 Ready to Add Maximum Chaos to Your Community? 🔥</h3>
-            <p style="font-size: 1.2rem; margin-bottom: 30px; opacity: 0.9;">
-              Join thousands of users already farming aura and having unhinged AI conversations!
-            </p>
-            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px;">
-              <a href="https://x.com/AuraFarmBot" target="_blank" class="btn btn-secondary" style="font-size: 1.1rem; padding: 20px 40px;">🐦 Follow on X</a>
-              <a href="https://t.me/iAuraFarmBot" target="_blank" class="btn btn-secondary" style="font-size: 1.1rem; padding: 20px 40px;">📱 Try on Telegram</a>
-              <a href="/auth/streamer" class="btn" style="font-size: 1.1rem; padding: 20px 40px;">🚀 Add to Twitch</a>
-            </div>
-            
-            <div style="border-top: 1px solid rgba(255, 255, 255, 0.2); padding-top: 30px;">
+            <div>
               <h4 style="font-size: 1.4rem; margin-bottom: 20px; color: #ffd700;">🔗 Official Bot Channels</h4>
               <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
                 <a href="https://x.com/AuraFarmBot" target="_blank" style="display: flex; align-items: center; justify-content: center; width: 80px; height: 80px; padding: 15px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 15px; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);" onmouseover="this.style.background='rgba(0, 0, 0, 0.7)'; this.style.transform='translateY(-3px)'" onmouseout="this.style.background='rgba(0, 0, 0, 0.4)'; this.style.transform='translateY(0)'">
