@@ -208,10 +208,10 @@ function setupWebInterface(app) {
         <div class="container">
           <div class="bot-icon">💀🔥</div>
           <h1>iAuraFarmBot</h1>
-          <h2 class="subtitle">Your Chat Made Brainrot</h2>
+          <h2 class="subtitle">Multi-Platform Chaos Engine</h2>
           <p class="description">
-            The most unhinged aura farming bot for maximum chaos and engagement! 
-            Turn your Twitch chat into pure brainrot energy with epic duels and farming.
+            The most unhinged AI-powered bot that brings brainrot energy to Telegram, Twitch, and Twitter! 
+            Farm aura, battle friends, and have chaotic conversations with Claude AI across all platforms.
           </p>
           
           <div class="cta-buttons">
@@ -221,8 +221,12 @@ function setupWebInterface(app) {
 
           <div class="stats-grid">
             <div class="stat-card">
-              <div class="stat-number">${activeChannels.size}</div>
-              <div class="stat-label">Active Channels</div>
+              <div class="stat-number">3</div>
+              <div class="stat-label">Platforms</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">AI</div>
+              <div class="stat-label">Powered</div>
             </div>
             <div class="stat-card">
               <div class="stat-number">24/7</div>
@@ -236,14 +240,29 @@ function setupWebInterface(app) {
 
           <div class="features-grid" id="features">
             <div class="feature-card">
+              <span class="feature-emoji">🌐</span>
+              <div class="feature-title">Multi-Platform</div>
+              <div class="feature-desc">Works seamlessly on Telegram, Twitch, and Twitter with unified experience</div>
+            </div>
+            <div class="feature-card">
+              <span class="feature-emoji">🤖</span>
+              <div class="feature-title">Claude AI Conversations</div>
+              <div class="feature-desc">Just @mention the bot for chaotic brainrot conversations with memory</div>
+            </div>
+            <div class="feature-card">
               <span class="feature-emoji">✨</span>
               <div class="feature-title">Aura Farming</div>
               <div class="feature-desc">24h cooldown farming system with RNG chaos and newbie protection</div>
             </div>
             <div class="feature-card">
               <span class="feature-emoji">💀</span>
-              <div class="feature-title">really goin aura 4 aura huh?</div>
+              <div class="feature-title">Aura 4 Aura Duels</div>
               <div class="feature-desc">1v1 showdowns with custom stakes for maximum brainrot energy</div>
+            </div>
+            <div class="feature-card">
+              <span class="feature-emoji">🐦</span>
+              <div class="feature-title">Smart Twitter Replies</div>
+              <div class="feature-desc">40% reply chance with throttling. Max 50/day on Free API tier</div>
             </div>
             <div class="feature-card">
               <span class="feature-emoji">📊</span>
@@ -256,14 +275,59 @@ function setupWebInterface(app) {
               <div class="feature-desc">Users can gift aura to others with maximum brainrot blessings</div>
             </div>
             <div class="feature-card">
+              <span class="feature-emoji">🧠</span>
+              <div class="feature-title">Memory & Context</div>
+              <div class="feature-desc">Remembers conversations across platforms with Redis + Supabase</div>
+            </div>
+            <div class="feature-card">
               <span class="feature-emoji">⚙️</span>
               <div class="feature-title">Custom Settings</div>
               <div class="feature-desc">Personalize cooldowns, rewards, and chaos levels per channel</div>
             </div>
-            <div class="feature-card">
-              <span class="feature-emoji">🔐</span>
-              <div class="feature-title">Secure OAuth</div>
-              <div class="feature-desc">Enterprise-grade security with easy self-service setup</div>
+          </div>
+
+          <div style="margin-top: 60px; text-align: center;">
+            <h2 style="font-size: 2.5rem; margin-bottom: 30px; color: #ffd700;">How to Use</h2>
+            <div class="features-grid">
+              <div class="feature-card">
+                <span class="feature-emoji">📱</span>
+                <div class="feature-title">Telegram</div>
+                <div class="feature-desc">
+                  <strong>Commands:</strong> /aurafarm, /aura4aura, /bless<br>
+                  <strong>AI Chat:</strong> @aurafarmbot hey what's up?<br>
+                  <strong>Works in:</strong> Groups & DMs
+                </div>
+              </div>
+              <div class="feature-card">
+                <span class="feature-emoji">🎮</span>
+                <div class="feature-title">Twitch</div>
+                <div class="feature-desc">
+                  <strong>Commands:</strong> !aurafarm, !aura4aura, !bless<br>
+                  <strong>AI Chat:</strong> @aurafarmbot tell me something wild<br>
+                  <strong>Works in:</strong> Any channel with bot enabled
+                </div>
+              </div>
+              <div class="feature-card">
+                <span class="feature-emoji">🐦</span>
+                <div class="feature-title">Twitter</div>
+                <div class="feature-desc">
+                  <strong>AI Chat:</strong> @aurafarmbot thoughts on aura?<br>
+                  <strong>Smart Throttling:</strong> 40% reply chance<br>
+                  <strong>Daily Limit:</strong> Max 50 replies/day
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 60px; text-align: center; padding: 40px; background: rgba(255, 255, 255, 0.1); border-radius: 20px; backdrop-filter: blur(10px);">
+            <h3 style="font-size: 1.8rem; margin-bottom: 20px; color: #ffd700;">🔥 Ready to Add Maximum Chaos to Your Community? 🔥</h3>
+            <p style="font-size: 1.2rem; margin-bottom: 30px; opacity: 0.9;">
+              Join thousands of users already farming aura and having unhinged AI conversations!
+            </p>
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+              <a href="/auth/streamer" class="btn" style="font-size: 1.1rem; padding: 20px 40px;">🚀 Add to Twitch</a>
+              <a href="https://t.me/iAuraFarmBot" target="_blank" class="btn btn-secondary" style="font-size: 1.1rem; padding: 20px 40px;">📱 Try on Telegram</a>
+              <a href="https://twitter.com/iAuraFarmBot" target="_blank" class="btn btn-secondary" style="font-size: 1.1rem; padding: 20px 40px;">🐦 Follow on Twitter</a>
             </div>
           </div>
         </div>
@@ -386,7 +450,7 @@ function setupWebInterface(app) {
         <!DOCTYPE html>
         <html>
         <head>
-          <title>Success - AuraFarmBot Added!</title>
+          <title>Success - Multi-Platform AuraFarmBot Added!</title>
           <style>
             body { 
               font-family: Arial, sans-serif; 
@@ -443,6 +507,11 @@ function setupWebInterface(app) {
               <p><code>!auraboard</code> - View leaderboard</p>
               <p><code>!bless @user [amount]</code> - Give aura to someone</p>
               <p><code>!help</code> - Show command list</p>
+              <h3>AI Conversations:</h3>
+              <p><code>@aurafarmbot [message]</code> - Chat with Claude AI</p>
+              <p style="font-size: 0.9rem; color: #adadb8; margin-top: 5px;">Just mention the bot to have chaotic brainrot conversations!</p>
+              <h3>Multi-Platform Support:</h3>
+              <p style="font-size: 0.9rem; color: #adadb8;">Also works on <strong>Telegram</strong> (/commands) and <strong>Twitter</strong> (@mentions)</p>
             </div>
             
             <a href="/dashboard" class="btn">⚙️ Customize Settings</a>
@@ -794,6 +863,11 @@ function setupWebInterface(app) {
                 <div class="section-header">🎮 Commands</div>
                 <div class="section-content">
                   <div class="commands-grid">
+                    <div class="command-item" style="border: 2px solid #ffd700;">
+                      <div class="command-name">@aurafarmbot 🤖</div>
+                      <div class="command-desc">Claude AI conversations with memory</div>
+                      <div class="command-usage">@aurafarmbot what's up?</div>
+                    </div>
                     <div class="command-item">
                       <div class="command-name">!aurafarm</div>
                       <div class="command-desc">Farm aura with RNG chaos</div>
@@ -805,11 +879,6 @@ function setupWebInterface(app) {
                       <div class="command-usage">!aura4aura @user [amount]</div>
                     </div>
                     <div class="command-item">
-                      <div class="command-name">!auraboard</div>
-                      <div class="command-desc">See the aura moggers</div>
-                      <div class="command-usage">Shows leaderboard</div>
-                    </div>
-                    <div class="command-item">
                       <div class="command-name">!bless</div>
                       <div class="command-desc">Gift aura to someone</div>
                       <div class="command-usage">!bless @user [amount]</div>
@@ -819,6 +888,15 @@ function setupWebInterface(app) {
                       <div class="command-desc">Check aura balance</div>
                       <div class="command-usage">!aura [@user]</div>
                     </div>
+                    <div class="command-item">
+                      <div class="command-name">!auraboard</div>
+                      <div class="command-desc">See the aura moggers</div>
+                      <div class="command-usage">Shows leaderboard</div>
+                    </div>
+                  </div>
+                  <div style="margin-top: 20px; padding: 15px; background: rgba(255, 215, 0, 0.1); border-radius: 8px; border: 1px solid rgba(255, 215, 0, 0.3);">
+                    <p style="margin: 0; font-size: 0.9rem; color: #ffd700;"><strong>Multi-Platform:</strong></p>
+                    <p style="margin: 5px 0 0 0; font-size: 0.8rem; color: #adadb8;">Also works on Telegram (/commands) and Twitter (@mentions with smart throttling)</p>
                   </div>
                   
                   <div class="settings-toggle">
