@@ -1,23 +1,6 @@
 const { createClient } = require('@supabase/supabase-js');
-const { Pool } = require('pg');
 
-// Initialize PostgreSQL connection pool (preferred for performance)
-let pgPool = null;
-if (process.env.DATABASE_URL) {
-  pgPool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false },
-    max: 20, // Maximum connections
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 10000,
-  });
-  
-  console.log('🔗 PostgreSQL connection pool initialized');
-} else {
-  console.log('⚠️ DATABASE_URL not found, using Supabase client only');
-}
-
-// Initialize Supabase client with optimized settings (fallback)
+// Initialize Supabase client with optimized settings
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_KEY,
@@ -40,27 +23,14 @@ const supabase = createClient(
 // Database health check
 async function checkDatabaseHealth() {
   try {
-    if (pgPool) {
-      // Use PostgreSQL connection
-      const client = await pgPool.connect();
-      try {
-        await client.query('SELECT 1');
-        console.log('✅ PostgreSQL connection healthy');
-        return true;
-      } finally {
-        client.release();
-      }
-    } else {
-      // Fallback to Supabase client
-      const { data, error } = await supabase
-        .from('aura')
-        .select('count')
-        .limit(1);
-      
-      if (error) throw error;
-      console.log('✅ Supabase client connection healthy');
-      return true;
-    }
+    const { data, error } = await supabase
+      .from('aura')
+      .select('count')
+      .limit(1);
+    
+    if (error) throw error;
+    console.log('✅ Supabase client connection healthy');
+    return true;
   } catch (error) {
     console.log('💀 Database health check failed:', error.message);
     return false;
@@ -82,20 +52,7 @@ async function retryOperation(operation, maxRetries = 3) {
   }
 }
 
-// Helper function for PostgreSQL queries
-async function executeQuery(query, params = []) {
-  if (pgPool) {
-    const client = await pgPool.connect();
-    try {
-      const result = await client.query(query, params);
-      return result.rows;
-    } finally {
-      client.release();
-    }
-  } else {
-    throw new Error('PostgreSQL pool not available');
-  }
-}
+
 
 // Check database health every 5 minutes
 setInterval(async () => {
@@ -118,64 +75,7 @@ async function getUser(userId, chatId, platform = 'telegram', username = null) {
     // Create composite key for platform-chat-specific user
     const compositeKey = `${platform}_${chatId}_${userId}`;
     
-    // Try PostgreSQL first for better performance
-    if (pgPool) {
-      try {
-        // First try to get existing user by composite key
-        const existingUsers = await executeQuery(
-          'SELECT * FROM aura WHERE user_id = $1 LIMIT 1',
-          [compositeKey]
-        );
-        
-        if (existingUsers.length > 0) {
-          const existingUser = existingUsers[0];
-          // Update username if provided and different
-          if (username && existingUser.username !== username) {
-            await executeQuery(
-              'UPDATE aura SET username = $1 WHERE user_id = $2',
-              [username, compositeKey]
-            );
-            existingUser.username = username;
-          }
-          return existingUser;
-        }
-        
-        // If not found and it's a username lookup, try to find by username
-        if (userId.startsWith('username_') && username) {
-          const usersByUsername = await executeQuery(
-            'SELECT * FROM aura WHERE username = $1 AND user_id LIKE $2 LIMIT 1',
-            [username, `${platform}_${chatId}_%`]
-          );
-          
-          if (usersByUsername.length > 0) {
-            return usersByUsername[0];
-          }
-        }
-        
-        // Create new user with PostgreSQL
-        const newUserData = {
-          user_id: compositeKey,
-          username: username || 'Unknown',
-          aura: 0,
-          last_farm: null,
-          reactions_today: 0,
-          platform: platform
-        };
-        
-        await executeQuery(
-          'INSERT INTO aura (user_id, username, aura, last_farm, reactions_today, platform) VALUES ($1, $2, $3, $4, $5, $6)',
-          [newUserData.user_id, newUserData.username, newUserData.aura, newUserData.last_farm, newUserData.reactions_today, newUserData.platform]
-        );
-        
-        return newUserData;
-        
-      } catch (pgError) {
-        console.log('⚠️ PostgreSQL getUser failed, falling back to Supabase:', pgError.message);
-        // Fall through to Supabase fallback
-      }
-    }
-    
-    // Fallback to Supabase client
+    // Use Supabase client consistently
     const { data: existingUser, error: fetchError } = await supabase
       .from('aura')
       .select('*')
@@ -246,6 +146,7 @@ async function updateAura(userId, chatId, amount, platform = 'telegram') {
   try {
     const compositeKey = `${platform}_${chatId}_${userId}`;
     
+    // Use Supabase client consistently
     // First get current aura
     const { data: currentUser, error: fetchError } = await supabase
       .from('aura')
@@ -292,6 +193,7 @@ async function updateLastFarm(userId, chatId, platform = 'telegram') {
   try {
     const compositeKey = `${platform}_${chatId}_${userId}`;
     
+    // Use Supabase client consistently
     const { data, error } = await supabase
       .from('aura')
       .update({ 
