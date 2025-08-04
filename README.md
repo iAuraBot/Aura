@@ -30,6 +30,12 @@ A mystical Telegram bot that rewards or removes aura points through RNG-based fa
 - Positive/negative energy indicators
 - Shows which chat the balance is for
 
+### ✨ Aura Blessing (`/bless @user [amount]`)
+- **Give your aura** to another user - spread the love!
+- **Transfer system** - costs you aura to bless others
+- **Wholesome interaction** with positive flavor text
+- Great way to **help new users** get started
+
 ### 🎉 Daily Reaction Bonus
 - Automatic tracking of message reactions
 - **Daily reset at midnight UTC**
@@ -130,6 +136,7 @@ AuraFarmBot/
 |---------|-------------|----------|
 | `/aurafarm` | Farm aura with RNG | 24 hours |
 | `/aura4aura @user [amount]` | 50/50 aura gambling | None |
+| `/bless @user [amount]` | Give aura to another user | None |
 | `/auraboard` | View top 10 aura leaderboard | None |
 | `/aura [@user]` | Check aura balance | None |
 | `/help` | Show all commands and usage | None |

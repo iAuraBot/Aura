@@ -293,6 +293,11 @@ bot.command('help', async (ctx) => {
 • See who's winning and who's getting REKT
 • Example: \`/auraboard\`
 
+✨ **/bless @user [amount]**
+• Give your aura to another user - WHOLESOME VIBES!
+• Transfers aura from you to them
+• Example: \`/bless @friend 25\`
+
 ❓ **/help**
 • Shows this menu (you're here now, genius!)
 
@@ -306,6 +311,75 @@ bot.command('help', async (ctx) => {
 **LET'S GET THIS AURA! NO CAP! 🚀**`;
 
     await ctx.reply(helpMessage);
+  });
+});
+
+// /bless command
+bot.command('bless', async (ctx) => {
+  await handleCommand(ctx, async (ctx) => {
+    const message = ctx.message.text;
+    const giver = ctx.from;
+    const chatId = ctx.chat.id.toString();
+    
+    // Parse command: /bless @username amount
+    const parts = message.split(' ');
+    const mentionMatch = message.match(/@(\w+)/);
+    
+    if (!mentionMatch || parts.length < 3) {
+      await ctx.reply('✨ **AURA BLESSING** ✨\n\nUsage: `/bless @username [amount]`\nShare your aura with others! 💫\nSpread those POSITIVE VIBES!\n\nExample: `/bless @friend 10`');
+      return;
+    }
+    
+    const targetUsername = mentionMatch[1];
+    const blessAmount = parseInt(parts[2]);
+    
+    if (isNaN(blessAmount) || blessAmount <= 0) {
+      await ctx.reply('💀 BRUH! Enter a valid positive number for the blessing! Keep it WHOLESOME! ✨');
+      return;
+    }
+    
+    // Get both users
+    const giverId = giver.id.toString();
+    const giverUser = await db.getUser(giverId, chatId, giver.username);
+    
+    const targetId = `username_${targetUsername.toLowerCase()}`;
+    const targetUser = await db.getUser(targetId, chatId, targetUsername);
+    
+    // Check if giver has enough aura
+    if (giverUser.aura < blessAmount) {
+      await ctx.reply(`💸 BLESSING FAILED! ${formatUsername(giver)} doesn't have ${blessAmount} aura to give! Current aura: ${giverUser.aura} 💀\n\nGet that bag first before being GENEROUS! 🌱`);
+      return;
+    }
+    
+    // Can't bless yourself
+    if (giverId === targetId || giver.username?.toLowerCase() === targetUsername.toLowerCase()) {
+      await ctx.reply('🤡 NICE TRY! You can\'t bless yourself, NARCISSIST! Touch grass and make some friends! 💀');
+      return;
+    }
+    
+    // Transfer aura
+    await db.updateAura(giverId, chatId, -blessAmount);
+    await db.updateAura(targetId, chatId, blessAmount);
+    
+    const blessings = [
+      '✨ Blessed with POSITIVE VIBES! ✨',
+      '🌟 The aura gods smile upon this blessing! 🌟',
+      '💫 WHOLESOME ENERGY TRANSFER COMPLETE! 💫',
+      '🙏 Blessed be this GENEROUS SPIRIT! 🙏',
+      '✨ GOOD KARMA FLOWS THROUGH THE CHAT! ✨',
+      '💝 This blessing is PURE GIGACHAD ENERGY! 💝',
+      '🌈 Rainbow blessings rain down! 🌈',
+      '👑 ROYAL GENEROSITY DETECTED! 👑'
+    ];
+    
+    const blessing = getRandomElement(blessings);
+    
+    await ctx.reply(
+      `✨ **AURA BLESSING SUCCESSFUL** ✨\n\n` +
+      `${blessing}\n\n` +
+      `${formatUsername(giver)} blessed @${targetUsername} with ${blessAmount} aura! 🙏\n\n` +
+      `💫 May good vibes multiply! 🌟`
+    );
   });
 });
 
@@ -385,7 +459,7 @@ bot.on('inline_query', async (ctx) => {
       {
         type: 'article',
         id: '4',
-        title: '📊 /auraboard', 
+                title: '📊 /auraboard',
         description: 'View leaderboard',
         input_message_content: {
           message_text: 'See the rankings: /auraboard 📊🏆'
@@ -394,6 +468,15 @@ bot.on('inline_query', async (ctx) => {
       {
         type: 'article',
         id: '5',
+        title: '✨ /bless @user [amount]',
+        description: 'Give aura to another user',
+        input_message_content: {
+          message_text: 'Spread good vibes: /bless @username [amount] ✨🙏'
+        }
+      },
+      {
+        type: 'article',
+        id: '6',
         title: '❓ /help', 
         description: 'Show all commands and usage',
         input_message_content: {
