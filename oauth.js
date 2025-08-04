@@ -140,9 +140,10 @@ function initializeOAuth() {
 
   // Start server
   const port = process.env.PORT || 3080;
-  server = app.listen(port, () => {
+  server = app.listen(port, '0.0.0.0', () => {
     console.log(`🔐 OAuth server running on port ${port}`);
-    console.log(`🌍 OAuth URL: https://your-railway-domain.up.railway.app/auth/twitch`);
+    console.log(`🌍 OAuth URL: https://aura-production-877f.up.railway.app/auth/twitch`);
+    console.log(`🔗 Health check: https://aura-production-877f.up.railway.app/health`);
   });
 
   return app;
