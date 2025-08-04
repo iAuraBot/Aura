@@ -33,7 +33,9 @@ const NEGATIVE_FLAVORS = [
   '🚫 COPE + SEETHE! Your aura game is WEAK!',
   '🗿 OHIO MOMENT! Your farm was SUS as hell!',
   '📉 STONKS DOWN! Your aura portfolio CRASHED!',
-  '💸 FANUM TAXED! Someone stole your vibe!'
+  '💸 FANUM TAXED! Someone stole your vibe!',
+  '🍴 GET FANUM TAXED! Your aura got STOLEN!',
+  '💸 FANUM TAX MOMENT! The universe just ROBBED you!'
 ];
 
 const JACKPOT_FLAVORS = [
@@ -47,7 +49,8 @@ const IMPLOSION_FLAVORS = [
   '💥 CRITICAL DAMAGE! You just got ABSOLUTELY REKT!',
   '🌪️ EMOTIONAL DAMAGE! Your aura said BYE BYE!',
   '⚡ BRUH MOMENT! This is a CERTIFIED OHIO CLASSIC!',
-  '🕳️ GET RATIO\'D BY THE UNIVERSE! Touch grass NOW!'
+  '🕳️ GET RATIO\'D BY THE UNIVERSE! Touch grass NOW!',
+  '💸 ULTIMATE FANUM TAX! The universe just CLEANED YOU OUT!'
 ];
 
 const DUEL_WIN_FLAVORS = [
@@ -185,12 +188,12 @@ bot.command('aura4aura', async (ctx) => {
     
     // Check if both users have enough aura
     if (challengerUser.aura < wagerAmount) {
-      await ctx.reply(`💸 BROKE BOY ALERT! ${formatUsername(challenger)} doesn't have ${wagerAmount} aura to wager! Current aura: ${challengerUser.aura} 💀`);
+              await ctx.reply(`💸 BROKE BOY ALERT! ${formatUsername(challenger)} got FANUM TAXED and can't afford ${wagerAmount} aura! Current aura: ${challengerUser.aura} 💀`);
       return;
     }
     
     if (targetUser.aura < wagerAmount) {
-      await ctx.reply(`💸 TARGET IS BROKE! @${targetUsername} doesn't have ${wagerAmount} aura to match the wager! Their aura: ${targetUser.aura} 😭`);
+              await ctx.reply(`💸 TARGET IS BROKE! @${targetUsername} got FANUM TAXED and can't match ${wagerAmount} aura! Their aura: ${targetUser.aura} 😭`);
       return;
     }
     
@@ -357,7 +360,7 @@ bot.command('bless', async (ctx) => {
     
     // Check if giver has enough aura
     if (giverUser.aura < blessAmount) {
-      await ctx.reply(`💸 BLESSING FAILED! ${formatUsername(giver)} doesn't have ${blessAmount} aura to give! Current aura: ${giverUser.aura} 💀\n\nGet that bag first before being a GIGACHAD! 🌱`);
+      await ctx.reply(`💸 BLESSING FAILED! ${formatUsername(giver)} got FANUM TAXED and can't afford ${blessAmount} aura! Current aura: ${giverUser.aura} 💀\n\nGet that bag back before being a GIGACHAD! 🌱`);
       return;
     }
     
@@ -379,7 +382,7 @@ bot.command('bless', async (ctx) => {
       '🔥 W BLESSING! This is some SIGMA MALE sharing!',
       '💯 NO CAP! That blessing just HIT DIFFERENT!',
       '🚀 BASED ENERGY TRANSFER! Your rizz is CONTAGIOUS!',
-      '💸 REVERSE FANUM TAX! Someone just got BLESSED not REKT!',
+      '💸 W GENEROSITY! Someone just got BLESSED not REKT!',
       '⚡ ABSOLUTELY NUCLEAR! This chat is about to EXPLODE!',
       '👑 ALPHA GENEROSITY! This blessing is UTTERLY BONKERS!'
     ];
@@ -389,7 +392,7 @@ bot.command('bless', async (ctx) => {
     await ctx.reply(
       `✨ **AURA BLESSING SUCCESSFUL** ✨\n\n` +
       `${blessing}\n\n` +
-      `${formatUsername(giver)} just FANUM TAXED @${targetUsername} with ${blessAmount} aura! 💀\n\n` +
+      `${formatUsername(giver)} just BLESSED @${targetUsername} with ${blessAmount} aura! 💸\n\n` +
       `🗿 ABSOLUTE SIGMA BEHAVIOR! This chat is about to get CHAOTIC! 🔥`
     );
   });
@@ -510,7 +513,7 @@ bot.on('inline_query', async (ctx) => {
         title: '✨ /bless @user [amount]',
         description: 'Give aura to another user',
         input_message_content: {
-          message_text: 'FANUM TAX others: /bless @username [amount] 💀🔥'
+          message_text: 'BLESS others with aura: /bless @username [amount] 💸🔥'
         }
       },
       {
