@@ -35,10 +35,13 @@ function setupWebInterface(app) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>iAuraFarmBot - Your Chat Made Brainrot</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
         <style>
           * { margin: 0; padding: 0; box-sizing: border-box; }
           body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #1a3d2e 0%, #2d5d43 25%, #4a7c59 50%, #76b947 75%, #9fff7a 100%);
             min-height: 100vh;
             display: flex;
@@ -482,9 +485,12 @@ function setupWebInterface(app) {
         <html>
         <head>
           <title>Success - Multi-Platform AuraFarmBot Added!</title>
+          <link rel="preconnect" href="https://fonts.googleapis.com">
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+          <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
           <style>
             body { 
-              font-family: Arial, sans-serif; 
+              font-family: 'Poppins', Arial, sans-serif; 
               background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
               min-height: 100vh;
               display: flex;
@@ -578,10 +584,13 @@ function setupWebInterface(app) {
         <html>
         <head>
           <title>iAuraFarmBot Dashboard - ${req.session.user.display_name}</title>
+          <link rel="preconnect" href="https://fonts.googleapis.com">
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+          <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
           <style>
             * { margin: 0; padding: 0; box-sizing: border-box; }
             body { 
-              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+              font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
               background: linear-gradient(135deg, #0f1f1a 0%, #1a3d2e 25%, #2d5d43 50%, #4a7c59 75%, #5a8b3a 100%);
               color: #efeff1;
               min-height: 100vh;
