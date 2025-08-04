@@ -166,7 +166,7 @@ async function handleTwitchMessage(channel, chatId, userId, username, message, u
     }
   } catch (error) {
     console.error('❌ Error handling Twitch message:', error);
-    await sayInChannel(channel, '💀 BRUH! The aura servers just got REKT! This is a certified OHIO moment! Try again fr fr! 🤡');
+    await sayInChannel(channel, '💀 Aura servers having a moment... try again! 🔄');
   }
 }
 

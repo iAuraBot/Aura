@@ -31,7 +31,7 @@ async function handleCommand(ctx, commandFn) {
     await commandFn(ctx);
   } catch (error) {
     console.error('Command error:', error);
-    await ctx.reply('💀 BRUH! The aura servers just got REKT! This is a certified OHIO moment! Try again fr fr! 🤡');
+    await ctx.reply('💀 Aura servers having a moment... try again! 🔄');
   }
 }
 
