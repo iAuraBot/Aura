@@ -262,7 +262,9 @@ bot.on('text', async (ctx) => {
     const userId = ctx.from.id.toString();
     const chatId = ctx.chat.id.toString();
     
-    const reply = await claude.getBrainrotReply(userId, messageText, 'telegram', chatId);
+    // For Telegram, default to full brainrot mode (family-friendly = false)
+    // Could be extended later to support per-group family-friendly settings
+    const reply = await claude.getBrainrotReply(userId, messageText, 'telegram', chatId, false);
     await ctx.reply(reply);
   });
 });

@@ -225,13 +225,11 @@ function setupWebInterface(app) {
       </head>
       <body>
         <div class="container">
-          <div class="bot-icon">💀🔥</div>
-          <h1>iAuraFarmBot</h1>
+          <div class="bot-icon">
+            <img src="/assets/aurafarmbot.png" alt="AuraFarmBot" style="width: 120px; height: 120px; border-radius: 20px; object-fit: cover;">
+          </div>
                       <h2 class="subtitle">unhinged AI-powered bot that brings brainrot energy to Telegram, Twitch, and X! Farm aura, battle friends, and have chaotic conversations with AI</h2>
-          <p class="description">
-            The most unhinged AI-powered bot that brings brainrot energy to Telegram, Twitch, and Twitter! 
-            Farm aura, battle friends, and have chaotic conversations with Claude AI across all platforms.
-          </p>
+
           
           <div class="cta-buttons">
             <a href="/auth/streamer" class="btn">Add to Chat</a>
@@ -562,7 +560,12 @@ function setupWebInterface(app) {
       `);
       
     } catch (error) {
-      console.error('Streamer OAuth error:', error);
+      console.error('Streamer OAuth error:', {
+        message: error.message,
+        code: error.code,
+        stack: error.stack,
+        error: error
+      });
       res.send(`
         <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
           <h2>❌ Setup Failed</h2>
@@ -581,6 +584,7 @@ function setupWebInterface(app) {
     
     try {
       const channelConfig = await db.getChannelConfig(req.session.user.id);
+      const familyFriendlySetting = await db.getFamilyFriendlySetting('twitch', req.session.user.id);
       
       res.send(`
         <!DOCTYPE html>
@@ -994,6 +998,15 @@ function setupWebInterface(app) {
                 </div>
 
                 <div class="form-group">
+                  <label>Family-Friendly AI Mode</label>
+                  <div class="toggle-group">
+                    <span>Family-Friendly Claude AI</span>
+                    <div class="toggle-switch ${familyFriendlySetting ? 'active' : ''}" onclick="toggleFamilyMode()"></div>
+                  </div>
+                  <small>ON = Clean, wholesome AI responses | OFF = Full unhinged brainrot mode</small>
+                </div>
+
+                <div class="form-group">
                   <label>Custom Welcome Message</label>
                   <textarea name="custom_welcome" rows="3" placeholder="Welcome to ${req.session.user.display_name}'s aura farming community! 💀🔥">${channelConfig?.settings?.custom_welcome || ''}</textarea>
                   <small>Message shown to new farmers (leave empty for default brainrot message)</small>
@@ -1024,6 +1037,30 @@ function setupWebInterface(app) {
             function toggleBlessings() {
               const toggle = document.querySelectorAll('.toggle-switch')[2];
               toggle.classList.toggle('active');
+            }
+
+            function toggleFamilyMode() {
+              const toggle = document.querySelectorAll('.toggle-switch')[3];
+              toggle.classList.toggle('active');
+              
+              // Send update to server
+              const isActive = toggle.classList.contains('active');
+              fetch('/dashboard/family-mode', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ familyFriendly: isActive })
+              }).then(response => response.json())
+                .then(data => {
+                  if (!data.success) {
+                    // Revert toggle on error
+                    toggle.classList.toggle('active');
+                    alert('Error updating family-friendly mode: ' + data.error);
+                  }
+                }).catch(err => {
+                  // Revert toggle on error
+                  toggle.classList.toggle('active');
+                  alert('Error updating family-friendly mode');
+                });
             }
 
             function resetToDefaults() {
@@ -1123,6 +1160,32 @@ function setupWebInterface(app) {
       
     } catch (error) {
       console.error('Remove bot error:', error);
+      res.json({ success: false, error: error.message });
+    }
+  });
+
+  // Family-friendly mode toggle
+  app.post('/dashboard/family-mode', async (req, res) => {
+    if (!req.session.user) {
+      return res.json({ success: false, error: 'Not authenticated' });
+    }
+    
+    try {
+      const { familyFriendly } = req.body;
+      const success = await db.setFamilyFriendlySetting(
+        'twitch', 
+        req.session.user.id, 
+        req.session.user.login, 
+        familyFriendly
+      );
+      
+      if (success) {
+        res.json({ success: true });
+      } else {
+        res.json({ success: false, error: 'Failed to update setting' });
+      }
+    } catch (error) {
+      console.error('Family-friendly toggle error:', error);
       res.json({ success: false, error: error.message });
     }
   });

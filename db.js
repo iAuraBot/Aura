@@ -474,7 +474,13 @@ async function createChannelConfig(channelId, channelLogin, config) {
     }
     return data;
   } catch (error) {
-    console.error('Error creating channel config:', error);
+    console.error('Error creating channel config:', {
+      message: error.message,
+      code: error.code,
+      details: error.details,
+      hint: error.hint,
+      error: error
+    });
     throw error;
   }
 }
@@ -620,6 +626,58 @@ async function getChannelSettings(channelLogin) {
   }
 }
 
+// Get family-friendly setting for a channel
+async function getFamilyFriendlySetting(platform, channelId) {
+  try {
+    const { data, error } = await supabase
+      .from('channel_settings')
+      .select('family_friendly')
+      .eq('platform', platform)
+      .eq('channel_id', channelId)
+      .single();
+
+    if (error && error.code !== 'PGRST116') {
+      console.error('Error getting family-friendly setting:', error);
+      return false; // Default to non-family-friendly on error
+    }
+
+    return data?.family_friendly || false;
+  } catch (error) {
+    console.error('Error in getFamilyFriendlySetting:', error);
+    return false; // Default to non-family-friendly on error
+  }
+}
+
+// Set family-friendly setting for a channel
+async function setFamilyFriendlySetting(platform, channelId, channelName, familyFriendly) {
+  try {
+    const { data, error } = await supabase
+      .from('channel_settings')
+      .upsert({
+        platform,
+        channel_id: channelId,
+        channel_name: channelName,
+        family_friendly: familyFriendly,
+        updated_at: new Date().toISOString()
+      }, {
+        onConflict: 'platform,channel_id'
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error setting family-friendly setting:', error);
+      return false;
+    }
+
+    console.log(`✅ Set family-friendly mode ${familyFriendly ? 'ON' : 'OFF'} for ${platform} channel: ${channelName}`);
+    return true;
+  } catch (error) {
+    console.error('Error in setFamilyFriendlySetting:', error);
+    return false;
+  }
+}
+
 module.exports = { 
   getUser, 
   updateAura, 
@@ -636,6 +694,8 @@ module.exports = {
   removeChannelConfig,
   getAllActiveChannels,
   getChannelSettings,
+  getFamilyFriendlySetting,
+  setFamilyFriendlySetting,
   checkDatabaseHealth,
   retryOperation
 };

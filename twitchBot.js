@@ -157,6 +157,11 @@ async function handleTwitchMessage(channel, chatId, userId, username, message, u
 
 
 
+        case 'familymode':
+        case 'familyfriendly':
+          await handleFamilyMode(channel, chatId, userId, username, userstate, args);
+          break;
+
         case 'help':
         case 'commands':
           await handleHelp(channel);
@@ -290,6 +295,11 @@ async function handleHelp(channel) {
 ❓ **!help** (or !commands)
 • Shows this menu (you're here now, genius!)
 
+🔒 **!familymode on/off** (MODS/BROADCASTER ONLY)
+• Toggle family-friendly AI conversations
+• ON = Clean, wholesome responses
+• OFF = Full unhinged brainrot mode
+
 💀 **PRO TIPS:**
 • Each channel has its own aura ecosystem! 🏘️
 • Farm daily to stack that aura bag! 💸
@@ -313,7 +323,10 @@ async function handleNaturalConversation(channel, chatId, userId, username, mess
   if (cleanMessage.length < 2 || cleanMessage.length > 500) return;
   
   try {
-    const reply = await claude.getBrainrotReply(userId, cleanMessage, 'twitch', chatId);
+    // Check if family-friendly mode is enabled for this channel
+    const familyFriendly = await db.getFamilyFriendlySetting('twitch', chatId);
+    
+    const reply = await claude.getBrainrotReply(userId, cleanMessage, 'twitch', chatId, familyFriendly);
     await sayInChannel(channel, `@${username} ${reply}`);
   } catch (error) {
     claude.logError('Error in Twitch natural conversation:', error);
@@ -391,6 +404,56 @@ async function sendDailyReactionWinner(chatId, username, auraGained) {
   const message = `🎉 **DAILY REACTION CHAMPION** 🎉\n\n@${username} wins +${auraGained} aura for being the most reactive today! 💀🔥`;
   
   await sayInChannel(channel, message);
+}
+
+// Handle family-friendly mode toggle (MODS/BROADCASTER only)
+async function handleFamilyMode(channel, chatId, userId, username, userstate, args) {
+  try {
+    // Check if user is broadcaster or mod
+    const isMod = userstate.mod || userstate.badges?.broadcaster === '1' || userstate.badges?.moderator === '1';
+    const isBroadcaster = userstate.badges?.broadcaster === '1';
+    
+    if (!isMod && !isBroadcaster) {
+      await sayInChannel(channel, `@${username} Only mods and the broadcaster can toggle family-friendly mode! 🔒`);
+      return;
+    }
+
+    // Get current setting
+    const currentSetting = await db.getFamilyFriendlySetting('twitch', chatId);
+    
+    if (args.length === 0) {
+      // Show current status
+      const status = currentSetting ? 'ON 🟢' : 'OFF 🔴';
+      await sayInChannel(channel, `@${username} Family-friendly mode is currently: ${status}\n\nUsage: !familymode on/off`);
+      return;
+    }
+
+    const setting = args[0].toLowerCase();
+    let newValue = null;
+    
+    if (setting === 'on' || setting === 'enable' || setting === 'true') {
+      newValue = true;
+    } else if (setting === 'off' || setting === 'disable' || setting === 'false') {
+      newValue = false;
+    } else {
+      await sayInChannel(channel, `@${username} Usage: !familymode on/off`);
+      return;
+    }
+
+    // Update the setting
+    const success = await db.setFamilyFriendlySetting('twitch', chatId, channel.replace('#', ''), newValue);
+    
+    if (success) {
+      const statusText = newValue ? 'ON 🟢' : 'OFF 🔴';
+      const modeText = newValue ? 'FAMILY-FRIENDLY' : 'REGULAR BRAINROT';
+      await sayInChannel(channel, `✅ Family-friendly mode: ${statusText}\n\nClaude AI is now in ${modeText} mode! 🤖`);
+    } else {
+      await sayInChannel(channel, `@${username} Failed to update family-friendly setting. Try again! 💀`);
+    }
+  } catch (error) {
+    console.error('Error in handleFamilyMode:', error);
+    await sayInChannel(channel, `@${username} Error updating family-friendly setting! 💀`);
+  }
 }
 
 module.exports = {
