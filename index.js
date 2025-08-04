@@ -219,23 +219,23 @@ bot.command('aura4aura', async (ctx) => {
 // /auraboard command
 bot.command('auraboard', async (ctx) => {
   await handleCommand(ctx, async (ctx) => {
-    const topUsers = await db.getTopUsers(5, false); // Top 5 highest
-    const bottomUsers = await db.getTopUsers(5, true); // Top 5 lowest
+    const allUsers = await db.getTopUsers(10, false); // Top 10 users sorted by aura (highest to lowest)
     
     let message = '📊 **AURA LEADERBOARD** 📊\n\n';
     
-    message += '🗿 **AURA MOGGERS** 🗿\n';
-    topUsers.forEach((user, index) => {
-      const medal = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'][index] || '🏅';
+    allUsers.forEach((user, index) => {
+      const position = index + 1;
+      let emoji;
+      
+      // Different emojis based on position and aura
+      if (position === 1) emoji = '🥇';
+      else if (position === 2) emoji = '🥈';
+      else if (position === 3) emoji = '🥉';
+      else if (user.aura >= 0) emoji = '💫';
+      else emoji = '💀';
+      
       const username = user.username || 'Unknown';
-      message += `${medal} @${username}: ${user.aura} aura\n`;
-    });
-    
-    message += '\n😭 **L + RATIO HALL OF SHAME** 😭\n';
-    bottomUsers.forEach((user, index) => {
-      const skull = ['💀', '🤡', '💩', '🗿', '😭'][index] || '💀';
-      const username = user.username || 'Unknown';
-      message += `${skull} @${username}: ${user.aura} aura\n`;
+      message += `${emoji} ${position}. @${username}: ${user.aura} aura\n`;
     });
     
     await ctx.reply(message);
@@ -274,8 +274,8 @@ bot.command('help', async (ctx) => {
 • Example: \`/aura\` or \`/aura @someone\`
 
 📊 **/auraboard**
-• View top 5 AURA MOGGERS (highest)
-• See top 5 L + RATIO HALL OF SHAME (lowest)
+• View top 10 users ranked by aura
+• See who's winning and who's getting REKT
 • Example: \`/auraboard\`
 
 ❓ **/help**

@@ -192,25 +192,56 @@ async function updateReactions(userId) {
 }
 
 /**
- * Get top aura users (leaderboard)
+ * Get top aura users (leaderboard) with deduplication
  * @param {number} limit - Number of users to return
  * @param {boolean} ascending - Sort order (true for lowest, false for highest)
  * @returns {Array} Array of user data
  */
 async function getTopUsers(limit = 5, ascending = false) {
   try {
-    const { data, error } = await supabase
+    // Get all users first to deduplicate
+    const { data: allUsers, error } = await supabase
       .from('aura')
       .select('user_id, username, aura')
-      .order('aura', { ascending })
-      .limit(limit);
+      .order('aura', { ascending });
 
     if (error) {
-      console.error('Error getting top users:', error);
+      console.error('Error getting users:', error);
       throw error;
     }
 
-    return data || [];
+    if (!allUsers) return [];
+
+    // Deduplicate by username, keeping the best record
+    const userMap = new Map();
+    
+    allUsers.forEach(user => {
+      const username = user.username?.toLowerCase();
+      if (!username || username === 'unknown') return;
+      
+      const existing = userMap.get(username);
+      if (!existing) {
+        userMap.set(username, user);
+      } else {
+        // Keep the record with real Telegram ID (no prefix) or higher aura
+        const isRealId = !user.user_id.includes('_');
+        const existingIsRealId = !existing.user_id.includes('_');
+        
+        if (isRealId && !existingIsRealId) {
+          userMap.set(username, user);
+        } else if (!isRealId && existingIsRealId) {
+          // Keep existing real ID
+        } else if (user.aura > existing.aura) {
+          userMap.set(username, user);
+        }
+      }
+    });
+
+    // Convert back to array and sort
+    const deduplicatedUsers = Array.from(userMap.values());
+    deduplicatedUsers.sort((a, b) => ascending ? a.aura - b.aura : b.aura - a.aura);
+
+    return deduplicatedUsers.slice(0, limit);
   } catch (error) {
     console.error('Error in getTopUsers:', error);
     throw error;
