@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const crypto = require('crypto');
 const { setupWebInterface } = require('./webInterface');
+const claude = require('./lib/claude');
 
 let app = null;
 let server = null;
@@ -17,6 +18,11 @@ function initializeOAuth() {
   }
 
   app = express();
+  
+  // Add Sentry middleware (if available)
+  const sentryMiddleware = claude.getSentryMiddleware();
+  app.use(sentryMiddleware.requestHandler);
+  
   app.use(express.json());
 
   // Setup web interface for streamers to add bot to their channels
@@ -141,6 +147,9 @@ function initializeOAuth() {
       timestamp: new Date().toISOString()
     });
   });
+
+  // Add Sentry error handler (must be last middleware)
+  app.use(sentryMiddleware.errorHandler);
 
   // Start server - Railway provides PORT dynamically
   const port = process.env.PORT || 3080;

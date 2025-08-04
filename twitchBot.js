@@ -1,6 +1,7 @@
 const tmi = require('tmi.js');
 const auraLogic = require('./auraLogic.js');
 const db = require('./db.js'); // Import database functions for channel settings
+const claude = require('./lib/claude.js');
 
 // Twitch client instance
 let twitchClient = null;
@@ -116,53 +117,63 @@ function setupTwitchEventListeners() {
 async function handleTwitchMessage(channel, chatId, userId, username, message, userstate) {
   try {
     // Check if message is a command (starts with !)
-    if (!message.startsWith('!')) return;
+    if (message.startsWith('!')) {
+      const commandMatch = message.match(/^!(\w+)(?:\s+(.*))?/);
+      if (!commandMatch) return;
 
-    const commandMatch = message.match(/^!(\w+)(?:\s+(.*))?/);
-    if (!commandMatch) return;
+      const command = commandMatch[1].toLowerCase();
+      const args = commandMatch[2] ? commandMatch[2].trim().split(/\s+/) : [];
 
-    const command = commandMatch[1].toLowerCase();
-    const args = commandMatch[2] ? commandMatch[2].trim().split(/\s+/) : [];
+      console.log(`🎮 Twitch command: !${command} from ${username} in ${channel}`);
 
-    console.log(`🎮 Twitch command: !${command} from ${username} in ${channel}`);
+      // Handle different commands
+      switch (command) {
+        case 'aurafarm':
+        case 'farm':
+          await handleAuraFarm(channel, chatId, userId, username);
+          break;
 
-    // Handle different commands
-    switch (command) {
-      case 'aurafarm':
-      case 'farm':
-        await handleAuraFarm(channel, chatId, userId, username);
-        break;
+        case 'aura':
+        case 'aura4aura':
+          if (command === 'aura4aura' && args.length >= 2) {
+            await handleAuraDuel(channel, chatId, userId, username, args);
+          } else {
+            await handleAuraCheck(channel, chatId, userId, username, args);
+          }
+          break;
 
-      case 'aura':
-      case 'aura4aura':
-        if (command === 'aura4aura' && args.length >= 2) {
-          await handleAuraDuel(channel, chatId, userId, username, args);
-        } else {
-          await handleAuraCheck(channel, chatId, userId, username, args);
-        }
-        break;
+        case 'auraboard':
+        case 'leaderboard':
+          await handleLeaderboard(channel, chatId);
+          break;
 
-      case 'auraboard':
-      case 'leaderboard':
-        await handleLeaderboard(channel, chatId);
-        break;
+        case 'bless':
+          if (args.length >= 2) {
+            await handleBless(channel, chatId, userId, username, args);
+          } else {
+            await sayInChannel(channel, '✨ **AURA BLESSING** ✨\n\nUsage: `!bless @username [amount]`\nShare your aura bag with the HOMIES! 💀\n\nExample: `!bless @friend 10`');
+          }
+          break;
 
-      case 'bless':
-        if (args.length >= 2) {
-          await handleBless(channel, chatId, userId, username, args);
-        } else {
-          await sayInChannel(channel, '✨ **AURA BLESSING** ✨\n\nUsage: `!bless @username [amount]`\nShare your aura bag with the HOMIES! 💀\n\nExample: `!bless @friend 10`');
-        }
-        break;
+        case 'chat':
+          await handleClaudeChat(channel, chatId, userId, username, args);
+          break;
 
-      case 'help':
-      case 'commands':
-        await handleHelp(channel);
-        break;
+        case 'help':
+        case 'commands':
+          await handleHelp(channel);
+          break;
 
-      default:
-        // Unknown command - ignore
-        break;
+        default:
+          // Unknown command - ignore
+          break;
+      }
+    } else {
+      // Handle non-command messages for Claude (when bot is mentioned)
+      const botName = process.env.TWITCH_BOT_USERNAME?.toLowerCase();
+      if (botName && (message.toLowerCase().includes(`@${botName}`) || message.toLowerCase().includes(botName))) {
+        await handleClaudeConversation(channel, chatId, userId, username, message);
+      }
     }
   } catch (error) {
     console.error('❌ Error handling Twitch message:', error);
@@ -273,6 +284,11 @@ async function handleHelp(channel) {
 • Transfers aura from you to them - SIGMA SHARING!
 • Example: \`!bless @friend 25\`
 
+🤖 **!chat [message]**
+• Talk to Claude AI for UNHINGED brainrot conversations!
+• Get chaotic zoomer responses and meme energy!
+• Example: \`!chat what do you think about aura farming?\`
+
 ❓ **!help** (or !commands)
 • Shows this menu (you're here now, genius!)
 
@@ -284,6 +300,46 @@ async function handleHelp(channel) {
 **LET'S GET THIS AURA! NO CAP! 🚀**`;
 
   await sayInChannel(channel, helpMessage);
+}
+
+// Claude chat command (!chat message)
+async function handleClaudeChat(channel, chatId, userId, username, args) {
+  if (args.length === 0) {
+    await sayInChannel(channel, '💭 **CLAUDE CHAT** 💭 | Usage: !chat your message here | Talk to the AI and get that UNHINGED brainrot energy! 🤖🔥 | Example: !chat what do you think about aura farming?');
+    return;
+  }
+  
+  const messageText = args.join(' ');
+  
+  try {
+    const reply = await claude.getBrainrotReply(userId, messageText, 'twitch', chatId);
+    await sayInChannel(channel, `@${username} ${reply}`);
+  } catch (error) {
+    claude.logError('Error in Twitch Claude chat:', error);
+    await sayInChannel(channel, `@${username} bro u just crashed me 😭`);
+  }
+}
+
+// Handle Claude conversation when bot is mentioned
+async function handleClaudeConversation(channel, chatId, userId, username, message) {
+  // Clean the message (remove bot mentions)
+  const botName = process.env.TWITCH_BOT_USERNAME?.toLowerCase();
+  let cleanMessage = message;
+  if (botName) {
+    cleanMessage = message.replace(new RegExp(`@?${botName}`, 'gi'), '').trim();
+  }
+  
+  if (!claude.shouldTriggerClaude(cleanMessage, 'twitch')) {
+    return; // Don't respond to everything
+  }
+  
+  try {
+    const reply = await claude.getBrainrotReply(userId, cleanMessage, 'twitch', chatId);
+    await sayInChannel(channel, `@${username} ${reply}`);
+  } catch (error) {
+    claude.logError('Error in Twitch Claude conversation:', error);
+    await sayInChannel(channel, `@${username} bro u just crashed me 😭`);
+  }
 }
 
 // Utility function to send messages to Twitch channel
