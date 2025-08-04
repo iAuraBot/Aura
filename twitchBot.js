@@ -134,11 +134,14 @@ async function handleTwitchMessage(channel, chatId, userId, username, message, u
           break;
 
         case 'aura':
-        case 'aura4aura':
-          if (command === 'aura4aura' && args.length >= 2) {
+          await handleAuraCheck(channel, chatId, userId, username, args);
+          break;
+
+        case 'mog':
+          if (command === 'mog' && args.length >= 2) {
             await handleAuraDuel(channel, chatId, userId, username, args);
           } else {
-            await handleAuraCheck(channel, chatId, userId, username, args);
+            await sayInChannel(channel, '💀 **trying to mog someone?** 💀\n\n`!mog @user [amount]` - 50/50 showdown\n\nExample: `!mog @friend 25`');
           }
           break;
 
@@ -211,7 +214,7 @@ async function handleAuraDuel(channel, chatId, userId, username, args) {
   }
 
   if (args.length < 2) {
-    await sayInChannel(channel, '💀 **really goin aura 4 aura huh?** 💀\n\n`!aura4aura @user [amount]` - 50/50 showdown\n\nExample: `!aura4aura @friend 25`');
+              await sayInChannel(channel, '💀 **trying to mog someone?** 💀\n\n`!mog @user [amount]` - 50/50 showdown\n\nExample: `!mog @friend 25`');
     return;
   }
 
@@ -267,11 +270,11 @@ async function handleHelp(channel) {
 • 20% chance: -10 to -25 aura (L)  
 • 10% chance: +100 JACKPOT or -50 IMPLOSION!
 
-🎰 **!aura4aura @user [amount]**
-    • 50/50 aura showdowns
+🎰 **!mog @user [amount]**
+    • 50/50 mogging showdowns
 • Both players need enough aura to match bet
-    • Winner takes ALL the aura on the line
-• Example: \`!aura4aura @friend 25\`
+    • Winner mogs the loser and takes ALL the aura
+• Example: \`!mog @friend 25\`
 
 💫 **!aura [@user]**
 • Check your aura balance or someone else's

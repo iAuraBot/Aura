@@ -310,7 +310,7 @@ function setupWebInterface(app) {
                 <img src="/assets/telegram.png" alt="Telegram" style="width: 48px; height: 48px; margin-bottom: 15px; display: block;">
                 <div class="feature-title">Telegram</div>
                 <div class="feature-desc">
-                  <strong>Commands:</strong> /aurafarm, /aura4aura, /bless<br>
+                  <strong>Commands:</strong> /aurafarm, /mog, /bless<br>
                   <strong>AI Chat:</strong> @aurafarmbot hey what's up?<br>
                   <strong>Works in:</strong> Groups & DMs
                 </div>
@@ -328,7 +328,7 @@ function setupWebInterface(app) {
                 <img src="/assets/twitch.png" alt="Twitch" style="width: 48px; height: 48px; margin-bottom: 15px; display: block;">
                 <div class="feature-title">Twitch</div>
                 <div class="feature-desc">
-                  <strong>Commands:</strong> !aurafarm, !aura4aura, !bless<br>
+                  <strong>Commands:</strong> !aurafarm, !mog, !bless<br>
                   <strong>AI Chat:</strong> @aurafarmbot tell me something wild<br>
                   <strong>Works in:</strong> Any channel with bot enabled
                 </div>
@@ -541,7 +541,7 @@ function setupWebInterface(app) {
               <h3>Available Commands:</h3>
               <p><code>!aurafarm</code> - Farm aura (24h cooldown)</p>
               <p><code>!aura [@user]</code> - Check aura balance</p>
-              <p><code>!aura4aura @user [amount]</code> - Challenge to duel</p>
+              <p><code>!mog @user [amount]</code> - Challenge to mog</p>
               <p><code>!auraboard</code> - View leaderboard</p>
               <p><code>!bless @user [amount]</code> - Give aura to someone</p>
               <p><code>!help</code> - Show command list</p>
@@ -926,9 +926,9 @@ function setupWebInterface(app) {
                       <div class="command-usage">24h cooldown</div>
                     </div>
                     <div class="command-item">
-                      <div class="command-name">!aura4aura</div>
-                      <div class="command-desc">really goin aura 4 aura huh?</div>
-                      <div class="command-usage">!aura4aura @user [amount]</div>
+                      <div class="command-name">!mog</div>
+                      <div class="command-desc">trying to mog someone?</div>
+                      <div class="command-usage">!mog @user [amount]</div>
                     </div>
                     <div class="command-item">
                       <div class="command-name">!bless</div>

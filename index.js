@@ -86,18 +86,18 @@ bot.command('aurafarm', async (ctx) => {
   });
 });
 
-// /aura4aura command - MULTI-PLATFORM GAMBLING! 🎰💀
-bot.command('aura4aura', async (ctx) => {
+// /mog command - MULTI-PLATFORM MOGGING! 🎰💀
+bot.command('mog', async (ctx) => {
   await handleCommand(ctx, async (ctx) => {
     const message = ctx.message.text;
     const challenger = ctx.from;
     
-    // Parse command: /aura4aura @username amount
+    // Parse command: /mog @username amount
     const parts = message.split(' ');
     const mentionMatch = message.match(/@(\w+)/);
     
     if (!mentionMatch || parts.length < 3) {
-      await ctx.reply('💀 **really goin aura 4 aura huh?** 💀\n\n`/aura4aura @user [amount]` - 50/50 showdown\n\nExample: `/aura4aura @friend 25`');
+      await ctx.reply('💀 **trying to mog someone?** 💀\n\n`/mog @user [amount]` - 50/50 showdown\n\nExample: `/mog @friend 25`');
       return;
     }
     
@@ -150,11 +150,11 @@ bot.command('help', async (ctx) => {
 • 10% chance: +100 JACKPOT or -50 IMPLOSION!
 • Example: \`/aurafarm\`
 
-🎰 **/aura4aura @user [amount]**
-    • 50/50 aura showdowns
+🎰 **/mog @user [amount]**
+    • 50/50 mogging showdowns
 • Both players need enough aura to match bet
-    • Winner takes ALL the aura on the line
-• Example: \`/aura4aura @friend 25\`
+    • Winner mogs the loser and takes ALL the aura
+• Example: \`/mog @friend 25\`
 
 💫 **/aura [@user]**
 • Check your aura balance or someone else's
@@ -355,10 +355,10 @@ bot.on('inline_query', async (ctx) => {
       {
         type: 'article', 
         id: '2',
-        title: '🎰 /aura4aura @user [amount]',
-        description: '50/50 aura 4 aura showdowns',
+        title: '🎰 /mog @user [amount]',
+        description: '50/50 mogging showdowns',
         input_message_content: {
-          message_text: 'Challenge someone: /aura4aura @username [amount] 🎰💀'
+          message_text: 'Try to mog someone: /mog @username [amount] 🎰💀'
         }
       },
       {
@@ -504,7 +504,7 @@ bot.launch().then(() => {
   console.log('');
   console.log('🗿 AVAILABLE COMMANDS (Telegram/Twitch):');
   console.log('  📱 /aurafarm (!aurafarm) - Farm aura (24h cooldown)');
-  console.log('  🎰 /aura4aura (!aura4aura) @user [amount] - Challenge to duel');
+  console.log('  🎰 /mog (!mog) @user [amount] - Challenge to mog');
   console.log('  📊 /auraboard (!auraboard) - View leaderboard');
   console.log('  💫 /aura (!aura) [@user] - Check aura balance');
   console.log('  ✨ /bless (!bless) @user [amount] - Give aura to others');

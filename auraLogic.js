@@ -5,30 +5,49 @@ const POSITIVE_FLAVORS = [
   '🚀 ABSOLUTELY NUCLEAR FARM! Your aura is ASCENDED!',
   '🔥 W FARM! Your aura is straight up GIGACHAD energy!',
   '💯 NO CAP this is some SIGMA MALE farming!',
-  '⚡ BASED FARM SUCCESS! The universe said YES!',
-  '🗿 BASED FARM! Your aura game is UNMATCHED!',
+  '⚡ BASED AF FARM SUCCESS! The universe said YES!',
+  '🗿 BASED AF FARM! Your aura game is UNMATCHED!',
   '👑 ALPHA ENERGY detected! This farm HITS DIFFERENT!',
-  '💎 LEGENDARY VIBES! Your rizz is CONTAGIOUS!'
+  '💎 LEGENDARY VIBES! Your rizz is CONTAGIOUS AF!',
+  '🎭 GYATT DAYUM! That farm was absolutely BUSSIN AF!',
+  '🏆 SKIBIDI SIGMA! Your grindset is GOATED AF fr fr!',
+  '⭐ POGGERS FARM! You\'re the BIGGEST BIRD in here!',
+  '🌟 ZESTY AF ENERGY! This aura farm was absolutely FIRE!',
+  '💫 RIZZIN UP the universe! Your charm is UNMATCHED AF!'
 ];
 
 const NEGATIVE_FLAVORS = [
-  '💀 L + RATIO! Your farm just got COOKED!',
+  '💀 L + RATIO! Your farm just got COOKED AF!',
   '😭 SKILL ISSUE! Time to touch grass fr!',
-  '🤡 CRINGE FARM! Your aura said "nah fam"!',
-  '💩 MID FARMING! This is some BETA behavior!',
-  '🚫 COPE + SEETHE! Your aura game is WEAK!',
-  '🗿 OHIO MOMENT! Your farm was SUS as hell!',
+  '🤡 CRINGE AF FARM! Your aura said "nah fam"!',
+  '💩 MID AF FARMING! This is some BETA behavior!',
+  '🚫 COPE + SEETHE! Your aura game is WEAK AF!',
+  '🗿 ONLY IN OHIO! Your farm was SUS AF as hell!',
   '📉 STONKS DOWN! Your aura portfolio CRASHED!',
   '💸 FANUM TAXED! Someone stole your vibe!',
   '🍴 GET FANUM TAXED! Your aura got STOLEN!',
-  '💸 FANUM TAX MOMENT! The universe just ROBBED you!'
+  '💸 FANUM TAX MOMENT! The universe just ROBBED you!',
+  '📉 GENERATIONAL AURA DEBT! Your bloodline is COOKED AF!',
+  '🏦 FILED FOR AURA BANKRUPTCY! Your ancestors felt that!',
+  '⚰️ NEGATIVE AURA TERRITORY! Your kids gonna inherit this L!',
+  '💸 AURA RECESSION! This debt transcends BLOODLINES!',
+  '🌊 GENERATIONAL WEALTH GAP in your aura! DEMOLISHED!',
+  '🎭 GOOFY AHH FARM! That was absolutely DELULU AF behavior!',
+  '🤮 NOT BUSSIN AF! Your aura tastes like expired milk!',
+  '🕺 SKIBIDI TOILET LUCK! Your farm got FLUSHED!',
+  '😵 SUSSY AF IMPOSTER vibes! Your farm was CAP!',
+  '🧠 NEGATIVE RIZZ detected! You\'re in your FLOP era AF!'
 ];
 
 const JACKPOT_FLAVORS = [
   '🎰 GYATTTT! JACKPOT! You just hit the AURA LOTTERY!',
-  '💎 LEGENDARY PULL! This is some GIGACHAD luck!',
-  '🚀 ABSOLUTELY NUCLEAR! Your rizz just ASCENDED!',
-  '🎉 HOLY SIGMA! This farm is UTTERLY BONKERS!'
+  '💎 LEGENDARY PULL! This is some GIGACHAD AF luck!',
+  '🚀 ABSOLUTELY NUCLEAR! Your rizz just ASCENDED AF!',
+  '🎉 HOLY SIGMA! This farm is UTTERLY BONKERS AF!',
+  '🕺 SKIBIDI BOP YES YES! Your grindset just went NUCLEAR AF!',
+  '🏆 POGGERS! You\'re literally the BIGGEST BIRD in existence!',
+  '⭐ BUSSIN AF JACKPOT! This luck is absolutely GOATED!',
+  '💫 ZESTY AF ENERGY OVERFLOW! Your aura is hittin DIFFERENT!'
 ];
 
 const IMPLOSION_FLAVORS = [
@@ -36,7 +55,11 @@ const IMPLOSION_FLAVORS = [
   '🌪️ EMOTIONAL DAMAGE! Your aura said BYE BYE!',
   '⚡ BRUH MOMENT! This is a CERTIFIED OHIO CLASSIC!',
   '🕳️ GET RATIO\'D BY THE UNIVERSE! Touch grass NOW!',
-  '💸 ULTIMATE FANUM TAX! The universe just CLEANED YOU OUT!'
+  '💸 ULTIMATE FANUM TAX! The universe just CLEANED YOU OUT!',
+  '📉 GENERATIONAL AURA CATASTROPHE! Your bloodline got NUKED!',
+  '🏦 DECLARED INTER-DIMENSIONAL AURA BANKRUPTCY!',
+  '⚰️ GENERATIONAL AURA ANNIHILATION! Seven generations will feel this!',
+  '💸 AURA APOCALYPSE! Your family tree is in DEBT forever!'
 ];
 
 const DUEL_WIN_FLAVORS = [
@@ -45,16 +68,32 @@ const DUEL_WIN_FLAVORS = [
   '💀 {winner} just RATIO\'D {loser} into the SHADOW REALM!',
   '⚡ {winner} FLEXED that SIGMA GRINDSET on {loser}!',
   '🔥 {winner} COOKED {loser} like it\'s THANKSGIVING!',
-  '🗿 {winner} just ENDED {loser}\'s whole career! SHEESH!'
+  '🗿 {winner} just ENDED {loser}\'s whole career! SHEESH!',
+  '📉 {loser} now has GENERATIONAL AURA DEBT thanks to {winner}!',
+  '🏦 {winner} sent {loser} to AURA BANKRUPTCY court!',
+  '💸 {loser}\'s great-grandchildren will feel this L from {winner}!',
+  '📊 {winner} put {loser} in NEGATIVE AURA TERRITORY!',
+  '⚰️ {winner} buried {loser}\'s aura bloodline for CENTURIES!',
+  '🌊 {winner} created a GENERATIONAL WEALTH GAP in {loser}\'s aura!',
+  '🎭 GYATT! {winner} just RIZZIN UP their W while {loser} got DELULU AF!',
+  '🕺 {winner} hit the GRIDDY on {loser}\'s aura! SKIBIDI AF MOMENT!',
+  '🤡 {loser} really thought they could mog {winner}? GOOFY AHH move AF!',
+  '🎯 {winner} is the BIGGEST BIRD! {loser} got sent to OHIO AF!',
+  '🧠 {winner}\'s GIGACHAD energy was too much for {loser}\'s mid AF rizz!',
+  '🍕 {winner} served {loser} a GLIZZY SIZED L! That was BUSSIN AF!'
 ];
 
 const BLESSING_FLAVORS = [
-  '🚀 BASED ENERGY TRANSFER! Your rizz is CONTAGIOUS!',
-  '✨ BLESSING AURA ACTIVATED! This is SIGMA BEHAVIOR!',
-  '💎 GIGACHAD GENEROSITY! The universe RESPECTS this move!',
-  '🔥 WHOLESOME CHAOS! Your aura just went NUCLEAR!',
+  '🚀 BASED AF ENERGY TRANSFER! Your rizz is CONTAGIOUS!',
+  '✨ BLESSING AURA ACTIVATED! This is SIGMA AF BEHAVIOR!',
+  '💎 GIGACHAD AF GENEROSITY! The universe RESPECTS this move!',
+  '🔥 WHOLESOME CHAOS! Your aura just went NUCLEAR AF!',
   '🌟 COSMIC BLESSING! The multiverse APPROVES!',
-  '💫 LEGENDARY SHARE! This is some ASCENDED energy!'
+  '💫 LEGENDARY SHARE! This is some ASCENDED AF energy!',
+  '🎭 GYATT! That blessing was absolutely BUSSIN AF!',
+  '🕺 SKIBIDI GENEROUS AF! You\'re hittin the GRIDDY of kindness!',
+  '🏆 POGGERS BLESSING! You\'re the BIGGEST BIRD of generosity!',
+  '🌟 ZESTY AF GIVING! This blessing energy is OFF THE CHARTS!'
 ];
 
 
@@ -240,7 +279,7 @@ async function auraDuel(challengerUserId, challengerUsername, targetUsername, ba
     loser,
     battleAmount,
     flavorText,
-    message: `💀 **aura 4 aura result** 💀\n\n${flavorText}\n\n💰 **Stakes:** ${battleAmount} aura\n🏆 **Winner:** @${winner} (+${battleAmount})\n💀 **Loser:** @${loser} (-${battleAmount})`
+    message: `💀 **mog battle result** 💀\n\n${flavorText}\n\n💰 **Stakes:** ${battleAmount} aura\n🏆 **Winner:** @${winner} (+${battleAmount})\n💀 **Got Mogged:** @${loser} (-${battleAmount})`
   };
 }
 
