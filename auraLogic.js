@@ -176,7 +176,7 @@ async function farmAura(userId, chatId, platform, username, channelLogin = null)
 }
 
 // Core aura duel logic
-async function auraDuel(challengerUserId, challengerUsername, targetUsername, wagerAmount, chatId, platform) {
+async function auraDuel(challengerUserId, challengerUsername, targetUsername, battleAmount, chatId, platform) {
   // Get challenger data
   const challengerUser = await db.getUser(challengerUserId, chatId, platform, challengerUsername);
   
@@ -185,19 +185,19 @@ async function auraDuel(challengerUserId, challengerUsername, targetUsername, wa
   const targetUser = await db.getUser(targetId, chatId, platform, targetUsername);
 
   // Check if both users have enough aura
-  if (challengerUser.aura < wagerAmount) {
+  if (challengerUser.aura < battleAmount) {
     return {
       success: false,
       type: 'insufficient_challenger',
-      message: `💸 BROKE BOY ALERT! ${formatUsername(challengerUsername, platform)} got FANUM TAXED and can't afford ${wagerAmount} aura! Current aura: ${challengerUser.aura} 💀`
+      message: `💸 BROKE BOY ALERT! ${formatUsername(challengerUsername, platform)} got FANUM TAXED and can't afford ${battleAmount} aura! Current aura: ${challengerUser.aura} 💀`
     };
   }
 
-  if (targetUser.aura < wagerAmount) {
+  if (targetUser.aura < battleAmount) {
     return {
       success: false,
       type: 'insufficient_target',
-      message: `💸 TARGET IS BROKE! @${targetUsername} got FANUM TAXED and can't match ${wagerAmount} aura! Their aura: ${targetUser.aura} 😭`
+      message: `💸 TARGET IS BROKE! @${targetUsername} got FANUM TAXED and can't match ${battleAmount} aura! Their aura: ${targetUser.aura} 😭`
     };
   }
 
@@ -218,8 +218,8 @@ async function auraDuel(challengerUserId, challengerUsername, targetUsername, wa
   }
 
   // Transfer aura
-  await db.updateAura(winnerId, chatId, wagerAmount, platform);
-  await db.updateAura(loserId, chatId, -wagerAmount, platform);
+  await db.updateAura(winnerId, chatId, battleAmount, platform);
+  await db.updateAura(loserId, chatId, -battleAmount, platform);
 
   // Get flavor text
   const flavorText = getRandomElement(DUEL_WIN_FLAVORS)
@@ -231,9 +231,9 @@ async function auraDuel(challengerUserId, challengerUsername, targetUsername, wa
     type: 'duel_result',
     winner,
     loser,
-    wagerAmount,
+    battleAmount,
     flavorText,
-    message: `🎰 **AURA CASINO RESULT** 🎰\n\n${flavorText}\n\n💰 **Wager:** ${wagerAmount} aura\n🏆 **Winner:** @${winner} (+${wagerAmount})\n💀 **Loser:** @${loser} (-${wagerAmount})`
+    message: `💀 **aura 4 aura result** 💀\n\n${flavorText}\n\n💰 **Stakes:** ${battleAmount} aura\n🏆 **Winner:** @${winner} (+${battleAmount})\n💀 **Loser:** @${loser} (-${battleAmount})`
   };
 }
 

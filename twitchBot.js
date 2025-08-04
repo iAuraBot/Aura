@@ -197,19 +197,19 @@ async function handleAuraDuel(channel, chatId, userId, username, args) {
   }
 
   if (args.length < 2) {
-    await sayInChannel(channel, '🎰 **AURA CASINO** 🎰\n\nUsage: `!aura4aura @username [amount]`\nCHALLENGE SOMEONE TO A 50/50 AURA GAMBLE! 💀\nBoth players must have enough aura to match the wager!\n\nExample: `!aura4aura @friend 25`');
+    await sayInChannel(channel, '💀 **really goin aura 4 aura huh?** 💀\n\nUsage: `!aura4aura @username [amount]`\nSTART BEEF WITH SOMEONE IN A 1V1 AURA SHOWDOWN! 🔥\nBoth users gotta have enough aura to match the stakes!\n\nExample: `!aura4aura @friend 25`');
     return;
   }
 
   const targetUsername = args[0].replace('@', '');
-  const wagerAmount = parseInt(args[1]);
+  const battleAmount = parseInt(args[1]);
 
-  if (isNaN(wagerAmount) || wagerAmount <= 0) {
-    await sayInChannel(channel, '💀 BRUH! Enter a valid positive number for the wager! No SUS amounts! 🎰');
+  if (isNaN(battleAmount) || battleAmount <= 0) {
+    await sayInChannel(channel, '💀 BRUH! Enter a valid positive number for the stakes! No SUS amounts! 💀');
     return;
   }
 
-  const result = await auraLogic.auraDuel(userId, username, targetUsername, wagerAmount, chatId, 'twitch');
+  const result = await auraLogic.auraDuel(userId, username, targetUsername, battleAmount, chatId, 'twitch');
   await sayInChannel(channel, result.message);
 }
 
@@ -254,9 +254,9 @@ async function handleHelp(channel) {
 • 10% chance: +100 JACKPOT or -50 IMPLOSION!
 
 🎰 **!aura4aura @user [amount]**
-• 50/50 aura gambling casino - PURE DEGENERACY!
+    • 50/50 aura 4 aura action - PURE CHAOS!
 • Both players need enough aura to match bet
-• Winner takes ALL the wagered aura
+    • Winner takes ALL the aura on the line
 • Example: \`!aura4aura @friend 25\`
 
 💫 **!aura [@user]**
@@ -279,7 +279,7 @@ async function handleHelp(channel) {
 💀 **PRO TIPS:**
 • Each channel has its own aura ecosystem! 🏘️
 • Farm daily to stack that aura bag! 💸
-• Gamble responsibly... or don't, I'm not your mom! 🎰
+    • Start beef wisely... or don't, I'm not your mom! 💀
 
 **LET'S GET THIS AURA! NO CAP! 🚀**`;
 

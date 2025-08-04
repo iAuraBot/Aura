@@ -60,15 +60,15 @@ bot.command('aura4aura', async (ctx) => {
     const mentionMatch = message.match(/@(\w+)/);
     
     if (!mentionMatch || parts.length < 3) {
-      await ctx.reply('🎰 **AURA CASINO** 🎰\n\nUsage: `/aura4aura @username [amount]`\nCHALLENGE SOMEONE TO A 50/50 AURA GAMBLE! 💀\nBoth players must have enough aura to match the wager!\n\nExample: `/aura4aura @friend 25`');
+      await ctx.reply('💀 **really goin aura 4 aura huh?** 💀\n\nUsage: `/aura4aura @username [amount]`\nSTART BEEF WITH SOMEONE IN A 1V1 AURA SHOWDOWN! 🔥\nBoth users gotta have enough aura to match the stakes!\n\nExample: `/aura4aura @friend 25`');
       return;
     }
     
     const targetUsername = mentionMatch[1];
-    const wagerAmount = parseInt(parts[2]);
+    const battleAmount = parseInt(parts[2]);
     
-    if (isNaN(wagerAmount) || wagerAmount <= 0) {
-      await ctx.reply('💀 BRUH! Enter a valid positive number for the wager! Stop being SUS! 🤡');
+      if (isNaN(battleAmount) || battleAmount <= 0) {
+    await ctx.reply('💀 BRUH! Enter a valid positive number for the stakes! Stop being SUS! 🤡');
       return;
     }
     
@@ -76,7 +76,7 @@ bot.command('aura4aura', async (ctx) => {
     const chatId = ctx.chat.id.toString();
     const username = challenger.username;
     
-    const result = await auraLogic.auraDuel(userId, username, targetUsername, wagerAmount, chatId, 'telegram');
+    const result = await auraLogic.auraDuel(userId, username, targetUsername, battleAmount, chatId, 'telegram');
     await ctx.reply(result.message);
   });
 });
@@ -114,9 +114,9 @@ bot.command('help', async (ctx) => {
 • Example: \`/aurafarm\`
 
 🎰 **/aura4aura @user [amount]**
-• 50/50 aura gambling casino - PURE DEGENERACY!
+    • 50/50 aura 4 aura action - PURE CHAOS!
 • Both players need enough aura to match bet
-• Winner takes ALL the wagered aura
+    • Winner takes ALL the aura on the line
 • Example: \`/aura4aura @friend 25\`
 
 💫 **/aura [@user]**
@@ -140,7 +140,7 @@ bot.command('help', async (ctx) => {
 💀 **PRO TIPS:**
 • Each chat has its own aura ecosystem! 🏘️
 • Farm daily to stack that aura bag! 💸
-• Gamble responsibly... or don't, I'm not your mom! 🎰
+    • Start beef wisely... or don't, I'm not your mom! 💀
 • React to messages for daily bonus aura! 📱
 • Your aura balance is separate in each group! 🔥
 
@@ -217,7 +217,7 @@ bot.on('inline_query', async (ctx) => {
         type: 'article', 
         id: '2',
         title: '🎰 /aura4aura @user [amount]',
-        description: '50/50 aura gambling casino',
+        description: '50/50 aura 4 aura showdowns',
         input_message_content: {
           message_text: 'Challenge someone: /aura4aura @username [amount] 🎰💀'
         }

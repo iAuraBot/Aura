@@ -13,10 +13,10 @@ A mystical Telegram bot that rewards or removes aura points through RNG-based fa
   - 10% chance: +100 jackpot or -50 implosion
 - BRAINROT flavor text for each outcome
 
-### 🎰 Aura Casino (`/aura4aura @user [amount]`)
-- **50/50 gambling system** with custom wagers
+### 💀 really goin aura 4 aura huh? (`/aura4aura @user [amount]`)
+- **50/50 aura 4 aura system** with custom stakes
 - Both players must have enough aura in this chat to match the bet
-- Winner takes the full wager amount from loser
+- Winner takes ALL the aura on the line from loser
 - Pure RNG with BRAINROT flavor text
 - Unlimited gambling (no cooldown)
 
@@ -100,7 +100,7 @@ npm start
 - 🎰 JACKPOT! The universe rewards your patience!
 - 💎 LEGENDARY! You've struck aura gold!
 
-**Casino Wins:**
+**Aura 4 Aura Wins:**
 - ⚔️ {winner} absolutely MOGGED {loser}! NO MERCY!
 - 🏆 {winner} said "GET REKT" and FANUM TAXED {loser}!
 
