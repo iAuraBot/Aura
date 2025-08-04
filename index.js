@@ -7,6 +7,7 @@ const auraLogic = require('./auraLogic');
 const twitchBot = require('./twitchBot');
 const oauth = require('./oauth');
 const claude = require('./lib/claude');
+const twitter = require('./lib/twitter');
 
 // Initialize Supabase client for cron job
 const supabase = createClient(
@@ -27,12 +28,13 @@ db.checkDatabaseHealth().then(healthy => {
   }
 });
 
-// Check Claude services status on startup
+// Check services status on startup
 setTimeout(() => {
-  console.log('🤖 Claude AI Service Status:');
+  console.log('🤖 Service Status Summary:');
   console.log(`   Redis: ${claude.isRedisAvailable() ? '✅ Connected to Redis' : '⚠️ Using Supabase memory only'}`);
   console.log(`   Sentry: ${claude.isSentryAvailable() ? '✅ Sentry initialized' : '⚠️ Sentry disabled'}`);
   console.log(`   Claude: ${process.env.ANTHROPIC_API_KEY ? '✅ Claude AI ready' : '❌ Claude AI disabled (ANTHROPIC_API_KEY missing)'}`);
+  console.log(`   Twitter: ${twitter.isTwitterAvailable() ? '✅ Twitter integration ready' : '⚠️ Twitter disabled (credentials missing)'}`);
 }, 1000);
 
 // Initialize OAuth server for secure Twitch authentication
@@ -42,6 +44,12 @@ const oauthServer = oauth.initializeOAuth();
 const twitchClient = twitchBot.initializeTwitchBot();
 
 // Multi-platform bot setup complete! 🔥💀
+
+// Initialize Twitter polling
+let twitterPollInterval = null;
+if (twitter.isTwitterAvailable()) {
+  twitterPollInterval = twitter.startTwitterPolling();
+}
 
 // Error handling wrapper
 async function handleCommand(ctx, commandFn) {
@@ -234,9 +242,6 @@ bot.command('aura', async (ctx) => {
 
 // General message handler for Claude - Natural conversation when mentioned!
 bot.on('text', async (ctx) => {
-  // Skip if it's a command (existing aura commands are handled separately)
-  if (ctx.message.text.startsWith('/')) return;
-  
   // Respond in DMs or when bot is mentioned
   const isPrivateChat = ctx.chat.type === 'private';
   const isBotMentioned = ctx.message.text.includes(`@${ctx.botInfo.username}`);
@@ -245,6 +250,9 @@ bot.on('text', async (ctx) => {
   
   // Clean the message (remove bot mention)
   const messageText = ctx.message.text.replace(`@${ctx.botInfo.username}`, '').trim();
+  
+  // Skip if it's a command AFTER cleaning (so @bot /help gets properly handled)
+  if (messageText.startsWith('/')) return;
   
   // Basic filtering - ignore very short messages or obvious spam
   if (messageText.length < 2 || messageText.length > 500) return;
@@ -422,14 +430,20 @@ bot.launch().then(() => {
   console.log('');
   console.log('📱 TELEGRAM PLATFORM ACTIVE!');
   console.log('🎮 TWITCH PLATFORM:', twitchClient ? 'ACTIVE! 🔥' : 'DISABLED (missing credentials)');
+  console.log('🐦 TWITTER PLATFORM:', twitter.isTwitterAvailable() ? 'ACTIVE! 🔥' : 'DISABLED (missing credentials)');
   console.log('');
-  console.log('🗿 AVAILABLE COMMANDS (both platforms):');
+  console.log('🗿 AVAILABLE COMMANDS (Telegram/Twitch):');
   console.log('  📱 /aurafarm (!aurafarm) - Farm aura (24h cooldown)');
   console.log('  🎰 /aura4aura (!aura4aura) @user [amount] - Challenge to duel');
   console.log('  📊 /auraboard (!auraboard) - View leaderboard');
   console.log('  💫 /aura (!aura) [@user] - Check aura balance');
   console.log('  ✨ /bless (!bless) @user [amount] - Give aura to others');
   console.log('  ❓ /help (!help) - Show command list');
+  console.log('');
+  console.log('🐦 TWITTER FEATURES:');
+  console.log('  🤖 @mention bot for Claude conversations');
+  console.log('  🎲 40% reply chance with smart throttling');
+  console.log('  📊 Max 50 replies/day on Free API tier');
   console.log('');
   console.log('💀 EACH PLATFORM HAS SEPARATE AURA ECOSYSTEMS! 💀');
 }).catch(error => {
@@ -441,11 +455,17 @@ bot.launch().then(() => {
 process.once('SIGINT', () => {
   console.log('💀 Received SIGINT, shutting down gracefully...');
   oauth.stopOAuth();
+  if (twitterPollInterval) {
+    twitter.stopTwitterPolling(twitterPollInterval);
+  }
   bot.stop('SIGINT');
 });
 
 process.once('SIGTERM', () => {
   console.log('💀 Received SIGTERM, shutting down gracefully...');
   oauth.stopOAuth();
+  if (twitterPollInterval) {
+    twitter.stopTwitterPolling(twitterPollInterval);
+  }
   bot.stop('SIGTERM');
 });
