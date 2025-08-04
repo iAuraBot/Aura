@@ -38,7 +38,7 @@ function setupWebInterface(app) {
           * { margin: 0; padding: 0; box-sizing: border-box; }
           body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%);
+            background: linear-gradient(135deg, #1a3d2e 0%, #2d5d43 25%, #4a7c59 50%, #76b947 75%, #9fff7a 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -482,17 +482,18 @@ function setupWebInterface(app) {
             * { margin: 0; padding: 0; box-sizing: border-box; }
             body { 
               font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-              background: #0e0e10;
+              background: linear-gradient(135deg, #0f1f1a 0%, #1a3d2e 25%, #2d5d43 50%, #4a7c59 75%, #5a8b3a 100%);
               color: #efeff1;
               min-height: 100vh;
             }
             .header {
-              background: #18181b;
-              border-bottom: 1px solid #2f2f35;
+              background: rgba(26, 61, 46, 0.9);
+              border-bottom: 1px solid rgba(116, 185, 71, 0.2);
               padding: 20px 40px;
               display: flex;
               justify-content: space-between;
               align-items: center;
+              backdrop-filter: blur(10px);
             }
             .header h1 {
               font-size: 1.8rem;
@@ -505,7 +506,7 @@ function setupWebInterface(app) {
               margin-top: 4px;
             }
             .header .join-btn {
-              background: #9146ff;
+              background: #76b947;
               color: white;
               padding: 10px 20px;
               border: none;
@@ -514,7 +515,7 @@ function setupWebInterface(app) {
               font-weight: 600;
               text-decoration: none;
             }
-            .header .join-btn:hover { background: #772ce8; }
+            .header .join-btn:hover { background: #5a8b3a; }
             .main-content {
               padding: 40px 80px;
               width: 100%;
@@ -542,7 +543,7 @@ function setupWebInterface(app) {
             }
             .metric-change {
               font-size: 0.9rem;
-              color: #00f5ff;
+              color: #9fff7a;
               margin-top: 4px;
             }
             .dashboard-sections {
@@ -552,15 +553,16 @@ function setupWebInterface(app) {
               margin-bottom: 40px;
             }
             .analytics-section {
-              background: #18181b;
+              background: rgba(26, 61, 46, 0.8);
               border-radius: 12px;
-              border: 1px solid #2f2f35;
+              border: 1px solid rgba(116, 185, 71, 0.3);
               overflow: hidden;
+              backdrop-filter: blur(15px);
             }
             .section-header {
-              background: #1f1f23;
+              background: rgba(15, 31, 26, 0.9);
               padding: 20px 24px;
-              border-bottom: 1px solid #2f2f35;
+              border-bottom: 1px solid rgba(116, 185, 71, 0.2);
               font-size: 1.1rem;
               font-weight: 600;
             }
@@ -569,14 +571,14 @@ function setupWebInterface(app) {
             }
             .chart-placeholder {
               height: 200px;
-              background: linear-gradient(135deg, #9146ff20, #00f5ff10);
+              background: linear-gradient(135deg, rgba(116, 185, 71, 0.2), rgba(159, 255, 122, 0.1));
               border-radius: 8px;
               display: flex;
               align-items: center;
               justify-content: center;
               font-size: 1.2rem;
-              color: #adadb8;
-              border: 2px dashed #2f2f35;
+              color: #c5e8a7;
+              border: 2px dashed rgba(116, 185, 71, 0.4);
               margin-bottom: 20px;
             }
             .leaderboard-item {
@@ -598,27 +600,28 @@ function setupWebInterface(app) {
             }
             .leaderboard-value {
               font-weight: 600;
-              color: #00f5ff;
+              color: #9fff7a;
             }
             .commands-section {
-              background: #18181b;
+              background: rgba(26, 61, 46, 0.8);
               border-radius: 12px;
-              border: 1px solid #2f2f35;
+              border: 1px solid rgba(116, 185, 71, 0.3);
               height: fit-content;
+              backdrop-filter: blur(15px);
             }
             .commands-grid {
               display: grid;
               gap: 12px;
             }
             .command-item {
-              background: #1f1f23;
+              background: rgba(15, 31, 26, 0.7);
               padding: 16px;
               border-radius: 8px;
-              border: 1px solid #2f2f35;
+              border: 1px solid rgba(116, 185, 71, 0.2);
               transition: background 0.2s;
             }
             .command-item:hover {
-              background: #26262b;
+              background: rgba(45, 93, 67, 0.5);
             }
             .command-name {
               font-weight: 600;
@@ -631,9 +634,9 @@ function setupWebInterface(app) {
             }
             .command-usage {
               font-size: 0.8rem;
-              color: #00f5ff;
+              color: #9fff7a;
               margin-top: 8px;
-              background: #0e0e10;
+              background: rgba(15, 31, 26, 0.8);
               padding: 4px 8px;
               border-radius: 4px;
             }
@@ -657,7 +660,7 @@ function setupWebInterface(app) {
               cursor: pointer;
               transition: 0.3s;
             }
-            .toggle-switch.active { background: #9146ff; }
+            .toggle-switch.active { background: #76b947; }
             .toggle-switch::before {
               content: '';
               position: absolute;
@@ -671,7 +674,7 @@ function setupWebInterface(app) {
             }
             .toggle-switch.active::before { transform: translateX(26px); }
             .btn {
-              background: #9146ff;
+              background: #76b947;
               color: white;
               padding: 12px 24px;
               border: none;
@@ -682,17 +685,18 @@ function setupWebInterface(app) {
               margin: 8px 4px;
               transition: background 0.2s;
             }
-            .btn:hover { background: #772ce8; }
+            .btn:hover { background: #5a8b3a; }
             .btn-secondary { background: #2f2f35; }
             .btn-secondary:hover { background: #3f3f45; }
             .btn-danger { background: #e74c3c; }
             .btn-danger:hover { background: #c0392b; }
             .quick-settings {
-              background: #18181b;
+              background: rgba(26, 61, 46, 0.8);
               border-radius: 12px;
-              border: 1px solid #2f2f35;
+              border: 1px solid rgba(116, 185, 71, 0.3);
               margin-top: 40px;
               overflow: hidden;
+              backdrop-filter: blur(15px);
             }
             .settings-form {
               padding: 24px;
@@ -715,15 +719,15 @@ function setupWebInterface(app) {
             .form-group input, .form-group textarea {
               width: 100%;
               padding: 12px;
-              background: #0e0e10;
-              border: 1px solid #2f2f35;
+              background: rgba(15, 31, 26, 0.8);
+              border: 1px solid rgba(116, 185, 71, 0.3);
               border-radius: 6px;
               color: #efeff1;
               font-size: 14px;
             }
             .form-group input:focus, .form-group textarea:focus {
               outline: none;
-              border-color: #9146ff;
+              border-color: #76b947;
             }
             .form-group small {
               color: #adadb8;
