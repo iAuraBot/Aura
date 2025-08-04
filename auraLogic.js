@@ -57,16 +57,7 @@ const BLESSING_FLAVORS = [
   '💫 LEGENDARY SHARE! This is some ASCENDED energy!'
 ];
 
-const BLESSING_FLAVORS = [
-  '💀 SHEESH! This blessing is absolutely BUSSIN! FR FR!',
-  '🗿 GIGACHAD GENEROSITY! Your aura game is UNMATCHED!',
-  '🔥 W BLESSING! This is some SIGMA MALE sharing!',
-  '💯 NO CAP! That blessing just HIT DIFFERENT!',
-  '🚀 BASED ENERGY TRANSFER! Your rizz is CONTAGIOUS!',
-  '💸 W GENEROSITY! Someone just got BLESSED not REKT!',
-  '⚡ ABSOLUTELY NUCLEAR! This chat is about to EXPLODE!',
-  '👑 ALPHA GENEROSITY! This blessing is UTTERLY BONKERS!'
-];
+
 
 // Utility functions
 function getRandomElement(array) {
