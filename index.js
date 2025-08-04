@@ -57,7 +57,7 @@ const DUEL_WIN_FLAVORS = [
   '⚔️ {winner} absolutely MOGGED {loser}! NO MERCY!',
   '🏆 {winner} said "GET REKT" and FANUM TAXED {loser}!',
   '💀 {winner} just RATIO\'D {loser} into the SHADOW REALM!',
-  '⚡ {winner} hit {loser} with that SIGMA GRINDSET!',
+  '⚡ {winner} FLEXED that SIGMA GRINDSET on {loser}!',
   '🔥 {winner} COOKED {loser} like it\'s THANKSGIVING!',
   '🗿 {winner} just ENDED {loser}\'s whole career! SHEESH!'
 ];
@@ -113,7 +113,7 @@ bot.command('aurafarm', async (ctx) => {
     let auraChange, flavorText;
     
     if (isFirstTime) {
-      // First time farmers get guaranteed positive vibes!
+      // First time farmers get guaranteed W (no L)!
       auraChange = Math.floor(Math.random() * 31) + 20; // 20-50 guaranteed
       flavorText = getRandomElement(POSITIVE_FLAVORS);
     } else if (roll < 70) {
@@ -247,7 +247,7 @@ bot.command('auraboard', async (ctx) => {
     message += `💬 Chat: ${ctx.chat.title || 'This Chat'}\n\n`;
     
     if (allUsers.length === 0) {
-      message += '💀 No aura farmers in this chat yet!\nBe the first to `/aurafarm`! 🌱';
+              message += '💀 No aura farmers in this chat yet!\nBe the first to `/aurafarm`! 🔥';
     } else {
       allUsers.forEach((user, index) => {
         const position = index + 1;
@@ -360,7 +360,7 @@ bot.command('bless', async (ctx) => {
     
     // Check if giver has enough aura
     if (giverUser.aura < blessAmount) {
-      await ctx.reply(`💸 BLESSING FAILED! ${formatUsername(giver)} got FANUM TAXED and can't afford ${blessAmount} aura! Current aura: ${giverUser.aura} 💀\n\nGet that bag back before being a GIGACHAD! 🌱`);
+      await ctx.reply(`💸 BLESSING FAILED! ${formatUsername(giver)} got FANUM TAXED and can't afford ${blessAmount} aura! Current aura: ${giverUser.aura} 💀\n\nStack that aura before claiming GIGACHAD status! 💀`);
       return;
     }
     
