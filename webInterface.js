@@ -49,15 +49,42 @@ function setupWebInterface(app) {
             max-width: 600px;
             padding: 40px;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(2px);
+            border-radius: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             text-align: center;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            position: relative;
+          }
+          .container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            pointer-events: none;
           }
           h1 { font-size: 3rem; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
           .emoji { font-size: 4rem; margin: 20px 0; }
           .description { font-size: 1.2rem; margin-bottom: 30px; line-height: 1.6; }
-          .feature-list { text-align: left; margin: 30px 0; }
+          .feature-list { 
+            text-align: left; 
+            margin: 30px 0; 
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(2px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            position: relative;
+          }
+          .feature-list::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            pointer-events: none;
+          }
           .feature-list li { margin: 10px 0; font-size: 1.1rem; }
           .btn {
             display: inline-block;
@@ -76,7 +103,25 @@ function setupWebInterface(app) {
           .btn:hover { background: #772ce8; transform: translateY(-2px); }
           .btn-secondary { background: rgba(255, 255, 255, 0.2); }
           .btn-secondary:hover { background: rgba(255, 255, 255, 0.3); }
-          .stats { display: flex; justify-content: space-around; margin: 30px 0; }
+          .stats { 
+            display: flex; 
+            justify-content: space-around; 
+            margin: 30px 0; 
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(2px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            position: relative;
+          }
+          .stats::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            pointer-events: none;
+          }
           .stat { text-align: center; }
           .stat-number { font-size: 2rem; font-weight: bold; color: #ffd700; }
           .stat-label { font-size: 0.9rem; opacity: 0.8; }
