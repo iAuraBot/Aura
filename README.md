@@ -20,8 +20,8 @@ A mystical Telegram bot that rewards or removes aura points through RNG-based fa
 - Unlimited gambling (no cooldown)
 
 ### 📊 Leaderboard (`/auraboard`)
-- **Top 5 Aura Legends** (highest aura)
-- **Top 5 Cursed Champions** (lowest aura)
+- **Top 5 Aura Moggers** (highest aura)
+- **Top 5 L + Ratio Hall of Shame** (lowest aura)
 - Real-time rankings from Supabase
 
 ### 💫 Aura Check (`/aura` or `/aura @user`)
@@ -129,7 +129,7 @@ AuraFarmBot/
 |---------|-------------|----------|
 | `/aurafarm` | Farm aura with RNG | 24 hours |
 | `/aura4aura @user [amount]` | 50/50 aura gambling | None |
-| `/auraboard` | View leaderboard | None |
+| `/auraboard` | View aura moggers and L + ratio hall of shame | None |
 | `/aura [@user]` | Check aura balance | None |
 | `/help` | Show all commands and usage | None |
 

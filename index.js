@@ -224,16 +224,16 @@ bot.command('auraboard', async (ctx) => {
     
     let message = '📊 **AURA LEADERBOARD** 📊\n\n';
     
-    message += '🏆 **AURA LEGENDS** 🏆\n';
+    message += '🗿 **AURA MOGGERS** 🗿\n';
     topUsers.forEach((user, index) => {
       const medal = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'][index] || '🏅';
       const username = user.username || 'Unknown';
       message += `${medal} @${username}: ${user.aura} aura\n`;
     });
     
-    message += '\n💀 **CURSED CHAMPIONS** 💀\n';
+    message += '\n😭 **L + RATIO HALL OF SHAME** 😭\n';
     bottomUsers.forEach((user, index) => {
-      const skull = ['💀', '🕳️', '👻', '⚫', '🌑'][index] || '💀';
+      const skull = ['💀', '🤡', '💩', '🗿', '😭'][index] || '💀';
       const username = user.username || 'Unknown';
       message += `${skull} @${username}: ${user.aura} aura\n`;
     });
@@ -274,8 +274,8 @@ bot.command('help', async (ctx) => {
 • Example: \`/aura\` or \`/aura @someone\`
 
 📊 **/auraboard**
-• View top 5 AURA LEGENDS (highest)
-• See top 5 CURSED CHAMPIONS (lowest)
+• View top 5 AURA MOGGERS (highest)
+• See top 5 L + RATIO HALL OF SHAME (lowest)
 • Example: \`/auraboard\`
 
 ❓ **/help**
