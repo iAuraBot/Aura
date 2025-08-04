@@ -367,6 +367,8 @@ bot.command('bless', async (ctx) => {
       return;
     }
     
+
+    
     // Transfer aura
     await db.updateAura(giverId, chatId, -blessAmount);
     await db.updateAura(targetId, chatId, blessAmount);
@@ -403,17 +405,44 @@ bot.command('aura', async (ctx) => {
     
     const chatId = ctx.chat.id.toString();
     
+    let user;
+    
     if (mentionMatch) {
       // Check mentioned user's aura (use consistent username-based ID)
       targetUsername = mentionMatch[1];
       targetId = `username_${targetUsername.toLowerCase()}`;
+      user = await db.getUser(targetId, chatId, targetUsername);
     } else {
-      // Check own aura (use real Telegram ID)
-      targetId = ctx.from.id.toString();
+      // Check own aura - try BOTH real ID and username-based ID, merge if needed
+      const realId = ctx.from.id.toString();
+      const usernameId = `username_${ctx.from.username?.toLowerCase()}`;
       targetUsername = ctx.from.username;
+      
+      // Try real ID first
+      user = await db.getUser(realId, chatId, targetUsername);
+      
+      // Also check if they have a username-based record with higher aura
+      if (ctx.from.username) {
+        try {
+          const usernameUser = await db.getUser(usernameId, chatId, targetUsername);
+          
+          // If username-based record has higher aura, use that and merge
+          if (usernameUser.aura > user.aura) {
+            // Transfer the higher aura to the real ID record
+            const auraDiff = usernameUser.aura - user.aura;
+            await db.updateAura(realId, chatId, auraDiff);
+            user = await db.getUser(realId, chatId, targetUsername);
+            
+            // Clean up the old username-based record by setting it to 0
+            await db.updateAura(usernameId, chatId, -usernameUser.aura);
+          }
+        } catch (error) {
+          // Username-based record doesn't exist, that's fine
+        }
+      }
+      
+      targetId = realId;
     }
-    
-    const user = await db.getUser(targetId, chatId, targetUsername);
     
     let auraEmoji;
     if (user.aura >= 100) auraEmoji = '✨';
