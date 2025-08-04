@@ -347,13 +347,193 @@ function canUserFarm(user) {
   };
 }
 
-module.exports = {
-  getUser,
-  updateAura,
-  updateLastFarm,
-  updateReactions,
-  getTopUsers,
-  getMostReactiveUser,
+// Channel configuration functions for web interface
+async function createChannelConfig(channelId, channelLogin, config) {
+  try {
+    const { data, error } = await supabase
+      .from('channel_configs')
+      .insert({
+        channel_id: channelId,
+        channel_login: channelLogin.toLowerCase(),
+        display_name: config.display_name,
+        email: config.email,
+        bot_enabled: config.bot_enabled,
+        settings: config.settings,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      })
+      .select()
+      .single();
+
+    if (error) {
+      // If channel already exists, update it instead
+      if (error.code === '23505') {
+        return await updateChannelConfig(channelId, config);
+      }
+      throw error;
+    }
+    return data;
+  } catch (error) {
+    console.error('Error creating channel config:', error);
+    throw error;
+  }
+}
+
+async function getChannelConfig(channelId) {
+  try {
+    const { data, error } = await supabase
+      .from('channel_configs')
+      .select('*')
+      .eq('channel_id', channelId)
+      .single();
+
+    if (error && error.code !== 'PGRST116') {
+      throw error;
+    }
+    return data;
+  } catch (error) {
+    console.error('Error getting channel config:', error);
+    throw error;
+  }
+}
+
+async function updateChannelSettings(channelId, settings) {
+  try {
+    const { data, error } = await supabase
+      .from('channel_configs')
+      .update({
+        settings: settings,
+        updated_at: new Date().toISOString()
+      })
+      .eq('channel_id', channelId)
+      .select()
+      .single();
+
+    if (error) {
+      throw error;
+    }
+    return data;
+  } catch (error) {
+    console.error('Error updating channel settings:', error);
+    throw error;
+  }
+}
+
+async function updateChannelConfig(channelId, config) {
+  try {
+    const { data, error } = await supabase
+      .from('channel_configs')
+      .update({
+        display_name: config.display_name,
+        email: config.email,
+        bot_enabled: config.bot_enabled,
+        settings: config.settings,
+        updated_at: new Date().toISOString()
+      })
+      .eq('channel_id', channelId)
+      .select()
+      .single();
+
+    if (error) {
+      throw error;
+    }
+    return data;
+  } catch (error) {
+    console.error('Error updating channel config:', error);
+    throw error;
+  }
+}
+
+async function removeChannelConfig(channelId) {
+  try {
+    const { error } = await supabase
+      .from('channel_configs')
+      .delete()
+      .eq('channel_id', channelId);
+
+    if (error) {
+      throw error;
+    }
+    return true;
+  } catch (error) {
+    console.error('Error removing channel config:', error);
+    throw error;
+  }
+}
+
+async function getAllActiveChannels() {
+  try {
+    const { data, error } = await supabase
+      .from('channel_configs')
+      .select('channel_login, settings')
+      .eq('bot_enabled', true);
+
+    if (error) {
+      throw error;
+    }
+    return data;
+  } catch (error) {
+    console.error('Error getting active channels:', error);
+    throw error;
+  }
+}
+
+async function getChannelSettings(channelLogin) {
+  try {
+    const { data, error } = await supabase
+      .from('channel_configs')
+      .select('settings, bot_enabled')
+      .eq('channel_login', channelLogin.toLowerCase())
+      .eq('bot_enabled', true)
+      .single();
+
+    if (error && error.code !== 'PGRST116') {
+      throw error;
+    }
+    
+    // Return default settings if no custom config found
+    if (!data) {
+      return {
+        farm_cooldown: 24,
+        farm_min_reward: 20,
+        farm_max_reward: 50,
+        duel_enabled: true,
+        blessing_enabled: true,
+        custom_welcome: null,
+        custom_flavors: null
+      };
+    }
+    
+    return data.settings;
+  } catch (error) {
+    console.error('Error getting channel settings:', error);
+    // Return defaults on error
+    return {
+      farm_cooldown: 24,
+      farm_min_reward: 20,
+      farm_max_reward: 50,
+      duel_enabled: true,
+      blessing_enabled: true,
+      custom_welcome: null,
+      custom_flavors: null
+    };
+  }
+}
+
+module.exports = { 
+  getUser, 
+  updateAura, 
+  updateLastFarm, 
+  updateReactions, 
+  getTopUsers, 
+  getMostReactiveUser, 
   resetDailyReactions,
-  canUserFarm
+  canUserFarm,
+  createChannelConfig,
+  getChannelConfig,
+  updateChannelSettings,
+  updateChannelConfig,
+  removeChannelConfig,
+  getAllActiveChannels,
+  getChannelSettings
 };

@@ -77,7 +77,7 @@ function formatUsername(username, platform = 'telegram') {
 }
 
 // Core aura farming logic
-async function farmAura(userId, chatId, platform, username) {
+async function farmAura(userId, chatId, platform, username, channelLogin = null) {
   const user = await db.getUser(userId, chatId, platform, username);
   
   // Check cooldown
@@ -91,33 +91,61 @@ async function farmAura(userId, chatId, platform, username) {
     };
   }
 
+  // Get channel-specific settings (for Twitch channels with custom config)
+  let channelSettings = {
+    farm_min_reward: 20,
+    farm_max_reward: 50,
+    custom_welcome: null,
+    custom_flavors: null
+  };
+
+  if (platform === 'twitch' && channelLogin) {
+    try {
+      channelSettings = await db.getChannelSettings(channelLogin);
+    } catch (error) {
+      console.log('Using default settings for channel:', channelLogin);
+    }
+  }
+
   // Check if first time (newbie protection)
   const isFirstTime = user.aura === 0 && user.last_farm === null;
 
-  // RNG farming logic
+  // RNG farming logic with channel-specific rewards
   const roll = Math.random() * 100;
   let auraChange, flavorText;
 
+  // Use custom flavors if available, otherwise use defaults
+  const positiveFlavors = channelSettings.custom_flavors?.positive || POSITIVE_FLAVORS;
+  const negativeFlavors = channelSettings.custom_flavors?.negative || NEGATIVE_FLAVORS;
+  const jackpotFlavors = channelSettings.custom_flavors?.jackpot || JACKPOT_FLAVORS;
+  const implosionFlavors = channelSettings.custom_flavors?.implosion || IMPLOSION_FLAVORS;
+
+  // Calculate reward range based on channel settings
+  const minReward = channelSettings.farm_min_reward;
+  const maxReward = channelSettings.farm_max_reward;
+  const rewardRange = maxReward - minReward + 1;
+
   if (isFirstTime) {
-    // First time farmers get guaranteed W (no L)!
-    auraChange = Math.floor(Math.random() * 31) + 20; // 20-50 guaranteed
-    flavorText = getRandomElement(POSITIVE_FLAVORS);
+    // First time farmers get guaranteed W (no L)! Use channel settings
+    auraChange = Math.floor(Math.random() * rewardRange) + minReward;
+    flavorText = getRandomElement(positiveFlavors);
   } else if (roll < 70) {
-    // 70% chance: +20 to +50 aura
-    auraChange = Math.floor(Math.random() * 31) + 20; // 20-50
-    flavorText = getRandomElement(POSITIVE_FLAVORS);
+    // 70% chance: Positive reward using channel settings
+    auraChange = Math.floor(Math.random() * rewardRange) + minReward;
+    flavorText = getRandomElement(positiveFlavors);
   } else if (roll < 90) {
-    // 20% chance: -10 to -25 aura
-    auraChange = -(Math.floor(Math.random() * 16) + 10); // -10 to -25
-    flavorText = getRandomElement(NEGATIVE_FLAVORS);
+    // 20% chance: Negative amount scaled to channel settings
+    const lossAmount = Math.floor((minReward + maxReward) / 4);
+    auraChange = -(Math.floor(Math.random() * lossAmount) + Math.min(10, minReward));
+    flavorText = getRandomElement(negativeFlavors);
   } else {
-    // 10% chance: JACKPOT or IMPLOSION
+    // 10% chance: JACKPOT or IMPLOSION scaled to channel
     if (Math.random() < 0.5) {
-      auraChange = 100; // JACKPOT
-      flavorText = getRandomElement(JACKPOT_FLAVORS);
+      auraChange = Math.max(100, maxReward * 2); // JACKPOT scales with channel
+      flavorText = getRandomElement(jackpotFlavors);
     } else {
-      auraChange = -50; // IMPLOSION
-      flavorText = getRandomElement(IMPLOSION_FLAVORS);
+      auraChange = -Math.max(50, maxReward); // IMPLOSION scales with channel
+      flavorText = getRandomElement(implosionFlavors);
     }
   }
 
@@ -128,7 +156,12 @@ async function farmAura(userId, chatId, platform, username) {
   // Get updated user data
   const updatedUser = await db.getUser(userId, chatId, platform, username);
   const sign = auraChange > 0 ? '+' : '';
-  const welcomeMessage = isFirstTime ? '\n💀 **WELCOME TO THE CHAOS!** Newbie protection activated! 🔥' : '';
+  
+  // Use custom welcome message if available
+  const welcomeMessage = isFirstTime ? 
+    (channelSettings.custom_welcome ? 
+      `\n💀 **${channelSettings.custom_welcome}** 🔥` : 
+      '\n💀 **WELCOME TO THE CHAOS!** Newbie protection activated! 🔥') : '';
 
   return {
     success: true,

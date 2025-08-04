@@ -1,7 +1,8 @@
-// oauth.js - Secure Twitch OAuth implementation
+// oauth.js - Secure Twitch OAuth implementation + Web Interface
 require('dotenv').config();
 const express = require('express');
 const crypto = require('crypto');
+const { setupWebInterface } = require('./webInterface');
 
 let app = null;
 let server = null;
@@ -18,7 +19,10 @@ function initializeOAuth() {
   app = express();
   app.use(express.json());
 
-  // Generate OAuth URL
+  // Setup web interface for streamers to add bot to their channels
+  const { activeChannels } = setupWebInterface(app);
+
+  // Bot OAuth URL (for bot account authorization)
   app.get('/auth/twitch', (req, res) => {
     const state = crypto.randomBytes(16).toString('hex');
     const scopes = 'chat:read chat:edit'; // FIXED: chat:edit is the correct scope for sending messages

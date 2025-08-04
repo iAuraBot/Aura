@@ -1,5 +1,6 @@
 const tmi = require('tmi.js');
 const auraLogic = require('./auraLogic.js');
+const db = require('./db.js'); // Import database functions for channel settings
 
 // Twitch client instance
 let twitchClient = null;
@@ -171,7 +172,7 @@ async function handleTwitchMessage(channel, chatId, userId, username, message, u
 
 // Aura farming command
 async function handleAuraFarm(channel, chatId, userId, username) {
-  const result = await auraLogic.farmAura(userId, chatId, 'twitch', username);
+  const result = await auraLogic.farmAura(userId, chatId, 'twitch', username, chatId);
   await sayInChannel(channel, result.message);
 }
 
@@ -184,6 +185,17 @@ async function handleAuraCheck(channel, chatId, userId, username, args) {
 
 // Aura duel command
 async function handleAuraDuel(channel, chatId, userId, username, args) {
+  // Check if duels are enabled for this channel
+  try {
+    const channelSettings = await db.getChannelSettings(chatId);
+    if (!channelSettings.duel_enabled) {
+      await sayInChannel(channel, '🚫 Duels are disabled in this channel! Contact the streamer to enable them.');
+      return;
+    }
+  } catch (error) {
+    // Default to enabled if no settings found
+  }
+
   if (args.length < 2) {
     await sayInChannel(channel, '🎰 **AURA CASINO** 🎰\n\nUsage: `!aura4aura @username [amount]`\nCHALLENGE SOMEONE TO A 50/50 AURA GAMBLE! 💀\nBoth players must have enough aura to match the wager!\n\nExample: `!aura4aura @friend 25`');
     return;
