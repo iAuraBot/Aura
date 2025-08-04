@@ -1001,6 +1001,25 @@ function setupWebInterface(app) {
     }
   });
 
+  // Database health check endpoint
+  app.get('/health', async (req, res) => {
+    try {
+      const isHealthy = await db.checkDatabaseHealth();
+      res.json({ 
+        status: isHealthy ? 'healthy' : 'unhealthy',
+        timestamp: new Date().toISOString(),
+        database: isHealthy ? '✅ Connected' : '❌ Connection issues'
+      });
+    } catch (error) {
+      res.status(500).json({ 
+        status: 'error',
+        timestamp: new Date().toISOString(),
+        database: '💀 Failed to check',
+        error: error.message
+      });
+    }
+  });
+
   // Logout
   app.get('/logout', (req, res) => {
     req.session.destroy();

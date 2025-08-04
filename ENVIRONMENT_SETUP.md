@@ -13,7 +13,13 @@ BOT_TOKEN=your_telegram_bot_token_here
 ```env
 SUPABASE_URL=your_supabase_project_url_here
 SUPABASE_KEY=your_supabase_anon_key_here
+
+# RECOMMENDED: Direct PostgreSQL connection for better performance
+# Get this from Supabase Dashboard > Settings > Database > Connection pooling
+DATABASE_URL=postgresql://postgres.xxxxxxxxxx:[YOUR-PASSWORD]@aws-0-us-east-1.pooler.supabase.com:6543/postgres
 ```
+
+**📈 Performance Tip:** Adding `DATABASE_URL` enables direct PostgreSQL connections with connection pooling, which significantly reduces the database connection issues you may experience with high bot usage. This bypasses Supabase's REST API and connects directly to your database.
 
 ### 🎮 **TWITCH BOT (Optional)**
 
@@ -40,6 +46,12 @@ TWITCH_OAUTH_TOKEN=oauth:your_twitch_token_here
 
 # Comma-separated list of channels to join (without # symbol)
 TWITCH_CHANNELS=your_channel,another_channel
+```
+
+### 🌐 **WEB INTERFACE (For Streamer Dashboard)**
+```env
+# Secret key for web session management (generate a random string)
+SESSION_SECRET=your_random_session_secret_here
 ```
 
 ### 🚀 **DEPLOYMENT (Optional)**

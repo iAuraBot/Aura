@@ -7,17 +7,26 @@
     "start": "node index.js",
     "dev": "node index.js"
   },
-  "keywords": ["telegram", "twitch", "bot", "aura", "farming", "gaming", "multi-platform"],
+  "keywords": [
+    "telegram",
+    "twitch",
+    "bot",
+    "aura",
+    "farming",
+    "gaming",
+    "multi-platform"
+  ],
   "author": "AuraBot Team",
   "license": "MIT",
   "dependencies": {
-    "telegraf": "^4.15.6",
     "@supabase/supabase-js": "^2.39.7",
-    "node-cron": "^3.0.3",
     "dotenv": "^16.3.1",
-    "tmi.js": "^1.8.5",
     "express": "^4.18.2",
-    "express-session": "^1.17.3"
+    "express-session": "^1.17.3",
+    "node-cron": "^3.0.3",
+    "pg": "^8.16.3",
+    "telegraf": "^4.15.6",
+    "tmi.js": "^1.8.5"
   },
   "engines": {
     "node": ">=18.0.0"

@@ -17,6 +17,15 @@ const supabase = createClient(
 const bot = new Telegraf(process.env.BOT_TOKEN);
 console.log('🤖 Telegram bot initialized!');
 
+// Check database health on startup
+db.checkDatabaseHealth().then(healthy => {
+  if (healthy) {
+    console.log('✅ Database connection healthy!');
+  } else {
+    console.log('⚠️ Database connection issues detected on startup');
+  }
+});
+
 // Initialize OAuth server for secure Twitch authentication
 const oauthServer = oauth.initializeOAuth();
 
@@ -30,7 +39,18 @@ async function handleCommand(ctx, commandFn) {
   try {
     await commandFn(ctx);
   } catch (error) {
-    console.error('Command error:', error);
+    // Log detailed error information
+    console.error('💀 Command error details:');
+    console.error('- Error:', error.message);
+    console.error('- Stack:', error.stack);
+    console.error('- User:', ctx.from?.username || 'unknown');
+    console.error('- Chat:', ctx.chat?.id || 'unknown');
+    
+    // Check if it's a database-related error
+    if (error.message?.includes('supabase') || error.message?.includes('database') || error.message?.includes('connection')) {
+      console.error('🔴 DATABASE ERROR DETECTED');
+    }
+    
     await ctx.reply('💀 Aura servers having a moment... try again! 🔄');
   }
 }
