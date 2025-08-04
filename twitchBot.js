@@ -155,9 +155,7 @@ async function handleTwitchMessage(channel, chatId, userId, username, message, u
           }
           break;
 
-        case 'chat':
-          await handleClaudeChat(channel, chatId, userId, username, args);
-          break;
+
 
         case 'help':
         case 'commands':
@@ -169,10 +167,10 @@ async function handleTwitchMessage(channel, chatId, userId, username, message, u
           break;
       }
     } else {
-      // Handle non-command messages for Claude (when bot is mentioned)
+      // Handle non-command messages for Claude (when bot is mentioned) - Natural conversation!
       const botName = process.env.TWITCH_BOT_USERNAME?.toLowerCase();
       if (botName && (message.toLowerCase().includes(`@${botName}`) || message.toLowerCase().includes(botName))) {
-        await handleClaudeConversation(channel, chatId, userId, username, message);
+        await handleNaturalConversation(channel, chatId, userId, username, message);
       }
     }
   } catch (error) {
@@ -284,10 +282,10 @@ async function handleHelp(channel) {
 • Transfers aura from you to them - SIGMA SHARING!
 • Example: \`!bless @friend 25\`
 
-🤖 **!chat [message]**
-• Talk to Claude AI for UNHINGED brainrot conversations!
+🤖 **@botname [message]**
+• Just mention the bot to start UNHINGED brainrot conversations!
 • Get chaotic zoomer responses and meme energy!
-• Example: \`!chat what do you think about aura farming?\`
+• Example: \`@aurafarmbot what do you think about aura farming?\`
 
 ❓ **!help** (or !commands)
 • Shows this menu (you're here now, genius!)
@@ -302,26 +300,8 @@ async function handleHelp(channel) {
   await sayInChannel(channel, helpMessage);
 }
 
-// Claude chat command (!chat message)
-async function handleClaudeChat(channel, chatId, userId, username, args) {
-  if (args.length === 0) {
-    await sayInChannel(channel, '💭 **CLAUDE CHAT** 💭 | Usage: !chat your message here | Talk to the AI and get that UNHINGED brainrot energy! 🤖🔥 | Example: !chat what do you think about aura farming?');
-    return;
-  }
-  
-  const messageText = args.join(' ');
-  
-  try {
-    const reply = await claude.getBrainrotReply(userId, messageText, 'twitch', chatId);
-    await sayInChannel(channel, `@${username} ${reply}`);
-  } catch (error) {
-    claude.logError('Error in Twitch Claude chat:', error);
-    await sayInChannel(channel, `@${username} bro u just crashed me 😭`);
-  }
-}
-
-// Handle Claude conversation when bot is mentioned
-async function handleClaudeConversation(channel, chatId, userId, username, message) {
+// Handle natural conversation when bot is mentioned - Much more fluid!
+async function handleNaturalConversation(channel, chatId, userId, username, message) {
   // Clean the message (remove bot mentions)
   const botName = process.env.TWITCH_BOT_USERNAME?.toLowerCase();
   let cleanMessage = message;
@@ -329,15 +309,14 @@ async function handleClaudeConversation(channel, chatId, userId, username, messa
     cleanMessage = message.replace(new RegExp(`@?${botName}`, 'gi'), '').trim();
   }
   
-  if (!claude.shouldTriggerClaude(cleanMessage, 'twitch')) {
-    return; // Don't respond to everything
-  }
+  // Basic filtering - ignore very short messages or obvious spam
+  if (cleanMessage.length < 2 || cleanMessage.length > 500) return;
   
   try {
     const reply = await claude.getBrainrotReply(userId, cleanMessage, 'twitch', chatId);
     await sayInChannel(channel, `@${username} ${reply}`);
   } catch (error) {
-    claude.logError('Error in Twitch Claude conversation:', error);
+    claude.logError('Error in Twitch natural conversation:', error);
     await sayInChannel(channel, `@${username} bro u just crashed me 😭`);
   }
 }

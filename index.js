@@ -163,10 +163,10 @@ bot.command('help', async (ctx) => {
 • Transfers aura from you to them - SIGMA SHARING!
 • Example: \`/bless @friend 25\`
 
-🤖 **/chat [message]**
-• Talk to Claude AI for UNHINGED brainrot conversations!
+🤖 **@botname [message]**
+• Just mention the bot to start UNHINGED brainrot conversations!
 • Get chaotic zoomer responses and meme energy!
-• Example: \`/chat what do you think about aura farming?\`
+• Example: \`@aurafarmbot what do you think about aura farming?\`
 
 ❓ **/help**
 • Shows this menu (you're here now, genius!)
@@ -232,47 +232,31 @@ bot.command('aura', async (ctx) => {
   });
 });
 
-// /chat command - CLAUDE AI BRAINROT CONVERSATION! 🤖💀
-bot.command('chat', async (ctx) => {
+// General message handler for Claude - Natural conversation when mentioned!
+bot.on('text', async (ctx) => {
+  // Skip if it's a command (existing aura commands are handled separately)
+  if (ctx.message.text.startsWith('/')) return;
+  
+  // Respond in DMs or when bot is mentioned
+  const isPrivateChat = ctx.chat.type === 'private';
+  const isBotMentioned = ctx.message.text.includes(`@${ctx.botInfo.username}`);
+  
+  if (!isPrivateChat && !isBotMentioned) return;
+  
+  // Clean the message (remove bot mention)
+  const messageText = ctx.message.text.replace(`@${ctx.botInfo.username}`, '').trim();
+  
+  // Basic filtering - ignore very short messages or obvious spam
+  if (messageText.length < 2 || messageText.length > 500) return;
+  
+  // Respond with Claude for natural conversation!
   await handleCommand(ctx, async (ctx) => {
-    const messageText = ctx.message.text.replace('/chat', '').trim();
-    
-    if (!messageText) {
-      await ctx.reply('💭 **CLAUDE CHAT** 💭\n\nUsage: `/chat your message here`\nTalk to the AI and get that UNHINGED brainrot energy! 🤖🔥\n\nExample: `/chat what do you think about aura farming?`');
-      return;
-    }
-    
     const userId = ctx.from.id.toString();
     const chatId = ctx.chat.id.toString();
     
     const reply = await claude.getBrainrotReply(userId, messageText, 'telegram', chatId);
     await ctx.reply(reply);
   });
-});
-
-// General message handler for Claude (when bot is mentioned or in DMs)
-bot.on('text', async (ctx) => {
-  // Skip if it's a command (commands are handled separately)
-  if (ctx.message.text.startsWith('/')) return;
-  
-  // Only respond in DMs or when bot is mentioned
-  const isPrivateChat = ctx.chat.type === 'private';
-  const isBotMentioned = ctx.message.text.includes(`@${ctx.botInfo.username}`);
-  
-  if (!isPrivateChat && !isBotMentioned) return;
-  
-  // Check if message should trigger Claude
-  const messageText = ctx.message.text.replace(`@${ctx.botInfo.username}`, '').trim();
-  
-  if (claude.shouldTriggerClaude(messageText, 'telegram')) {
-    await handleCommand(ctx, async (ctx) => {
-      const userId = ctx.from.id.toString();
-      const chatId = ctx.chat.id.toString();
-      
-      const reply = await claude.getBrainrotReply(userId, messageText, 'telegram', chatId);
-      await ctx.reply(reply);
-    });
-  }
 });
 
 // Inline mode for @botname suggestions
