@@ -60,6 +60,28 @@ function initializeTwitchBot() {
   return twitchClient;
 }
 
+// Function to attempt Twitch reconnection
+async function attemptTwitchReconnection() {
+  if (!twitchClient) {
+    console.log('❌ No Twitch client available for reconnection');
+    return false;
+  }
+
+  if (isConnected) {
+    console.log('✅ Twitch already connected');
+    return true;
+  }
+
+  try {
+    console.log('🔄 Attempting Twitch reconnection...');
+    await twitchClient.connect();
+    return true;
+  } catch (error) {
+    console.error('❌ Twitch reconnection failed:', error);
+    return false;
+  }
+}
+
 // Setup all Twitch event listeners
 function setupTwitchEventListeners() {
   if (!twitchClient) return;
@@ -440,9 +462,18 @@ async function joinTwitchChannel(channelName) {
   }
 
   if (!isConnected) {
-    console.log(`📋 Twitch not connected yet. Queueing channel join: #${channelName}`);
+    console.log(`📋 Twitch not connected. Attempting reconnection for channel: #${channelName}`);
     pendingJoins.add(channelName);
-    return true; // Return true as it's queued successfully
+    
+    // Try to reconnect
+    const reconnected = await attemptTwitchReconnection();
+    if (!reconnected) {
+      console.log(`❌ Reconnection failed. Channel #${channelName} will remain queued.`);
+      return false;
+    }
+    
+    // If reconnection succeeded, the 'connected' event will process pending joins
+    return true;
   }
 
   try {
@@ -551,5 +582,6 @@ module.exports = {
   sendDailyReactionWinner,
   joinTwitchChannel,
   leaveTwitchChannel,
+  attemptTwitchReconnection,
   twitchClient: () => twitchClient
 };
