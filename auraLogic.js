@@ -215,14 +215,27 @@ async function handleSpecialCommand(userId, username, platform, chatId, commandT
 
     // Success! Award aura
     const auraGain = Math.floor(Math.random() * 12) + 2; // 2-13 aura
-    await db.updateAura(userId, user.aura + auraGain);
+    
+    try {
+      await db.updateAura(userId, chatId, auraGain, platform);
+    } catch (updateError) {
+      console.error('❌ Failed to update aura for special command:', { userId, username, platform, chatId, auraGain, error: updateError });
+      return {
+        success: false,
+        message: '💀 Failed to save aura! Try again later.'
+      };
+    }
 
     // Update special command usage
     const newSpecialData = {
       date: today,
       uses: specialUses + 1
     };
-    await db.updateSpecialData(userId, JSON.stringify(newSpecialData));
+    const specialDataResult = await db.updateSpecialData(userId, JSON.stringify(newSpecialData));
+    
+    if (!specialDataResult) {
+      console.error('❌ Failed to update special data:', { userId, username, platform, chatId });
+    }
 
     // Get appropriate flavor text
     let flavors;
@@ -242,7 +255,10 @@ async function handleSpecialCommand(userId, username, platform, chatId, commandT
 
     const flavor = getRandomElement(flavors).replace('{amount}', auraGain);
     const remaining = 3 - (specialUses + 1);
-    const newTotal = user.aura + auraGain;
+    
+    // Fetch fresh user data to get accurate total
+    const updatedUser = await db.getUser(userId, username, platform, chatId);
+    const newTotal = updatedUser ? updatedUser.aura : (user.aura + auraGain);
 
     return {
       success: true,
