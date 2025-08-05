@@ -85,7 +85,7 @@ const DUEL_WIN_FLAVORS = [
   '🌊 {winner} created a GENERATIONAL WEALTH GAP in {loser}\'s aura!',
   '🎭 GYATT! {winner} just RIZZIN UP their W while {loser} got DELULU AF!',
   '🕺 {winner} hit the GRIDDY on {loser}\'s aura! SKIBIDI AF MOMENT!',
-  '🫵😹 {loser} really thought they could mog {winner}? GOOFY AHH move AF!',
+  '🫵😹 {loser} really thought they could mog {winner}? GOOFY AHH move frfr!',
   '🎯 {winner} is the BIGGEST BIRD! {loser} got sent to OHIO AF!',
   '🧠 {winner}\'s GIGACHAD energy was too much for {loser}\'s mid AF rizz!',
   '🍕 {winner} served {loser} a GLIZZY SIZED L! That was BUSSIN AF!',
