@@ -7,7 +7,7 @@ const auraLogic = require('./auraLogic');
 const twitchBot = require('./twitchBot');
 const kickBot = require('./kickBot');
 const oauth = require('./oauth');
-const claude = require('./lib/claude');
+const claude = require('./lib/claude-enhanced');
 const twitter = require('./lib/twitter');
 
 // Initialize Supabase client for cron job
@@ -186,6 +186,7 @@ bot.command('help', async (ctx) => {
 
 🔒 **/unhinge** (ADMINS/CHAT OWNERS ONLY)
 • Toggle between family-friendly and unhinged mode
+• Bot starts in family-friendly mode by default
 • Switches AI personality for the whole chat
 • Use again to flip between wholesome and brainrot
 

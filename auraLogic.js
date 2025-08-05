@@ -179,7 +179,7 @@ const SPECIAL_FAIL_FLAVORS = [
 
 
 // Special Commands Logic (/edge, /goon, /mew)
-async function handleSpecialCommand(userId, username, platform, chatId, commandType, familyFriendly = false) {
+async function handleSpecialCommand(userId, username, platform, chatId, commandType, familyFriendly = true) {
   try {
     // Check if /edge or /goon is used in family-friendly mode
     if (familyFriendly && (commandType === 'edge' || commandType === 'goon')) {
@@ -290,7 +290,7 @@ async function handleSpecialCommand(userId, username, platform, chatId, commandT
     const remaining = 3 - (specialUses + 1);
     
     // Fetch fresh user data to get accurate total
-    const updatedUser = await db.getUser(userId, username, platform, chatId);
+    const updatedUser = await db.getUser(userId, chatId, platform, username);
     const newTotal = updatedUser ? updatedUser.aura : (user.aura + auraGain);
 
     return {

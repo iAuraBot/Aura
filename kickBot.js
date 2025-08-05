@@ -1,6 +1,6 @@
 const auraLogic = require('./auraLogic.js');
 const db = require('./db.js');
-const claude = require('./lib/claude.js');
+const claude = require('./lib/claude-enhanced');
 const { WebSocket } = require('ws');
 // Using built-in fetch instead of axios (Node.js 18+)
 
@@ -392,7 +392,7 @@ async function handleNaturalConversation(channelName, channelId, userId, usernam
   
   try {
     // Check if family-friendly mode is enabled (default false for Kick for now)
-    const familyFriendly = false; // TODO: Implement channel settings for Kick
+    const familyFriendly = true; // TODO: Implement channel settings for Kick
     
     const reply = await claude.getBrainrotReply(userId, cleanMessage, 'kick', channelId, familyFriendly);
     

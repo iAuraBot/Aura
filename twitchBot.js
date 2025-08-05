@@ -1,7 +1,7 @@
 const tmi = require('tmi.js');
 const auraLogic = require('./auraLogic.js');
 const db = require('./db.js'); // Import database functions for channel settings
-const claude = require('./lib/claude.js');
+const claude = require('./lib/claude-enhanced');
 
 // Twitch client instance
 let twitchClient = null;
@@ -354,6 +354,7 @@ async function handleHelp(channel) {
 
 🔒 **!unhinge** (MODS/BROADCASTER ONLY)
     • Toggle between family-friendly and unhinged mode
+    • Bot starts in family-friendly mode by default
     • Switches AI personality for the whole channel
     • Use again to flip between wholesome and brainrot
 

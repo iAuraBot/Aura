@@ -640,13 +640,13 @@ async function getFamilyFriendlySetting(platform, channelId) {
 
     if (error && error.code !== 'PGRST116') {
       console.error('Error getting family-friendly setting:', error);
-      return false; // Default to non-family-friendly on error
+      return true; // Default to family-friendly on error
     }
 
-    return data?.family_friendly || false;
+    return data?.family_friendly ?? true;
   } catch (error) {
     console.error('Error in getFamilyFriendlySetting:', error);
-    return false; // Default to non-family-friendly on error
+    return true; // Default to family-friendly on error
   }
 }
 
