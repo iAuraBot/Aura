@@ -717,6 +717,118 @@ async function updateSpecialData(userId, specialData) {
   }
 }
 
+// Comprehensive settings management for new dashboard
+async function getComprehensiveSettings(channelId, platform) {
+  try {
+    // Get existing channel config
+    const channelConfig = await getChannelConfig(channelId);
+    const familyFriendly = await getFamilyFriendlySetting(platform, channelId);
+    
+    // Return comprehensive settings with defaults
+    return {
+      personality: {
+        unhinged: !familyFriendly,
+        responseStyle: channelConfig?.settings?.response_style || 'energetic',
+        responseFrequency: channelConfig?.settings?.response_frequency || 50
+      },
+      aura: {
+        farmCooldown: channelConfig?.settings?.farm_cooldown || 24,
+        auraName: channelConfig?.settings?.aura_name || 'aura',
+        minReward: channelConfig?.settings?.farm_min_reward || 20,
+        maxReward: channelConfig?.settings?.farm_max_reward || 50,
+        duelsEnabled: channelConfig?.settings?.duel_enabled !== false,
+        blessingsEnabled: channelConfig?.settings?.blessing_enabled !== false,
+        specialCommands: channelConfig?.settings?.special_commands || false
+      },
+      commands: {
+        enabled: channelConfig?.settings?.commands_enabled || {
+          aurafarm: true, mog: true, bless: true, aura: true, auraboard: true, emote: true
+        },
+        aiChat: channelConfig?.settings?.ai_chat !== false,
+        globalCooldown: channelConfig?.settings?.global_cooldown || 3,
+        userCooldown: channelConfig?.settings?.user_cooldown || 10
+      },
+      moderation: {
+        spamProtection: channelConfig?.settings?.spam_protection || false,
+        rateLimit: channelConfig?.settings?.rate_limit || 10,
+        timeoutDuration: channelConfig?.settings?.timeout_duration || 60,
+        blacklistedUsers: channelConfig?.settings?.blacklisted_users || []
+      },
+      branding: {
+        botName: channelConfig?.settings?.bot_name || '',
+        welcomeMessage: channelConfig?.settings?.custom_welcome || '',
+        winTerms: channelConfig?.settings?.win_terms || '',
+        lossTerms: channelConfig?.settings?.loss_terms || '',
+        successEmoji: channelConfig?.settings?.success_emoji || '💀',
+        failEmoji: channelConfig?.settings?.fail_emoji || '😭'
+      }
+    };
+  } catch (error) {
+    console.error('Error getting comprehensive settings:', error);
+    // Return defaults if error
+    return {
+      personality: { unhinged: false, responseStyle: 'energetic', responseFrequency: 50 },
+      aura: { farmCooldown: 24, auraName: 'aura', minReward: 20, maxReward: 50, duelsEnabled: true, blessingsEnabled: true, specialCommands: false },
+      commands: { enabled: { aurafarm: true, mog: true, bless: true, aura: true, auraboard: true, emote: true }, aiChat: true, globalCooldown: 3, userCooldown: 10 },
+      moderation: { spamProtection: false, rateLimit: 10, timeoutDuration: 60, blacklistedUsers: [] },
+      branding: { botName: '', welcomeMessage: '', winTerms: '', lossTerms: '', successEmoji: '💀', failEmoji: '😭' }
+    };
+  }
+}
+
+async function saveComprehensiveSettings(channelId, platform, settings) {
+  try {
+    // Update family friendly setting
+    await setFamilyFriendlySetting(platform, channelId, !settings.personality.unhinged);
+    
+    // Prepare comprehensive settings object
+    const comprehensiveSettings = {
+      // Existing settings
+      farm_cooldown: settings.aura.farmCooldown,
+      farm_min_reward: settings.aura.minReward,
+      farm_max_reward: settings.aura.maxReward,
+      duel_enabled: settings.aura.duelsEnabled,
+      blessing_enabled: settings.aura.blessingsEnabled,
+      custom_welcome: settings.branding.welcomeMessage,
+      
+      // New comprehensive settings
+      response_style: settings.personality.responseStyle,
+      response_frequency: settings.personality.responseFrequency,
+      aura_name: settings.aura.auraName,
+      special_commands: settings.aura.specialCommands,
+      commands_enabled: settings.commands.enabled,
+      ai_chat: settings.commands.aiChat,
+      global_cooldown: settings.commands.globalCooldown,
+      user_cooldown: settings.commands.userCooldown,
+      spam_protection: settings.moderation.spamProtection,
+      rate_limit: settings.moderation.rateLimit,
+      timeout_duration: settings.moderation.timeoutDuration,
+      blacklisted_users: settings.moderation.blacklistedUsers,
+      bot_name: settings.branding.botName,
+      win_terms: settings.branding.winTerms,
+      loss_terms: settings.branding.lossTerms,
+      success_emoji: settings.branding.successEmoji,
+      fail_emoji: settings.branding.failEmoji
+    };
+    
+    // Update channel config
+    const { data, error } = await supabase
+      .from('channel_configs')
+      .update({
+        settings: comprehensiveSettings,
+        updated_at: new Date().toISOString()
+      })
+      .eq('channel_id', channelId)
+      .eq('platform', platform);
+    
+    if (error) throw error;
+    return { success: true };
+  } catch (error) {
+    console.error('Error saving comprehensive settings:', error);
+    return { success: false, error: error.message };
+  }
+}
+
 module.exports = {
   supabase, // Export the supabase client for direct queries
   getUser,
@@ -738,5 +850,7 @@ module.exports = {
   setFamilyFriendlySetting,
   updateSpecialData,
   checkDatabaseHealth,
-  retryOperation
+  retryOperation,
+  getComprehensiveSettings,
+  saveComprehensiveSettings
 };

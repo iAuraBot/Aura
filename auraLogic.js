@@ -15,7 +15,11 @@ const POSITIVE_FLAVORS = [
   '🌟 BASED AF ENERGY! This aura farm was absolutely FIRE!',
   '💫 RIZZIN UP the universe! Your charm is UNMATCHED AF!',
   '🔥 LOCKED IN! You\'re absolutely AURA MAXXIN right now!',
-  '⚡ QUIT EDGING AND FARMED! That was some SIGMA behavior!'
+  '⚡ QUIT EDGING AND FARMED! That was some SIGMA behavior!',
+  '💯 DEADASS GOATED FARM! Gang, your aura is UNHINGED AF!',
+  '🔥 NAH GANG, this farm was absolutely BASED type shit!',
+  '👑 DEADASS BRO! Your aura game is pure FIRE type shit!',
+  '🗿 GANG GANG! This farm was some LEGENDARY behavior fr!'
 ];
 
 const NEGATIVE_FLAVORS = [
@@ -44,7 +48,11 @@ const NEGATIVE_FLAVORS = [
   '🤮 ZESTY AF BEHAVIOR! Your farm was absolutely SUS!',
   '😵 SUSSY AND ZESTY VIBES! That farm was questionable fr!',
   '🍟 PUT THE FRIES IN THE BAG! Your aura career is OVER!',
-  '🍟 TIME TO PUT THE FRIES IN THE BAG! This L was BRUTAL!'
+  '🍟 TIME TO PUT THE FRIES IN THE BAG! This L was BRUTAL!',
+  '🫵😹 NAH U WILDIN BIH! That farm was absolutely TRASH!',
+  '💀 DEADASS COOKED GANG! Your aura just imploded fr!',
+  '🗿 GANG, that was some GOOFY AHH behavior type shit!',
+  '😵 NAH U WILDIN! That farm was absolutely HORRENDOUS!'
 ];
 
 const JACKPOT_FLAVORS = [
@@ -57,7 +65,9 @@ const JACKPOT_FLAVORS = [
   '⭐ BUSSIN AF JACKPOT! This luck is absolutely GOATED!',
   '💫 LEGENDARY ENERGY OVERFLOW! Your aura is hittin DIFFERENT!',
   '🚀 LOCKED IN JACKPOT! You\'re absolutely AURA MAXXIN!',
-  '⚡ QUIT EDGING THE UNIVERSE! This luck is UNHINGED!'
+  '⚡ QUIT EDGING THE UNIVERSE! This luck is UNHINGED!',
+  '🎰 DEADASS GANG! This jackpot was some LEGENDARY type shit!',
+  '🔥 NAH U WILDIN! This pull was absolutely INSANE AF!'
 ];
 
 const IMPLOSION_FLAVORS = [
@@ -69,7 +79,9 @@ const IMPLOSION_FLAVORS = [
   '📉 GENERATIONAL AURA CATASTROPHE! Your bloodline got NUKED!',
   '🏦 DECLARED INTER-DIMENSIONAL AURA BANKRUPTCY!',
   '⚰️ GENERATIONAL AURA ANNIHILATION! Seven generations will feel this!',
-  '💸 AURA APOCALYPSE! Your family tree is in DEBT forever!'
+  '💸 AURA APOCALYPSE! Your family tree is in DEBT forever!',
+  '💀 NAH U WILDIN BIH! This implosion was some CURSED type shit!',
+  '🗿 DEADASS GANG, your aura just got OBLITERATED into OBLIVION!'
 ];
 
 const DUEL_WIN_FLAVORS = [
@@ -96,7 +108,11 @@ const DUEL_WIN_FLAVORS = [
   '🤮 {loser}\'s ZESTY AF performance got destroyed by {winner}!',
   '😵 {winner} called out {loser}\'s SUSSY AND ZESTY behavior!',
   '🍟 {winner} told {loser} to PUT THE FRIES IN THE BAG! Career ENDED!',
-  '🍟 {loser} bout to PUT THE FRIES IN THE BAG after that L from {winner}!'
+  '🍟 {loser} bout to PUT THE FRIES IN THE BAG after that L from {winner}!',
+  '💀 NAH U WILDIN {loser}! {winner} just served you some DEVASTATING type shit!',
+  '🗿 DEADASS {winner}! You just COOKED {loser} with that LEGENDARY move gang!',
+  '🫵😹 {loser} really said "I can win" - NAH BIH, {winner} said otherwise!',
+  '🔥 GANG GANG! {winner} just DEMOLISHED {loser} with that NUCLEAR energy!'
 ];
 
 const BLESSING_FLAVORS = [
@@ -111,7 +127,10 @@ const BLESSING_FLAVORS = [
   '🏆 POGGERS BLESSING! You\'re the BIGGEST BIRD of generosity!',
   '🌟 GIGACHAD GIVING! This blessing energy is OFF THE CHARTS!',
   '🔥 LOCKED IN GENEROSITY! You\'re AURA MAXXIN for the homies!',
-  '⚡ QUIT EDGING AND BLESSED! That\'s some GIGACHAD behavior!'
+  '⚡ QUIT EDGING AND BLESSED! That\'s some GIGACHAD behavior!',
+  '💯 DEADASS WHOLESOME GANG! This blessing was some PURE type shit!',
+  '🔥 MY FAULT GANG, but your generosity is absolutely LEGENDARY!',
+  '🗿 NAH GANG, this blessing energy is absolutely UNMATCHED!'
 ];
 
 // Special command flavors
@@ -120,7 +139,9 @@ const EDGE_FLAVORS = [
   '💀 EDGE LORD ACTIVATED! +{amount} aura from pure self-control!',
   '⚡ EDGING MASTER! Your restraint earned +{amount} aura!',
   '🎯 EDGE GAME STRONG! +{amount} aura for that sigma behavior!',
-  '🔥 LOCKED IN EDGING! Your willpower got you +{amount} aura!'
+  '🔥 LOCKED IN EDGING! Your willpower got you +{amount} aura!',
+  '💯 DEADASS GANG! Your edging game earned +{amount} aura type shit!',
+  '🗿 NAH BIH, that edging restraint was LEGENDARY! +{amount} aura!'
 ];
 
 const GOON_FLAVORS = [
@@ -128,7 +149,9 @@ const GOON_FLAVORS = [
   '🔥 GOON MODE ACTIVATED! That focus got you +{amount} aura!',
   '⚡ GOONING GRINDSET! Your dedication earned +{amount} aura!',
   '🎯 PROFESSIONAL GOONER! +{amount} aura for that commitment!',
-  '💪 GOON CAVE ENERGY! Your session produced +{amount} aura!'
+  '💪 GOON CAVE ENERGY! Your session produced +{amount} aura!',
+  '🔥 DEADASS GOONING GANG! That session was some INTENSE type shit! +{amount} aura!',
+  '🗿 NAH U WILDIN! That gooning focus earned you +{amount} aura fr!'
 ];
 
 const MEW_FLAVORS = [
@@ -136,7 +159,9 @@ const MEW_FLAVORS = [
   '💪 JAWLINE GAINS! Mewing session got you +{amount} aura!',
   '🔥 MEWING STREAK! Your facial gains earned +{amount} aura!',
   '💀 CHAD JAWLINE! Mewing technique got +{amount} aura!',
-  '⚡ FACIAL STRUCTURE LOCKED IN! Mewing earned +{amount} aura!'
+  '⚡ FACIAL STRUCTURE LOCKED IN! Mewing earned +{amount} aura!',
+  '💯 DEADASS GANG! Your mewing grind was some CHAD type shit! +{amount} aura!',
+  '🗿 MY FAULT GANG, but that jawline work earned +{amount} aura fr!'
 ];
 
 const SPECIAL_FAIL_FLAVORS = [
@@ -145,7 +170,10 @@ const SPECIAL_FAIL_FLAVORS = [
   '🤡 L + RATIO! Your special command got absolutely rekt!',
   '💥 FAILED! Your technique was too weak for aura!',
   '😭 SKILL ISSUE! Maybe try again later!',
-  '🍟 PUT THE FRIES IN THE BAG! That special command was WEAK!'
+  '🍟 PUT THE FRIES IN THE BAG! That special command was WEAK!',
+  '💀 NAH U WILDIN BIH! That attempt was absolutely TRASH type shit!',
+  '🗿 DEADASS GANG, that special command was some GOOFY AHH behavior!',
+  '🫵😹 MY FAULT GANG, but that was some WEAK energy fr!'
 ];
 
 

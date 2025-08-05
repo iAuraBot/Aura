@@ -805,7 +805,7 @@ function setupWebInterface(app) {
     }
   });
 
-  // Dashboard - Manage bot settings
+  // Dashboard - Comprehensive settings page
   app.get('/dashboard', async (req, res) => {
     if (!req.session.user) {
       return res.redirect('/auth/streamer');
@@ -813,13 +813,20 @@ function setupWebInterface(app) {
     
     try {
       const channelConfig = await db.getChannelConfig(req.session.user.id);
-      const familyFriendlySetting = await db.getFamilyFriendlySetting('twitch', req.session.user.id);
+      const platform = req.session.user.platform || 'twitch';
+      const familyFriendlySetting = await db.getFamilyFriendlySetting(platform, req.session.user.id);
+      
+      // Get comprehensive settings from database
+      const settings = await db.getComprehensiveSettings(req.session.user.id, platform);
+      const channelUrl = platform === 'twitch' ? `https://twitch.tv/${req.session.user.login}` : 
+                        platform === 'kick' ? `https://kick.com/${req.session.user.slug}` : '#';
+      const platformName = platform.charAt(0).toUpperCase() + platform.slice(1);
       
       res.send(`
         <!DOCTYPE html>
         <html>
         <head>
-          <title>iAuraFarmBot Dashboard - ${req.session.user.display_name}</title>
+          <title>iAuraFarmBot Settings - ${req.session.user.display_name || req.session.user.username}</title>
           <link rel="preconnect" href="https://fonts.googleapis.com">
           <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
           <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -1241,13 +1248,14 @@ function setupWebInterface(app) {
                   <small>Message shown to new farmers (leave empty for default brainrot message)</small>
                 </div>
 
-                <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 20px; border-top: 1px solid #2f2f35;">
-                  <div>
-                    <button type="submit" class="btn">💾 Save Changes</button>
-                    <button type="button" class="btn btn-secondary" onclick="resetToDefaults()">🔄 Reset to Defaults</button>
+                                  <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 20px; border-top: 1px solid #2f2f35;">
+                    <div>
+                      <button type="submit" class="btn">💾 Save Changes</button>
+                      <button type="button" class="btn btn-secondary" onclick="resetToDefaults()">🔄 Reset to Defaults</button>
+                      <a href="/dashboard/advanced" class="btn" style="background: linear-gradient(45deg, #ffd700, #ffeb3b); color: #000; font-weight: 700;">⚙️ Advanced Settings</a>
+                    </div>
+                    <button type="button" class="btn btn-danger" onclick="removeBot()">🗑️ Remove Bot</button>
                   </div>
-                  <button type="button" class="btn btn-danger" onclick="removeBot()">🗑️ Remove Bot</button>
-                </div>
               </form>
             </div>
           </div>
@@ -1348,7 +1356,586 @@ function setupWebInterface(app) {
     }
   });
 
-  // Update settings
+  // Advanced Settings Dashboard - Comprehensive customization page
+  app.get('/dashboard/advanced', async (req, res) => {
+    if (!req.session.user) {
+      return res.redirect('/auth/streamer');
+    }
+    
+    try {
+      const platform = req.session.user.platform || 'twitch';
+      const settings = await db.getComprehensiveSettings(req.session.user.id, platform);
+      const channelUrl = platform === 'twitch' ? `https://twitch.tv/${req.session.user.login}` : 
+                        platform === 'kick' ? `https://kick.com/${req.session.user.slug}` : '#';
+      const platformName = platform.charAt(0).toUpperCase() + platform.slice(1);
+      
+      res.send(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Advanced Settings - iAuraFarmBot</title>
+          <link rel="preconnect" href="https://fonts.googleapis.com">
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+          <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+          <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body { 
+              font-family: 'Poppins', sans-serif;
+              background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)), url('/assets/aurafarmbot.png') center center;
+              background-size: cover;
+              background-attachment: fixed;
+              color: #efeff1;
+              min-height: 100vh;
+            }
+            .header {
+              background: rgba(26, 61, 46, 0.9);
+              padding: 20px 40px;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              backdrop-filter: blur(10px);
+              border-bottom: 1px solid rgba(116, 185, 71, 0.2);
+            }
+            .header h1 { font-size: 1.8rem; color: #ffd700; }
+            .platform-badge {
+              background: #ffd700;
+              color: #000;
+              padding: 4px 12px;
+              border-radius: 20px;
+              font-size: 0.8rem;
+              font-weight: 600;
+              text-transform: uppercase;
+              margin-left: 10px;
+            }
+            .btn {
+              background: #76b947;
+              color: white;
+              padding: 10px 20px;
+              border: none;
+              border-radius: 6px;
+              cursor: pointer;
+              font-weight: 600;
+              text-decoration: none;
+              font-size: 0.9rem;
+              transition: all 0.3s ease;
+              margin-left: 10px;
+            }
+            .btn:hover { background: #5a8b3a; }
+            .btn-secondary { background: #424249; }
+            .btn-secondary:hover { background: #36363d; }
+            .main-content {
+              padding: 40px;
+              max-width: 1200px;
+              margin: 0 auto;
+            }
+            .settings-container {
+              background: rgba(0, 0, 0, 0.5);
+              border-radius: 12px;
+              padding: 30px;
+              backdrop-filter: blur(10px);
+              border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .section {
+              margin-bottom: 40px;
+              padding-bottom: 30px;
+              border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .section:last-child { border-bottom: none; }
+            .section-title {
+              font-size: 1.3rem;
+              color: #ffd700;
+              margin-bottom: 20px;
+              display: flex;
+              align-items: center;
+              gap: 10px;
+            }
+            .form-grid {
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+              gap: 20px;
+              margin-bottom: 20px;
+            }
+            .form-group {
+              margin-bottom: 20px;
+            }
+            .form-group label {
+              display: block;
+              margin-bottom: 8px;
+              color: #efeff1;
+              font-weight: 500;
+            }
+            .form-group input, .form-group select, .form-group textarea {
+              width: 100%;
+              padding: 12px;
+              background: rgba(255, 255, 255, 0.1);
+              border: 1px solid rgba(255, 255, 255, 0.2);
+              border-radius: 6px;
+              color: #efeff1;
+              font-family: inherit;
+            }
+            .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+              outline: none;
+              border-color: #ffd700;
+              background: rgba(255, 255, 255, 0.15);
+            }
+            .form-group small {
+              display: block;
+              margin-top: 5px;
+              color: #adadb8;
+              font-size: 0.85rem;
+            }
+            .toggle-group {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 15px;
+              background: rgba(255, 255, 255, 0.05);
+              border-radius: 8px;
+              border: 1px solid rgba(255, 255, 255, 0.1);
+              margin-bottom: 10px;
+            }
+            .toggle-switch {
+              width: 50px;
+              height: 24px;
+              background: #424249;
+              border-radius: 24px;
+              position: relative;
+              cursor: pointer;
+              transition: background 0.3s ease;
+            }
+            .toggle-switch::after {
+              content: '';
+              position: absolute;
+              top: 2px;
+              left: 2px;
+              width: 20px;
+              height: 20px;
+              background: white;
+              border-radius: 50%;
+              transition: transform 0.3s ease;
+            }
+            .toggle-switch.active {
+              background: #76b947;
+            }
+            .toggle-switch.active::after {
+              transform: translateX(26px);
+            }
+            .feature-grid {
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+              gap: 15px;
+            }
+            .feature-item {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 15px;
+              background: rgba(255, 255, 255, 0.05);
+              border-radius: 8px;
+              border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .feature-info {
+              flex: 1;
+            }
+            .feature-name {
+              font-weight: 600;
+              color: #ffd700;
+              margin-bottom: 4px;
+            }
+            .feature-desc {
+              font-size: 0.85rem;
+              color: #adadb8;
+            }
+            .save-section {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding-top: 30px;
+              margin-top: 30px;
+              border-top: 2px solid rgba(255, 215, 0, 0.3);
+            }
+            .btn-danger { background: #e74c3c; }
+            .btn-danger:hover { background: #c0392b; }
+            .success-banner {
+              position: fixed;
+              top: 20px;
+              right: 20px;
+              background: #00f5ff;
+              color: #0e0e10;
+              padding: 15px 25px;
+              border-radius: 8px;
+              font-weight: 600;
+              z-index: 1000;
+              opacity: 0;
+              transform: translateX(100px);
+              transition: all 0.3s ease;
+            }
+            .success-banner.show {
+              opacity: 1;
+              transform: translateX(0);
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div>
+              <h1>⚙️ Advanced Settings</h1>
+              <span class="platform-badge">${platformName}</span>
+            </div>
+            <div>
+              <a href="${channelUrl}" class="btn btn-secondary">🎮 View Channel</a>
+              <a href="/dashboard" class="btn btn-secondary">← Back to Dashboard</a>
+              <a href="/" class="btn btn-secondary">🏠 Home</a>
+            </div>
+          </div>
+
+          <div class="main-content">
+            <div class="settings-container">
+              <!-- Bot Personality Section -->
+              <div class="section">
+                <div class="section-title">
+                  🎭 Bot Personality & Behavior
+                </div>
+                
+                <div class="toggle-group">
+                  <div>
+                    <strong>Unhinged Mode</strong>
+                    <small>OFF = Family-friendly AI | ON = Full brainrot chaos mode</small>
+                  </div>
+                  <div class="toggle-switch ${settings.personality.unhinged ? 'active' : ''}" onclick="toggleSetting('unhinged')"></div>
+                </div>
+                
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label>AI Response Style</label>
+                    <select id="response-style" onchange="updateSetting('responseStyle', this.value)">
+                      <option value="chill" ${settings.personality.responseStyle === 'chill' ? 'selected' : ''}>😎 Chill - Laid back vibes</option>
+                      <option value="energetic" ${settings.personality.responseStyle === 'energetic' ? 'selected' : ''}>⚡ Energetic - Hyped responses</option>
+                      <option value="chaotic" ${settings.personality.responseStyle === 'chaotic' ? 'selected' : ''}>🔥 Chaotic - Pure brainrot energy</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>AI Response Rate (%)</label>
+                    <input type="range" min="25" max="100" step="25" value="${settings.personality.responseFrequency}" onchange="updateSetting('responseFrequency', this.value); document.getElementById('freq-display').textContent = this.value + '%';">
+                    <small id="freq-display">${settings.personality.responseFrequency}% - How often bot responds to @mentions</small>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Aura System Section -->
+              <div class="section">
+                <div class="section-title">
+                  💀 Aura System Customization
+                </div>
+                
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label>Farm Cooldown Period</label>
+                    <select id="farm-cooldown" onchange="updateSetting('farmCooldown', parseInt(this.value))">
+                      <option value="12" ${settings.aura.farmCooldown === 12 ? 'selected' : ''}>12 hours - Fast grind mode</option>
+                      <option value="24" ${settings.aura.farmCooldown === 24 ? 'selected' : ''}>24 hours - Standard (default)</option>
+                      <option value="48" ${settings.aura.farmCooldown === 48 ? 'selected' : ''}>48 hours - Hardcore mode</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Custom Aura Name</label>
+                    <select id="aura-name" onchange="updateSetting('auraName', this.value)">
+                      <option value="aura" ${settings.aura.auraName === 'aura' ? 'selected' : ''}>aura (default)</option>
+                      <option value="energy" ${settings.aura.auraName === 'energy' ? 'selected' : ''}>energy</option>
+                      <option value="vibes" ${settings.aura.auraName === 'vibes' ? 'selected' : ''}>vibes</option>
+                      <option value="points" ${settings.aura.auraName === 'points' ? 'selected' : ''}>points</option>
+                      <option value="rizz" ${settings.aura.auraName === 'rizz' ? 'selected' : ''}>rizz</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Min Reward Range</label>
+                    <input type="number" min="1" max="100" value="${settings.aura.minReward}" onchange="updateSetting('minReward', parseInt(this.value))">
+                  </div>
+                  <div class="form-group">
+                    <label>Max Reward Range</label>
+                    <input type="number" min="1" max="200" value="${settings.aura.maxReward}" onchange="updateSetting('maxReward', parseInt(this.value))">
+                  </div>
+                </div>
+
+                <div class="toggle-group">
+                  <div>
+                    <strong>Mog Duels</strong>
+                    <small>Allow users to battle each other for aura</small>
+                  </div>
+                  <div class="toggle-switch ${settings.aura.duelsEnabled ? 'active' : ''}" onclick="toggleSetting('duelsEnabled')"></div>
+                </div>
+                
+                <div class="toggle-group">
+                  <div>
+                    <strong>Aura Blessings</strong>
+                    <small>Allow users to give aura to others</small>
+                  </div>
+                  <div class="toggle-switch ${settings.aura.blessingsEnabled ? 'active' : ''}" onclick="toggleSetting('blessingsEnabled')"></div>
+                </div>
+
+                <div class="toggle-group">
+                  <div>
+                    <strong>Special Commands (/edge, /goon, /mew)</strong>
+                    <small>Enable unhinged mode special commands</small>
+                  </div>
+                  <div class="toggle-switch ${settings.aura.specialCommands ? 'active' : ''}" onclick="toggleSetting('specialCommands')"></div>
+                </div>
+              </div>
+
+              <!-- Commands & Features Section -->
+              <div class="section">
+                <div class="section-title">
+                  ⚡ Command Management
+                </div>
+                
+                <div class="feature-grid">
+                  <div class="feature-item">
+                    <div class="feature-info">
+                      <div class="feature-name">!aurafarm</div>
+                      <div class="feature-desc">Core farming command</div>
+                    </div>
+                    <div class="toggle-switch ${settings.commands.enabled.aurafarm ? 'active' : ''}" onclick="toggleCommand('aurafarm')"></div>
+                  </div>
+                  <div class="feature-item">
+                    <div class="feature-info">
+                      <div class="feature-name">!mog</div>
+                      <div class="feature-desc">Duel battles</div>
+                    </div>
+                    <div class="toggle-switch ${settings.commands.enabled.mog ? 'active' : ''}" onclick="toggleCommand('mog')"></div>
+                  </div>
+                  <div class="feature-item">
+                    <div class="feature-info">
+                      <div class="feature-name">!bless</div>
+                      <div class="feature-desc">Give aura to others</div>
+                    </div>
+                    <div class="toggle-switch ${settings.commands.enabled.bless ? 'active' : ''}" onclick="toggleCommand('bless')"></div>
+                  </div>
+                  <div class="feature-item">
+                    <div class="feature-info">
+                      <div class="feature-name">!aura</div>
+                      <div class="feature-desc">Check aura balance</div>
+                    </div>
+                    <div class="toggle-switch ${settings.commands.enabled.aura ? 'active' : ''}" onclick="toggleCommand('aura')"></div>
+                  </div>
+                  <div class="feature-item">
+                    <div class="feature-info">
+                      <div class="feature-name">!auraboard</div>
+                      <div class="feature-desc">Leaderboard</div>
+                    </div>
+                    <div class="toggle-switch ${settings.commands.enabled.auraboard ? 'active' : ''}" onclick="toggleCommand('auraboard')"></div>
+                  </div>
+                  <div class="feature-item">
+                    <div class="feature-info">
+                      <div class="feature-name">!emote</div>
+                      <div class="feature-desc">Dance celebrations</div>
+                    </div>
+                    <div class="toggle-switch ${settings.commands.enabled.emote ? 'active' : ''}" onclick="toggleCommand('emote')"></div>
+                  </div>
+                </div>
+
+                <div class="toggle-group">
+                  <div>
+                    <strong>Claude AI Conversations</strong>
+                    <small>Allow @mentions for AI chat responses</small>
+                  </div>
+                  <div class="toggle-switch ${settings.commands.aiChat ? 'active' : ''}" onclick="toggleSetting('aiChat')"></div>
+                </div>
+              </div>
+
+              <!-- Branding Section -->
+              <div class="section">
+                <div class="section-title">
+                  🎨 Custom Branding & Messages
+                </div>
+                
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label>Custom Bot Name</label>
+                    <input type="text" maxlength="25" placeholder="iAuraFarmBot" value="${settings.branding.botName}" onchange="updateSetting('botName', this.value)">
+                    <small>Name shown in bot responses (leave empty for default)</small>
+                  </div>
+                  <div class="form-group">
+                    <label>Success Emoji</label>
+                    <input type="text" maxlength="5" value="${settings.branding.successEmoji}" onchange="updateSetting('successEmoji', this.value)">
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label>Custom Welcome Message</label>
+                  <textarea rows="3" placeholder="Welcome to the aura farming community! 💀🔥" onchange="updateSetting('welcomeMessage', this.value)">${settings.branding.welcomeMessage}</textarea>
+                  <small>Message shown to new farmers (leave empty for default brainrot welcome)</small>
+                </div>
+                
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label>Custom Win Terms</label>
+                    <input type="text" placeholder="goated, based, W, slay" value="${settings.branding.winTerms}" onchange="updateSetting('winTerms', this.value)">
+                    <small>Comma-separated terms for wins</small>
+                  </div>
+                  <div class="form-group">
+                    <label>Custom Loss Terms</label>
+                    <input type="text" placeholder="mid, L, cooked, down bad" value="${settings.branding.lossTerms}" onchange="updateSetting('lossTerms', this.value)">
+                    <small>Comma-separated terms for losses</small>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Save Section -->
+              <div class="save-section">
+                <div>
+                  <button class="btn btn-secondary" onclick="loadPreset('family')">👨‍👩‍👧‍👦 Family Mode</button>
+                  <button class="btn btn-secondary" onclick="loadPreset('standard')">⚖️ Standard</button>
+                  <button class="btn btn-secondary" onclick="loadPreset('chaos')">🔥 Max Chaos</button>
+                </div>
+                <div>
+                  <button class="btn" onclick="saveAllSettings()">💾 Save All Settings</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <script>
+            // Current settings state
+            let currentSettings = ${JSON.stringify(settings)};
+
+            function toggleSetting(setting) {
+              const toggles = event.target;
+              toggles.classList.toggle('active');
+              
+              // Update settings object
+              if (setting.includes('.')) {
+                const [section, key] = setting.split('.');
+                currentSettings[section][key] = toggles.classList.contains('active');
+              } else {
+                // Handle top-level settings
+                if (setting === 'unhinged') {
+                  currentSettings.personality.unhinged = toggles.classList.contains('active');
+                } else if (setting === 'duelsEnabled') {
+                  currentSettings.aura.duelsEnabled = toggles.classList.contains('active');
+                } else if (setting === 'blessingsEnabled') {
+                  currentSettings.aura.blessingsEnabled = toggles.classList.contains('active');
+                } else if (setting === 'specialCommands') {
+                  currentSettings.aura.specialCommands = toggles.classList.contains('active');
+                } else if (setting === 'aiChat') {
+                  currentSettings.commands.aiChat = toggles.classList.contains('active');
+                }
+              }
+            }
+
+            function toggleCommand(command) {
+              const toggle = event.target;
+              toggle.classList.toggle('active');
+              currentSettings.commands.enabled[command] = toggle.classList.contains('active');
+            }
+
+            function updateSetting(setting, value) {
+              // Update currentSettings based on setting path
+              if (setting === 'responseStyle') {
+                currentSettings.personality.responseStyle = value;
+              } else if (setting === 'responseFrequency') {
+                currentSettings.personality.responseFrequency = parseInt(value);
+              } else if (setting === 'farmCooldown') {
+                currentSettings.aura.farmCooldown = value;
+              } else if (setting === 'auraName') {
+                currentSettings.aura.auraName = value;
+              } else if (setting === 'minReward') {
+                currentSettings.aura.minReward = value;
+              } else if (setting === 'maxReward') {
+                currentSettings.aura.maxReward = value;
+              } else if (setting === 'botName') {
+                currentSettings.branding.botName = value;
+              } else if (setting === 'welcomeMessage') {
+                currentSettings.branding.welcomeMessage = value;
+              } else if (setting === 'winTerms') {
+                currentSettings.branding.winTerms = value;
+              } else if (setting === 'lossTerms') {
+                currentSettings.branding.lossTerms = value;
+              } else if (setting === 'successEmoji') {
+                currentSettings.branding.successEmoji = value;
+              }
+            }
+
+            function loadPreset(preset) {
+              switch(preset) {
+                case 'family':
+                  currentSettings.personality.unhinged = false;
+                  currentSettings.personality.responseStyle = 'chill';
+                  currentSettings.aura.specialCommands = false;
+                  break;
+                case 'standard':
+                  currentSettings.personality.unhinged = false;
+                  currentSettings.personality.responseStyle = 'energetic';
+                  currentSettings.aura.specialCommands = false;
+                  break;
+                case 'chaos':
+                  currentSettings.personality.unhinged = true;
+                  currentSettings.personality.responseStyle = 'chaotic';
+                  currentSettings.personality.responseFrequency = 100;
+                  currentSettings.aura.specialCommands = true;
+                  break;
+              }
+              location.reload(); // Reload to show new settings
+            }
+
+            function saveAllSettings() {
+              fetch('/dashboard/save-settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(currentSettings)
+              })
+              .then(response => response.json())
+              .then(data => {
+                if (data.success) {
+                  showBanner('✅ Settings saved successfully!');
+                } else {
+                  showBanner('❌ Error saving settings: ' + data.error);
+                }
+              })
+              .catch(err => {
+                showBanner('❌ Network error saving settings');
+              });
+            }
+
+            function showBanner(message) {
+              const banner = document.createElement('div');
+              banner.className = 'success-banner show';
+              banner.textContent = message;
+              document.body.appendChild(banner);
+              
+              setTimeout(() => {
+                banner.classList.remove('show');
+                setTimeout(() => banner.remove(), 300);
+              }, 3000);
+            }
+          </script>
+        </body>
+        </html>
+      `);
+      
+    } catch (error) {
+      console.error('Advanced settings error:', error);
+      res.send('Error loading advanced settings. Please try again.');
+    }
+  });
+
+  // Save comprehensive settings from new dashboard
+  app.post('/dashboard/save-settings', async (req, res) => {
+    if (!req.session.user) {
+      return res.status(401).json({ success: false, error: 'Not authenticated' });
+    }
+    
+    try {
+      const platform = req.session.user.platform || 'twitch';
+      const result = await db.saveComprehensiveSettings(req.session.user.id, platform, req.body);
+      
+      res.json(result);
+    } catch (error) {
+      console.error('Comprehensive settings save error:', error);
+      res.json({ success: false, error: error.message });
+    }
+  });
+
+  // Legacy update settings (keep for compatibility)
   app.post('/dashboard/update', async (req, res) => {
     if (!req.session.user) {
       return res.redirect('/auth/streamer');
