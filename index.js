@@ -184,6 +184,11 @@ bot.command('help', async (ctx) => {
 • Switches AI personality for the whole chat
 • Use again to flip between wholesome and brainrot
 
+💀 **UNHINGED MODE SPECIALS** (3 uses total per day):
+**/edge** - 60% chance of +2-13 aura (unhinged only)
+**/goon** - 60% chance of +2-13 aura (unhinged only)  
+**/mew** - 60% chance of +2-13 aura (works in both modes)
+
 💀 **PRO TIPS:**
 • Each chat has its own aura ecosystem! 🏘️
 • Farm daily to stack that aura bag! 💸
@@ -280,6 +285,60 @@ bot.command('aura', async (ctx) => {
     const mentionedUsername = mentionMatch ? mentionMatch[1] : null;
     
     const result = await auraLogic.checkAura(userId, chatId, 'telegram', username, mentionedUsername);
+    await ctx.reply(result.message);
+  });
+});
+
+// /edge command - Unhinged special command
+bot.command('edge', async (ctx) => {
+  await handleCommand(ctx, async (ctx) => {
+    const chatId = ctx.chat.id.toString();
+    const userId = ctx.from.id.toString();
+    const username = ctx.from.username || ctx.from.first_name || 'unknown';
+    
+    // Get family-friendly setting for this chat
+    const familyFriendly = await db.getFamilyFriendlySetting('telegram', chatId);
+    
+    const result = await auraLogic.handleSpecialCommand(
+      userId, username, 'telegram', chatId, 'edge', familyFriendly
+    );
+    
+    await ctx.reply(result.message);
+  });
+});
+
+// /goon command - Unhinged special command  
+bot.command('goon', async (ctx) => {
+  await handleCommand(ctx, async (ctx) => {
+    const chatId = ctx.chat.id.toString();
+    const userId = ctx.from.id.toString();
+    const username = ctx.from.username || ctx.from.first_name || 'unknown';
+    
+    // Get family-friendly setting for this chat
+    const familyFriendly = await db.getFamilyFriendlySetting('telegram', chatId);
+    
+    const result = await auraLogic.handleSpecialCommand(
+      userId, username, 'telegram', chatId, 'goon', familyFriendly
+    );
+    
+    await ctx.reply(result.message);
+  });
+});
+
+// /mew command - Family-friendly special command
+bot.command('mew', async (ctx) => {
+  await handleCommand(ctx, async (ctx) => {
+    const chatId = ctx.chat.id.toString();
+    const userId = ctx.from.id.toString();
+    const username = ctx.from.username || ctx.from.first_name || 'unknown';
+    
+    // Get family-friendly setting for this chat (mew works in both modes)
+    const familyFriendly = await db.getFamilyFriendlySetting('telegram', chatId);
+    
+    const result = await auraLogic.handleSpecialCommand(
+      userId, username, 'telegram', chatId, 'mew', familyFriendly
+    );
+    
     await ctx.reply(result.message);
   });
 });

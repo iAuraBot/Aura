@@ -164,6 +164,18 @@ async function handleTwitchMessage(channel, chatId, userId, username, message, u
           await handleUnhinge(channel, chatId, userId, username, userstate, args);
           break;
 
+        case 'edge':
+          await handleSpecialCommand(channel, chatId, userId, username, 'edge');
+          break;
+
+        case 'goon':
+          await handleSpecialCommand(channel, chatId, userId, username, 'goon');
+          break;
+
+        case 'mew':
+          await handleSpecialCommand(channel, chatId, userId, username, 'mew');
+          break;
+
         case 'help':
         case 'commands':
           await handleHelp(channel);
@@ -302,6 +314,11 @@ async function handleHelp(channel) {
     • Switches AI personality for the whole channel
     • Use again to flip between wholesome and brainrot
 
+💀 **UNHINGED MODE SPECIALS** (3 uses total per day):
+**!edge** - 60% chance of +2-13 aura (unhinged only)
+**!goon** - 60% chance of +2-13 aura (unhinged only)  
+**!mew** - 60% chance of +2-13 aura (works in both modes)
+
 💀 **PRO TIPS:**
 • Each channel has its own aura ecosystem! 🏘️
 • Farm daily to stack that aura bag! 💸
@@ -437,6 +454,23 @@ async function handleUnhinge(channel, chatId, userId, username, userstate, args)
   } catch (error) {
     console.error('Error in handleUnhinge:', error);
     await sayInChannel(channel, `@${username} Error toggling AI mode! 💀`);
+  }
+}
+
+// Handle special commands (edge, goon, mew)
+async function handleSpecialCommand(channel, chatId, userId, username, commandType) {
+  try {
+    // Get family-friendly setting for this channel
+    const familyFriendly = await db.getFamilyFriendlySetting('twitch', chatId);
+    
+    const result = await auraLogic.handleSpecialCommand(
+      userId, username, 'twitch', chatId, commandType, familyFriendly
+    );
+    
+    await sayInChannel(channel, `@${username} ${result.message}`);
+  } catch (error) {
+    console.error(`Error in handleSpecialCommand (${commandType}):`, error);
+    await sayInChannel(channel, `@${username} Error with special command! 💀`);
   }
 }
 

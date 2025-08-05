@@ -12,8 +12,10 @@ const POSITIVE_FLAVORS = [
   '🎭 GYATT DAYUM! That farm was absolutely BUSSIN AF!',
   '🏆 SKIBIDI SIGMA! Your grindset is GOATED AF fr fr!',
   '⭐ POGGERS FARM! You\'re the BIGGEST BIRD in here!',
-  '🌟 ZESTY AF ENERGY! This aura farm was absolutely FIRE!',
-  '💫 RIZZIN UP the universe! Your charm is UNMATCHED AF!'
+  '🌟 BASED AF ENERGY! This aura farm was absolutely FIRE!',
+  '💫 RIZZIN UP the universe! Your charm is UNMATCHED AF!',
+  '🔥 LOCKED IN! You\'re absolutely AURA MAXXIN right now!',
+  '⚡ QUIT EDGING AND FARMED! That was some SIGMA behavior!'
 ];
 
 const NEGATIVE_FLAVORS = [
@@ -36,7 +38,11 @@ const NEGATIVE_FLAVORS = [
   '🤮 NOT BUSSIN AF! Your aura tastes like expired milk!',
   '🕺 SKIBIDI TOILET LUCK! Your farm got FLUSHED!',
   '😵 SUSSY AF IMPOSTER vibes! Your farm was CAP!',
-  '🧠 NEGATIVE RIZZ detected! You\'re in your FLOP era AF!'
+  '🧠 NEGATIVE RIZZ detected! You\'re in your FLOP era AF!',
+  '😵 STOP GOONING AROUND! Your farm got absolutely COOKED!',
+  '💀 YOU\'RE COOKED BRO! This L hit different!',
+  '🤮 ZESTY AF BEHAVIOR! Your farm was absolutely SUS!',
+  '😵 SUSSY AND ZESTY VIBES! That farm was questionable fr!'
 ];
 
 const JACKPOT_FLAVORS = [
@@ -47,7 +53,9 @@ const JACKPOT_FLAVORS = [
   '🕺 SKIBIDI BOP YES YES! Your grindset just went NUCLEAR AF!',
   '🏆 POGGERS! You\'re literally the BIGGEST BIRD in existence!',
   '⭐ BUSSIN AF JACKPOT! This luck is absolutely GOATED!',
-  '💫 ZESTY AF ENERGY OVERFLOW! Your aura is hittin DIFFERENT!'
+  '💫 LEGENDARY AF ENERGY OVERFLOW! Your aura is hittin DIFFERENT!',
+  '🚀 LOCKED IN JACKPOT! You\'re absolutely AURA MAXXIN!',
+  '⚡ QUIT EDGING THE UNIVERSE! This luck is UNHINGED!'
 ];
 
 const IMPLOSION_FLAVORS = [
@@ -80,7 +88,11 @@ const DUEL_WIN_FLAVORS = [
   '🤡 {loser} really thought they could mog {winner}? GOOFY AHH move AF!',
   '🎯 {winner} is the BIGGEST BIRD! {loser} got sent to OHIO AF!',
   '🧠 {winner}\'s GIGACHAD energy was too much for {loser}\'s mid AF rizz!',
-  '🍕 {winner} served {loser} a GLIZZY SIZED L! That was BUSSIN AF!'
+  '🍕 {winner} served {loser} a GLIZZY SIZED L! That was BUSSIN AF!',
+  '🔥 {winner} LOCKED IN while {loser} was just GOONING AROUND!',
+  '💀 {loser} got absolutely COOKED by {winner}\'s SIGMA energy!',
+  '🤮 {loser}\'s ZESTY AF performance got destroyed by {winner}!',
+  '😵 {winner} called out {loser}\'s SUSSY AND ZESTY behavior!'
 ];
 
 const BLESSING_FLAVORS = [
@@ -93,10 +105,168 @@ const BLESSING_FLAVORS = [
   '🎭 GYATT! That blessing was absolutely BUSSIN AF!',
   '🕺 SKIBIDI GENEROUS AF! You\'re hittin the GRIDDY of kindness!',
   '🏆 POGGERS BLESSING! You\'re the BIGGEST BIRD of generosity!',
-  '🌟 ZESTY AF GIVING! This blessing energy is OFF THE CHARTS!'
+  '🌟 GIGACHAD AF GIVING! This blessing energy is OFF THE CHARTS!',
+  '🔥 LOCKED IN GENEROSITY! You\'re AURA MAXXIN for the homies!',
+  '⚡ QUIT EDGING AND BLESSED! That\'s some GIGACHAD behavior!'
+];
+
+// Special command flavors
+const EDGE_FLAVORS = [
+  '🔥 EDGING SUCCESS! You got that +{amount} aura without finishing!',
+  '💀 EDGE LORD ACTIVATED! +{amount} aura from pure self-control!',
+  '⚡ EDGING MASTER! Your restraint earned +{amount} aura!',
+  '🎯 EDGE GAME STRONG! +{amount} aura for that sigma behavior!',
+  '🔥 LOCKED IN EDGING! Your willpower got you +{amount} aura!'
+];
+
+const GOON_FLAVORS = [
+  '💀 GOONING SESSION COMPLETE! +{amount} aura acquired!',
+  '🔥 GOON MODE ACTIVATED! That focus got you +{amount} aura!',
+  '⚡ GOONING GRINDSET! Your dedication earned +{amount} aura!',
+  '🎯 PROFESSIONAL GOONER! +{amount} aura for that commitment!',
+  '💪 GOON CAVE ENERGY! Your session produced +{amount} aura!'
+];
+
+const MEW_FLAVORS = [
+  '🗿 MEWING SUCCESS! Your jawline grind earned +{amount} aura!',
+  '💪 JAWLINE GAINS! Mewing session got you +{amount} aura!',
+  '🔥 MEWING STREAK! Your facial gains earned +{amount} aura!',
+  '💀 CHAD JAWLINE! Mewing technique got +{amount} aura!',
+  '⚡ FACIAL STRUCTURE LOCKED IN! Mewing earned +{amount} aura!'
+];
+
+const SPECIAL_FAIL_FLAVORS = [
+  '💀 COOKED! Your special move backfired - no aura!',
+  '😵 FUMBLED THE BAG! That attempt was mid af!',
+  '🤡 L + RATIO! Your special command got absolutely rekt!',
+  '💥 FAILED! Your technique was too weak for aura!',
+  '😭 SKILL ISSUE! Maybe try again later!'
 ];
 
 
+
+// Special Commands Logic (/edge, /goon, /mew)
+async function handleSpecialCommand(userId, username, platform, chatId, commandType, familyFriendly = false) {
+  try {
+    // Check if /edge or /goon is used in family-friendly mode
+    if (familyFriendly && (commandType === 'edge' || commandType === 'goon')) {
+      return {
+        success: false,
+        message: '🌸 These commands are only available in unhinged mode! Use `/unhinge` to unlock them.'
+      };
+    }
+
+    // Get user data
+    const user = await db.getUser(userId, username, platform, chatId);
+    if (!user) {
+      return {
+        success: false, 
+        message: '💀 User not found! Try `/aurafarm` first to get started!'
+      };
+    }
+
+    // Check daily special commands usage (stored in a hypothetical special_uses column)
+    const today = new Date().toDateString();
+    let specialUses = 0;
+    let lastSpecialDate = null;
+
+    // Parse special command data (we'll store as JSON in a column)
+    if (user.special_data) {
+      try {
+        const specialData = JSON.parse(user.special_data);
+        if (specialData.date === today) {
+          specialUses = specialData.uses || 0;
+        }
+        lastSpecialDate = specialData.date;
+      } catch (e) {
+        // Invalid JSON, reset
+        specialUses = 0;
+      }
+    }
+
+    // Check if user has uses remaining
+    if (specialUses >= 3) {
+      return {
+        success: false,
+        message: `💀 You've used all 3 special commands today! Resets in ${getTimeUntilReset()} hours.`
+      };
+    }
+
+    // 60% success rate
+    const success = Math.random() < 0.6;
+    
+    if (!success) {
+      // Increment usage even on failure
+      const newSpecialData = {
+        date: today,
+        uses: specialUses + 1
+      };
+
+      await db.updateSpecialData(userId, JSON.stringify(newSpecialData));
+
+      const failFlavor = getRandomElement(SPECIAL_FAIL_FLAVORS);
+      const remaining = 3 - (specialUses + 1);
+      
+      return {
+        success: true,
+        message: `${failFlavor}\n\n**Special commands remaining today: ${remaining}/3**`
+      };
+    }
+
+    // Success! Award aura
+    const auraGain = Math.floor(Math.random() * 12) + 2; // 2-13 aura
+    await db.updateAura(userId, user.aura + auraGain);
+
+    // Update special command usage
+    const newSpecialData = {
+      date: today,
+      uses: specialUses + 1
+    };
+    await db.updateSpecialData(userId, JSON.stringify(newSpecialData));
+
+    // Get appropriate flavor text
+    let flavors;
+    switch (commandType) {
+      case 'edge':
+        flavors = EDGE_FLAVORS;
+        break;
+      case 'goon':
+        flavors = GOON_FLAVORS;
+        break;
+      case 'mew':
+        flavors = MEW_FLAVORS;
+        break;
+      default:
+        flavors = EDGE_FLAVORS;
+    }
+
+    const flavor = getRandomElement(flavors).replace('{amount}', auraGain);
+    const remaining = 3 - (specialUses + 1);
+    const newTotal = user.aura + auraGain;
+
+    return {
+      success: true,
+      message: `${flavor}\n\n💫 **Total: ${newTotal} aura**\n**Special commands remaining today: ${remaining}/3**`
+    };
+
+  } catch (error) {
+    console.error('Error in handleSpecialCommand:', error);
+    return {
+      success: false,
+      message: '💀 Something went wrong! Try again later.'
+    };
+  }
+}
+
+function getTimeUntilReset() {
+  const now = new Date();
+  const tomorrow = new Date(now);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);
+  
+  const hoursUntilReset = Math.ceil((tomorrow - now) / (1000 * 60 * 60));
+  return hoursUntilReset;
+}
 
 // Utility functions
 function getRandomElement(array) {
@@ -488,6 +658,7 @@ module.exports = {
   formatUsername,
   getRandomElement,
   findUserByUsername,
+  handleSpecialCommand,
   POSITIVE_FLAVORS,
   NEGATIVE_FLAVORS,
   JACKPOT_FLAVORS,

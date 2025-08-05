@@ -678,14 +678,51 @@ async function setFamilyFriendlySetting(platform, channelId, channelName, family
   }
 }
 
-module.exports = { 
+// Update special command data for daily usage tracking
+async function updateSpecialData(userId, specialData) {
+  try {
+    const { data, error } = await supabase
+      .from('aura')
+      .update({ 
+        special_data: specialData,
+        updated_at: new Date().toISOString()
+      })
+      .eq('user_id', userId)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error updating special data:', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint,
+        stack: error.stack
+      });
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Error in updateSpecialData:', {
+      message: error.message,
+      code: error.code,
+      details: error.details,
+      hint: error.hint,
+      stack: error.stack
+    });
+    return false;
+  }
+}
+
+module.exports = {
   supabase, // Export the supabase client for direct queries
-  getUser, 
-  updateAura, 
-  updateLastFarm, 
-  updateReactions, 
-  getTopUsers, 
-  getMostReactiveUser, 
+  getUser,
+  updateAura,
+  updateLastFarm,
+  updateReactions,
+  getTopUsers,
+  getMostReactiveUser,
   resetDailyReactions,
   canUserFarm,
   createChannelConfig,
@@ -697,6 +734,7 @@ module.exports = {
   getChannelSettings,
   getFamilyFriendlySetting,
   setFamilyFriendlySetting,
+  updateSpecialData,
   checkDatabaseHealth,
   retryOperation
 };
