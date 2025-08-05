@@ -43,10 +43,7 @@ CREATE TABLE IF NOT EXISTS conversation_history (
   chat_id TEXT,
   message_text TEXT NOT NULL,
   is_user_message BOOLEAN NOT NULL DEFAULT true,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  
-  -- Index for efficient retrieval
-  INDEX(user_id, platform, created_at DESC)
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- 4. Create bot_state table for Twitter integration
@@ -56,6 +53,14 @@ CREATE TABLE IF NOT EXISTS bot_state (
   value JSONB NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Add missing columns if table exists but incomplete
+ALTER TABLE bot_state ADD COLUMN IF NOT EXISTS value JSONB;
+ALTER TABLE bot_state ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+
+-- Make value column NOT NULL after adding it
+UPDATE bot_state SET value = '{}'::jsonb WHERE value IS NULL;
+ALTER TABLE bot_state ALTER COLUMN value SET NOT NULL;
 
 -- Insert default bot state for Twitter
 INSERT INTO bot_state (key, value) VALUES (
@@ -75,10 +80,7 @@ CREATE TABLE IF NOT EXISTS twitter_memory (
   message_text TEXT NOT NULL,
   is_user_message BOOLEAN NOT NULL DEFAULT true,
   tweet_id TEXT,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  
-  -- Index for efficient retrieval
-  INDEX(user_id, created_at DESC)
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- 6. Create channel_settings table for family-friendly mode
