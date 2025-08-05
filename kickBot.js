@@ -2,7 +2,7 @@ const auraLogic = require('./auraLogic.js');
 const db = require('./db.js');
 const claude = require('./lib/claude.js');
 const { WebSocket } = require('ws');
-const axios = require('axios');
+// Using built-in fetch instead of axios (Node.js 18+)
 
 // Kick client instance and connection state
 let kickWebSocket = null;
@@ -542,8 +542,9 @@ async function leavKickChannel(channelName) {
 // Get Kick channel information
 async function getKickChannelInfo(channelName) {
   try {
-    const response = await axios.get(`${KICK_API_BASE}/channels/${channelName}`);
-    return response.data;
+    const response = await fetch(`${KICK_API_BASE}/channels/${channelName}`);
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error(`❌ Error getting Kick channel info for ${channelName}:`, error);
     return null;
