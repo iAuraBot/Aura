@@ -378,71 +378,132 @@ function setupWebInterface(app) {
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
         <style>
-          body { 
-            font-family: 'Poppins', Arial, sans-serif; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body {
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: 
+              linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)),
+              url('/assets/aurafarmbot.png') center center;
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0;
             color: white;
+            overflow-x: hidden;
           }
           .container {
-            max-width: 600px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
+            width: 100%;
+            max-width: 700px;
+            padding: 60px 40px;
             text-align: center;
+            position: relative;
+            z-index: 2;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
           }
+          h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 20px; 
+            font-weight: 700;
+            background: linear-gradient(45deg, #ffd700, #ffeb3b, #ff9800);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.7));
+            line-height: 1.2;
+          }
+          .description { 
+            font-size: 1.2rem; 
+            margin-bottom: 30px; 
+            line-height: 1.6; 
+            opacity: 0.8;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+          }
           .permissions {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 25px;
             margin: 25px 0;
             text-align: left;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+          }
+          .permissions:hover {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+          }
+          .permissions h3 {
+            color: #ffd700;
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
           }
           .permission-item {
             display: flex;
             align-items: center;
             margin: 15px 0;
             font-size: 16px;
+            line-height: 1.4;
           }
           .permission-item .icon {
             font-size: 24px;
             margin-right: 15px;
             width: 30px;
+            flex-shrink: 0;
           }
           .btn {
-            background: linear-gradient(45deg, #9146ff, #00d4ff);
-            color: white;
-            padding: 15px 40px;
-            border: none;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: 600;
-            text-decoration: none;
             display: inline-block;
-            margin: 20px 10px;
+            padding: 18px 36px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #1f2937;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
             transition: all 0.3s ease;
             cursor: pointer;
+            border: none;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            margin: 10px;
           }
-          .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+          .btn:hover { 
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
           }
-          .btn-secondary {
+          .btn-secondary { 
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+          }
+          .btn-secondary:hover { 
             background: rgba(255, 255, 255, 0.2);
             color: white;
+          }
+          @media (max-width: 768px) {
+            .container { padding: 40px 20px; }
+            h1 { font-size: 2rem; }
+            .permissions { padding: 20px; }
+            .permission-item { font-size: 14px; }
           }
         </style>
       </head>
       <body>
         <div class="container">
           <h1>🎮 Connect Your Twitch Channel</h1>
-          <p>AuraFarmBot needs permission to join your channel and respond to commands.</p>
+          <p class="description">AuraFarmBot needs permission to join your channel and respond to commands.</p>
           
           <div class="permissions">
             <h3>📋 What We're Requesting:</h3>

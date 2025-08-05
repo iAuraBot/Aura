@@ -19,15 +19,15 @@ function initializeTwitchBot() {
     return null;
   }
 
+  // Get initial channels from env (optional for OAuth flow)
   const channels = process.env.TWITCH_CHANNELS ? process.env.TWITCH_CHANNELS.split(',').map(ch => ch.trim()) : [];
   
-  if (channels.length === 0) {
-    console.log('⚠️ No Twitch channels specified. Skipping Twitch bot initialization.');
-    return null;
-  }
-
   console.log('🔥 Initializing Twitch bot...');
-  console.log(`🎯 Target channels: ${channels.join(', ')}`);
+  if (channels.length > 0) {
+    console.log(`🎯 Initial channels: ${channels.join(', ')}`);
+  } else {
+    console.log('🎯 Starting with no channels - will join via OAuth flow');
+  }
   
   twitchClient = new tmi.Client({
     options: { 
@@ -42,7 +42,7 @@ function initializeTwitchBot() {
       username: process.env.TWITCH_BOT_USERNAME.toLowerCase(), // CRITICAL: Username must be lowercase per Twitch docs
       password: process.env.TWITCH_OAUTH_TOKEN // Should be in format: oauth:your_token_here
     },
-    channels: channels.map(channel => channel.toLowerCase()) // Ensure channel names are lowercase
+    channels: channels.length > 0 ? channels.map(channel => channel.toLowerCase()) : [] // Start with no channels if none specified
   });
 
   // Event listeners
