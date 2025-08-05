@@ -364,7 +364,7 @@ async function handleHelp(channel) {
 
 🕺 **!emote [dance move]**
 • Celebrate with brainrot dance energy!
-• Use `!emote` for random dance or `!emote custom move`
+• Use \`!emote\` for random dance or \`!emote custom move\`
 • Example: \`!emote\` or \`!emote hit the griddy\`
 
 💀 **PRO TIPS:**
