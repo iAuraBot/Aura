@@ -19,9 +19,9 @@ const POSITIVE_FLAVORS = [
 ];
 
 const NEGATIVE_FLAVORS = [
-  '💀 L + RATIO! Your farm just got COOKED AF!',
+  '🫵😹 L + RATIO! Your farm just got COOKED AF!',
   '😭 SKILL ISSUE! Time to touch grass fr!',
-  '🤡 CRINGE AF FARM! Your aura said "nah fam"!',
+  '🫵😹 CRINGE AF FARM! Your aura said "nah fam"!',
   '💩 MID AF FARMING! This is some BETA behavior!',
   '🚫 COPE + SEETHE! Your aura game is WEAK AF!',
   '🗿 ONLY IN OHIO! Your farm was SUS AF as hell!',
@@ -40,7 +40,7 @@ const NEGATIVE_FLAVORS = [
   '😵 SUSSY AF IMPOSTER vibes! Your farm was CAP!',
   '🧠 NEGATIVE RIZZ detected! You\'re in your FLOP era AF!',
   '😵 STOP GOONING AROUND! Your farm got absolutely COOKED!',
-  '💀 YOU\'RE COOKED BRO! This L hit different!',
+  '🫵😹 YOU\'RE COOKED BRO! This L hit different!',
   '🤮 ZESTY AF BEHAVIOR! Your farm was absolutely SUS!',
   '😵 SUSSY AND ZESTY VIBES! That farm was questionable fr!'
 ];
@@ -73,7 +73,7 @@ const IMPLOSION_FLAVORS = [
 const DUEL_WIN_FLAVORS = [
   '⚔️ {winner} absolutely MOGGED {loser}! NO MERCY!',
   '🏆 {winner} said "GET REKT" and FANUM TAXED {loser}!',
-  '💀 {winner} just RATIO\'D {loser} into the SHADOW REALM!',
+  '🫵😹 {winner} just RATIO\'D {loser} into the SHADOW REALM!',
   '⚡ {winner} FLEXED that SIGMA GRINDSET on {loser}!',
   '🔥 {winner} COOKED {loser} like it\'s THANKSGIVING!',
   '🗿 {winner} just ENDED {loser}\'s whole career! SHEESH!',
@@ -85,12 +85,12 @@ const DUEL_WIN_FLAVORS = [
   '🌊 {winner} created a GENERATIONAL WEALTH GAP in {loser}\'s aura!',
   '🎭 GYATT! {winner} just RIZZIN UP their W while {loser} got DELULU AF!',
   '🕺 {winner} hit the GRIDDY on {loser}\'s aura! SKIBIDI AF MOMENT!',
-  '🤡 {loser} really thought they could mog {winner}? GOOFY AHH move AF!',
+  '🫵😹 {loser} really thought they could mog {winner}? GOOFY AHH move AF!',
   '🎯 {winner} is the BIGGEST BIRD! {loser} got sent to OHIO AF!',
   '🧠 {winner}\'s GIGACHAD energy was too much for {loser}\'s mid AF rizz!',
   '🍕 {winner} served {loser} a GLIZZY SIZED L! That was BUSSIN AF!',
   '🔥 {winner} LOCKED IN while {loser} was just GOONING AROUND!',
-  '💀 {loser} got absolutely COOKED by {winner}\'s SIGMA energy!',
+  '🫵😹 {loser} got absolutely COOKED by {winner}\'s SIGMA energy!',
   '🤮 {loser}\'s ZESTY AF performance got destroyed by {winner}!',
   '😵 {winner} called out {loser}\'s SUSSY AND ZESTY behavior!'
 ];
@@ -137,7 +137,7 @@ const MEW_FLAVORS = [
 
 const SPECIAL_FAIL_FLAVORS = [
   '💀 COOKED! Your special move backfired - no aura!',
-  '😵 FUMBLED THE BAG! That attempt was mid af!',
+  '🫵😹 FUMBLED THE BAG! That attempt was mid af!',
   '🤡 L + RATIO! Your special command got absolutely rekt!',
   '💥 FAILED! Your technique was too weak for aura!',
   '😭 SKILL ISSUE! Maybe try again later!'

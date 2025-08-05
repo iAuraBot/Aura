@@ -272,8 +272,8 @@ function setupWebInterface(app) {
               <div class="feature-desc">Daily chaos harvest with random W's and L's - noobs get extra protection fr</div>
             </div>
             <div class="feature-card">
-              <span class="feature-emoji">💀</span>
-              <div class="feature-title">Moggin Battles</div>
+              <span class="feature-emoji">🫵😹</span>
+              <div class="feature-title">Get Mogged</div>
               <div class="feature-desc">1v1 showdowns where you bet your aura - winner takes all, loser gets absolutely cooked</div>
             </div>
                           <div class="feature-card">
@@ -291,11 +291,7 @@ function setupWebInterface(app) {
               <div class="feature-title">Bless Your Homies</div>
               <div class="feature-desc">Gift aura to your friends with absolutely unhinged blessing messages - pure wholesome chaos</div>
             </div>
-            <div class="feature-card">
-              <span class="feature-emoji">🧠</span>
-              <div class="feature-title">Big Brain Memory</div>
-              <div class="feature-desc">Actually remembers your convos across all platforms - no short-term memory L's here</div>
-            </div>
+
             <div class="feature-card">
               <span class="feature-emoji">⚙️</span>
               <div class="feature-title">Custom Chaos Levels</div>
