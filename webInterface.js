@@ -772,6 +772,7 @@ function setupWebInterface(app) {
               <p><code>!mog @user [amount]</code> - Challenge to mog</p>
               <p><code>!auraboard</code> - View leaderboard</p>
               <p><code>!bless @user [amount]</code> - Give aura to someone</p>
+              <p><code>!emote [dance move]</code> - Random brainrot dance celebration</p>
               <p><code>!help</code> - Show command list</p>
               <h3>AI Conversations:</h3>
               <p><code>@aurafarmbot [message]</code> - Chat with Claude AI</p>
@@ -1452,6 +1453,466 @@ function setupWebInterface(app) {
   app.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/');
+  });
+
+  // ===========================================
+  // KICK OAUTH ROUTES
+  // ===========================================
+
+  // Kick Streamer OAuth - Step 1: Show permission explanation then redirect
+  app.get('/auth/kick/streamer', (req, res) => {
+    res.send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Connect Your Kick Channel - AuraFarmBot</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+        <style>
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body {
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: 
+              linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)),
+              url('/assets/aurafarmbot.png') center center;
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            overflow-x: hidden;
+          }
+          .container {
+            width: 100%;
+            max-width: 700px;
+            padding: 60px 40px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+          }
+          h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 20px; 
+            font-weight: 700;
+            background: linear-gradient(45deg, #ffd700, #ffeb3b, #ff9800);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.7));
+            line-height: 1.2;
+          }
+          .description { 
+            font-size: 1.2rem; 
+            margin-bottom: 30px; 
+            line-height: 1.6; 
+            opacity: 0.8;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+          }
+          .permissions {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 25px;
+            margin: 25px 0;
+            text-align: left;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+          }
+          .permissions:hover {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+          }
+          .permissions h3 {
+            color: #ffd700;
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+          }
+          .permission-item {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            font-size: 16px;
+            line-height: 1.4;
+          }
+          .permission-item .icon {
+            font-size: 24px;
+            margin-right: 15px;
+            width: 30px;
+            flex-shrink: 0;
+          }
+          .btn {
+            display: inline-block;
+            padding: 18px 36px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #1f2937;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            margin: 10px;
+          }
+          .btn:hover { 
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+          }
+          .btn-secondary { 
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+          }
+          .btn-secondary:hover { 
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+          }
+          @media (max-width: 768px) {
+            .container { padding: 40px 20px; }
+            h1 { font-size: 2rem; }
+            .permissions { padding: 20px; }
+            .permission-item { font-size: 14px; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>🦶 Connect Your Kick Channel</h1>
+          <p class="description">AuraFarmBot needs permission to join your channel and respond to commands.</p>
+          
+          <div class="permissions">
+            <h3>🔐 Required Permissions:</h3>
+            <div class="permission-item">
+              <span class="icon">👤</span>
+              <span><strong>Read user information:</strong> To identify your channel and manage settings</span>
+            </div>
+            <div class="permission-item">
+              <span class="icon">💬</span>
+              <span><strong>Write to chat:</strong> To respond to commands and send aura updates</span>
+            </div>
+          </div>
+          
+          <div class="permissions">
+            <h3>🤖 What AuraFarmBot Will Do:</h3>
+            <div class="permission-item">
+              <span class="icon">🎮</span>
+              <span>Join your Kick channel automatically</span>
+            </div>
+            <div class="permission-item">
+              <span class="icon">💀</span>
+              <span>Respond to !aurafarm, !mog, !emote, and other commands</span>
+            </div>
+            <div class="permission-item">
+              <span class="icon">🧠</span>
+              <span>Chat with Claude AI when mentioned (@iaurafarmbot)</span>
+            </div>
+            <div class="permission-item">
+              <span class="icon">📊</span>
+              <span>Track aura points separately for your channel</span>
+            </div>
+          </div>
+          
+          <a href="/auth/kick/streamer/authorize" class="btn">🔗 Connect Channel</a>
+          <a href="/" class="btn btn-secondary">Cancel</a>
+        </div>
+      </body>
+      </html>
+    `);
+  });
+
+  // Actual Kick authorization redirect
+  app.get('/auth/kick/streamer/authorize', (req, res) => {
+    const state = crypto.randomBytes(16).toString('hex');
+    const scopes = 'user:read+chatroom:write'; // Kick scopes for reading user info and writing to chat
+    
+    // Store state for verification
+    oauthStates.set(state, { 
+      timestamp: Date.now(),
+      type: 'kick_streamer_auth'
+    });
+    
+    const authUrl = `https://kick.com/oauth2/authorize?` +
+      `client_id=${process.env.KICK_CLIENT_ID}&` +
+      `redirect_uri=${encodeURIComponent(process.env.KICK_REDIRECT_URI)}&` +
+      `response_type=code&` +
+      `scope=${encodeURIComponent(scopes)}&` +
+      `state=${state}`;
+    
+    res.redirect(authUrl);
+  });
+
+  // Kick Streamer OAuth - Step 2: Handle callback and authorize bot for their channel
+  app.get('/auth/kick/callback', async (req, res) => {
+    const { code, state, error } = req.query;
+    
+    if (error) {
+      return res.send(`
+        <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+          <h2>❌ Authorization Failed</h2>
+          <p>Error: ${error}</p>
+          <a href="/" style="color: #53fc18;">← Back to Homepage</a>
+        </div>
+      `);
+    }
+    
+    if (!oauthStates.has(state)) {
+      return res.send(`
+        <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+          <h2>❌ Invalid Request</h2>
+          <p>Security verification failed. Please try again.</p>
+          <a href="/" style="color: #53fc18;">← Back to Homepage</a>
+        </div>
+      `);
+    }
+    
+    oauthStates.delete(state);
+    
+    try {
+      // Exchange code for access token
+      const tokenResponse = await fetch('https://kick.com/oauth2/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          client_id: process.env.KICK_CLIENT_ID,
+          client_secret: process.env.KICK_CLIENT_SECRET,
+          code: code,
+          grant_type: 'authorization_code',
+          redirect_uri: process.env.KICK_REDIRECT_URI,
+        }),
+      });
+      
+      const tokenData = await tokenResponse.json();
+      
+      if (!tokenResponse.ok) {
+        throw new Error(`Token exchange failed: ${tokenData.message}`);
+      }
+      
+      // Get user info from Kick API
+      const userResponse = await fetch('https://kick.com/api/v2/user', {
+        headers: {
+          'Authorization': `Bearer ${tokenData.access_token}`,
+          'Accept': 'application/json',
+        },
+      });
+      
+      const userData = await userResponse.json();
+      const user = userData; // Kick API structure
+      
+      // Store user session
+      req.session.user = {
+        id: user.id,
+        username: user.username,
+        slug: user.slug,
+        access_token: tokenData.access_token,
+        platform: 'kick'
+      };
+      
+      // Store channel configuration in database
+      await db.createChannelConfig(user.id, user.slug, {
+        display_name: user.username,
+        bot_enabled: true,
+        platform: 'kick', // Will be stored in platform column
+        settings: {
+          farm_cooldown: 24, // hours
+          farm_min_reward: 20,
+          farm_max_reward: 50,
+          duel_enabled: true,
+          blessing_enabled: true,
+          custom_welcome: `Welcome to ${user.username}'s aura farming community!`,
+          custom_flavors: null // Will use defaults
+        }
+      });
+      
+      // Add channel to active channels 
+      activeChannels.add(user.slug);
+      
+      // Actually join the channel!
+      const kickBot = require('./kickBot');
+      const joinSuccess = await kickBot.joinKickChannel(user.slug);
+      
+      console.log(`🦶 New Kick channel authorized: ${user.slug} (${user.username})`);
+      console.log(`🔗 Bot join attempt: ${joinSuccess ? 'SUCCESS' : 'FAILED'}`);
+      
+      res.send(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Success - AuraFarmBot Added to Kick!</title>
+          <link rel="preconnect" href="https://fonts.googleapis.com">
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+          <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+          <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body {
+              font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+              background: 
+                linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)),
+                url('/assets/aurafarmbot.png') center center;
+              background-size: cover;
+              background-attachment: fixed;
+              background-repeat: no-repeat;
+              min-height: 100vh;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              color: white;
+              overflow-x: hidden;
+            }
+            .container {
+              width: 100%;
+              max-width: 700px;
+              padding: 60px 40px;
+              text-align: center;
+              position: relative;
+              z-index: 2;
+              margin: 0 auto;
+              background: rgba(0, 0, 0, 0.3);
+              border-radius: 20px;
+              backdrop-filter: blur(10px);
+              border: 1px solid rgba(255, 255, 255, 0.1);
+              box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            }
+            h1 { 
+              font-size: 2.5rem; 
+              margin-bottom: 20px; 
+              font-weight: 700;
+              background: linear-gradient(45deg, #ffd700, #ffeb3b, #ff9800);
+              -webkit-background-clip: text;
+              -webkit-text-fill-color: transparent;
+              background-clip: text;
+              filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.7));
+              line-height: 1.2;
+            }
+            .success-message {
+              font-size: 1.3rem;
+              margin-bottom: 30px;
+              color: #53fc18;
+              font-weight: 600;
+            }
+            .status {
+              background: rgba(0, 0, 0, 0.5);
+              backdrop-filter: blur(15px);
+              border-radius: 16px;
+              border: 1px solid rgba(255, 255, 255, 0.2);
+              padding: 25px;
+              margin: 25px 0;
+              text-align: left;
+            }
+            .commands {
+              background: rgba(0, 0, 0, 0.5);
+              backdrop-filter: blur(15px);
+              border-radius: 16px;
+              border: 1px solid rgba(255, 255, 255, 0.2);
+              padding: 25px;
+              margin: 25px 0;
+              text-align: left;
+            }
+            .commands h3 {
+              color: #ffd700;
+              font-weight: 700;
+              margin-bottom: 15px;
+              font-size: 1.2rem;
+            }
+            .commands p {
+              margin: 10px 0;
+              font-family: 'Courier New', monospace;
+              background: rgba(255, 255, 255, 0.1);
+              padding: 8px 12px;
+              border-radius: 6px;
+              font-size: 14px;
+            }
+            .btn {
+              display: inline-block;
+              padding: 18px 36px;
+              background: rgba(255, 255, 255, 0.9);
+              color: #1f2937;
+              text-decoration: none;
+              border-radius: 12px;
+              font-weight: 700;
+              font-size: 1.1rem;
+              transition: all 0.3s ease;
+              cursor: pointer;
+              border: none;
+              backdrop-filter: blur(10px);
+              box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+              margin: 10px;
+            }
+            .btn:hover { 
+              background: rgba(255, 255, 255, 1);
+              transform: translateY(-3px);
+              box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            }
+            .btn-secondary { 
+              background: rgba(255, 255, 255, 0.1);
+              color: white;
+              border: 2px solid rgba(255, 255, 255, 0.3);
+            }
+            .btn-secondary:hover { 
+              background: rgba(255, 255, 255, 0.2);
+              color: white;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <h1>🎉 Success!</h1>
+            <div class="success-message">AuraFarmBot has been added to your Kick channel!</div>
+            
+            <div class="status">
+              <h3>📊 Status:</h3>
+                            <p>🔍 <strong>Look for "iaurafarmbot" in your viewer list!</strong></p>
+                <p>The bot should appear in your chat within 30-60 seconds.</p>
+            
+            <div class="commands">
+              <h3>Available Commands:</h3>
+              <p><code>!aurafarm</code> - Farm aura (24h cooldown)</p>
+              <p><code>!aura [@user]</code> - Check aura balance</p>
+              <p><code>!mog @user [amount]</code> - Challenge to mog</p>
+              <p><code>!auraboard</code> - View leaderboard</p>
+              <p><code>!bless @user [amount]</code> - Give aura to someone</p>
+              <p><code>!emote [dance move]</code> - Random brainrot dance celebration</p>
+              <p><code>!help</code> - Show command list</p>
+              <h3>AI Conversations:</h3>
+              <p><code>@iaurafarmbot [message]</code> - Chat with Claude AI</p>
+              <p style="font-size: 0.9rem; color: #adadb8; margin-top: 5px;">Just mention the bot to have chaotic brainrot conversations!</p>
+              <h3>Multi-Platform Support:</h3>
+              <p style="font-size: 0.9rem; color: #adadb8;">Also works on <strong>Telegram</strong> (/commands), <strong>Twitch</strong> (!commands), and <strong>X (Twitter)</strong> (@mentions)</p>
+            </div>
+            
+            <a href="/dashboard" class="btn">⚙️ Customize Settings</a>
+            <a href="https://kick.com/${user.slug}" class="btn">🦶 Go to Channel</a>
+          </div>
+        </body>
+        </html>
+      `);
+      
+    } catch (error) {
+      console.error('❌ Kick OAuth error:', error);
+      res.send(`
+        <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+          <h2>❌ Authorization Failed</h2>
+          <p>Error: ${error.message}</p>
+          <a href="/auth/kick/streamer" style="color: #53fc18;">← Try Again</a>
+        </div>
+      `);
+    }
   });
 
   return { activeChannels };

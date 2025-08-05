@@ -5,6 +5,7 @@ const { createClient } = require('@supabase/supabase-js');
 const db = require('./db');
 const auraLogic = require('./auraLogic');
 const twitchBot = require('./twitchBot');
+const kickBot = require('./kickBot');
 const oauth = require('./oauth');
 const claude = require('./lib/claude');
 const twitter = require('./lib/twitter');
@@ -35,6 +36,7 @@ setTimeout(() => {
   console.log(`   Sentry: ${claude.isSentryAvailable() ? '✅ Sentry initialized' : '⚠️ Sentry disabled'}`);
   console.log(`   Claude: ${process.env.ANTHROPIC_API_KEY ? '✅ Claude AI ready' : '❌ Claude AI disabled (ANTHROPIC_API_KEY missing)'}`);
   console.log(`   Twitter: ${twitter.isTwitterAvailable() ? '✅ Twitter integration ready' : '⚠️ Twitter disabled (credentials missing)'}`);
+  console.log(`   Kick: ${process.env.KICK_CLIENT_ID && process.env.KICK_CLIENT_SECRET ? '✅ Kick integration ready' : '⚠️ Kick disabled (credentials missing)'}`);
 }, 1000);
 
 // Initialize OAuth server for secure Twitch authentication
@@ -42,6 +44,9 @@ const oauthServer = oauth.initializeOAuth();
 
 // Initialize Twitch bot (optional)
 const twitchClient = twitchBot.initializeTwitchBot();
+
+// Initialize Kick bot (optional)  
+const kickClient = kickBot.initializeKickBot();
 
 // Multi-platform bot setup complete! 🔥💀
 
@@ -188,6 +193,11 @@ bot.command('help', async (ctx) => {
 **/edge** - 60% chance of +2-13 aura (unhinged only)
 **/goon** - 60% chance of +2-13 aura (unhinged only)  
 **/mew** - 60% chance of +2-13 aura (works in both modes)
+
+🕺 **/emote [dance move]**
+• Celebrate with brainrot dance energy!
+• Use `/emote` for random dance or `/emote custom move`
+• Example: \`/emote\` or \`/emote hit the griddy\`
 
 💀 **PRO TIPS:**
 • Each chat has its own aura ecosystem! 🏘️
@@ -340,6 +350,63 @@ bot.command('mew', async (ctx) => {
     );
     
     await ctx.reply(result.message);
+  });
+});
+
+// /emote command - BRAINROT DANCE CELEBRATION! 🕺💀
+bot.command('emote', async (ctx) => {
+  await handleCommand(ctx, async (ctx) => {
+    const message = ctx.message.text;
+    const username = ctx.from.username || ctx.from.first_name || 'unknown';
+    
+    // Parse the dance move from the command (optional)
+    const parts = message.split(' ');
+    parts.shift(); // Remove /emote
+    let danceMove = parts.join(' ').trim();
+    
+    // If no dance move provided, pick a random one!
+    if (!danceMove) {
+      const randomDances = [
+        'hit the griddy',
+        'default dance',
+        'orange justice', 
+        'twerking',
+        'sigma strut',
+        'flossing',
+        'take the L',
+        'windmill',
+        'robot dance',
+        'moonwalk',
+        'dab',
+        'whip and nae nae',
+        'macarena',
+        'gangnam style',
+        'fortnite dance',
+        'breakdancing',
+        'salsa',
+        'tango',
+        'ballet pirouette',
+        'chicken dance'
+      ];
+      danceMove = randomDances[Math.floor(Math.random() * randomDances.length)];
+    }
+    
+    // Generate brainrot celebration response
+    const celebrations = [
+      `💀 @${username} witerally ${danceMove} - that's some goated energy fr!`,
+      `🔥 @${username} said "${danceMove}" and now the whole chat is blessed ngl`,
+      `🕺 @${username} hittin the ${danceMove} - absolutely based behavior!`,
+      `💃 @${username} ${danceMove} era activated - chat's aura just increased!`,
+      `⚡ @${username} really said "${danceMove}" and left no crumbs 💀`,
+      `🎯 @${username} ${danceMove} and the vibes are IMMACULATE fr`,
+      `🫵😹 @${username} ${danceMove} got everyone shook - main character energy!`,
+      `🚀 @${username} ${danceMove} hit different - chat's locked in now!`,
+      `💫 @${username} really ${danceMove} and said "this is my moment" ong`,
+      `🎪 @${username} ${danceMove} supremacy - the griddy could never compare!`
+    ];
+    
+    const randomCelebration = celebrations[Math.floor(Math.random() * celebrations.length)];
+    await ctx.reply(randomCelebration);
   });
 });
 
@@ -503,6 +570,8 @@ cron.schedule('0 0 * * *', async () => {
               await bot.telegram.sendMessage(chatId, `🎉 **DAILY REACTION CHAMPION** 🎉\n\n@${mostReactiveUser.username} wins +25 aura for being the most reactive today! 💀🔥`);
             } else if (platform === 'twitch') {
               await twitchBot.sendDailyReactionWinner(chatId, mostReactiveUser.username, 25);
+            } else if (platform === 'kick') {
+              await kickBot.sayInChannel(chatId, `🎉 **DAILY REACTION CHAMPION** 🎉\n\n@${mostReactiveUser.username} wins +25 aura for being the most reactive today! 💀🔥`);
             }
           } catch (broadcastError) {
             console.error(`❌ Failed to broadcast to ${platform} chat ${chatId}:`, broadcastError);
@@ -535,14 +604,16 @@ bot.launch().then(() => {
   console.log('');
   console.log('📱 TELEGRAM PLATFORM ACTIVE!');
   console.log('🎮 TWITCH PLATFORM:', twitchClient ? 'ACTIVE! 🔥' : 'DISABLED (missing credentials)');
+  console.log('🦶 KICK PLATFORM:', kickClient ? 'ACTIVE! 🔥' : 'DISABLED (missing credentials)');
   console.log('🐦 TWITTER PLATFORM:', twitter.isTwitterAvailable() ? 'ACTIVE! 🔥' : 'DISABLED (missing credentials)');
   console.log('');
-  console.log('🗿 AVAILABLE COMMANDS (Telegram/Twitch):');
+  console.log('🗿 AVAILABLE COMMANDS (Telegram/Twitch/Kick):');
   console.log('  📱 /aurafarm (!aurafarm) - Farm aura (24h cooldown)');
   console.log('  🎰 /mog (!mog) @user [amount] - Challenge to mog');
   console.log('  📊 /auraboard (!auraboard) - View leaderboard');
   console.log('  💫 /aura (!aura) [@user] - Check aura balance');
   console.log('  ✨ /bless (!bless) @user [amount] - Give aura to others');
+  console.log('  🕺 /emote (!emote) [dance move] - Random brainrot dance celebration');
   console.log('  ❓ /help (!help) - Show command list');
   console.log('');
   console.log('🐦 TWITTER FEATURES:');

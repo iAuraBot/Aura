@@ -215,6 +215,10 @@ async function handleTwitchMessage(channel, chatId, userId, username, message, u
           await handleSpecialCommand(channel, chatId, userId, username, 'mew');
           break;
 
+        case 'emote':
+          await handleEmote(channel, chatId, userId, username, args);
+          break;
+
         case 'help':
         case 'commands':
           await handleHelp(channel);
@@ -358,6 +362,11 @@ async function handleHelp(channel) {
 **!goon** - 60% chance of +2-13 aura (unhinged only)  
 **!mew** - 60% chance of +2-13 aura (works in both modes)
 
+🕺 **!emote [dance move]**
+• Celebrate with brainrot dance energy!
+• Use `!emote` for random dance or `!emote custom move`
+• Example: \`!emote\` or \`!emote hit the griddy\`
+
 💀 **PRO TIPS:**
 • Each channel has its own aura ecosystem! 🏘️
 • Farm daily to stack that aura bag! 💸
@@ -366,6 +375,55 @@ async function handleHelp(channel) {
 **LET'S GET THIS AURA! NO CAP! 🚀**`;
 
   await sayInChannel(channel, helpMessage);
+}
+
+// Emote command - BRAINROT DANCE CELEBRATION! 🕺💀
+async function handleEmote(channel, chatId, userId, username, args) {
+  let danceMove = args.join(' ').trim();
+  
+  // If no dance move provided, pick a random one!
+  if (!danceMove) {
+    const randomDances = [
+      'hit the griddy',
+      'default dance',
+      'orange justice', 
+      'twerking',
+      'sigma strut',
+      'flossing',
+      'take the L',
+      'windmill',
+      'robot dance',
+      'moonwalk',
+      'dab',
+      'whip and nae nae',
+      'macarena',
+      'gangnam style',
+      'fortnite dance',
+      'breakdancing',
+      'salsa',
+      'tango',
+      'ballet pirouette',
+      'chicken dance'
+    ];
+    danceMove = randomDances[Math.floor(Math.random() * randomDances.length)];
+  }
+  
+  // Generate brainrot celebration response
+  const celebrations = [
+    `💀 @${username} witerally ${danceMove} - that's some goated energy fr!`,
+    `🔥 @${username} said "${danceMove}" and now the whole chat is blessed ngl`,
+    `🕺 @${username} hittin the ${danceMove} - absolutely based behavior!`,
+    `💃 @${username} ${danceMove} era activated - chat's aura just increased!`,
+    `⚡ @${username} really said "${danceMove}" and left no crumbs 💀`,
+    `🎯 @${username} ${danceMove} and the vibes are IMMACULATE fr`,
+    `🫵😹 @${username} ${danceMove} got everyone shook - main character energy!`,
+    `🚀 @${username} ${danceMove} hit different - chat's locked in now!`,
+    `💫 @${username} really ${danceMove} and said "this is my moment" ong`,
+    `🎪 @${username} ${danceMove} supremacy - the griddy could never compare!`
+  ];
+  
+  const randomCelebration = celebrations[Math.floor(Math.random() * celebrations.length)];
+  await sayInChannel(channel, randomCelebration);
 }
 
 // Handle natural conversation when bot is mentioned - Much more fluid!
@@ -385,7 +443,22 @@ async function handleNaturalConversation(channel, chatId, userId, username, mess
     const familyFriendly = await db.getFamilyFriendlySetting('twitch', chatId);
     
     const reply = await claude.getBrainrotReply(userId, cleanMessage, 'twitch', chatId, familyFriendly);
-    await sayInChannel(channel, `@${username} ${reply}`);
+    
+    // 🎯 TWITCH FIX: Ensure response fits in single message (no chunking/cutoffs)
+    const fullResponse = `@${username} ${reply}`;
+    
+    // Twitch has 500 char limit - but we want ULTRA-SHORT meme energy  
+    const maxTwitchLength = 200; // Much shorter for easy brainrot vibes
+    let finalResponse = fullResponse;
+    
+    if (finalResponse.length > maxTwitchLength) {
+      // Truncate at word boundary and add indicator
+      const truncated = finalResponse.substring(0, maxTwitchLength - 3);
+      const lastSpace = truncated.lastIndexOf(' ');
+      finalResponse = (lastSpace > 0 ? truncated.substring(0, lastSpace) : truncated) + '...';
+    }
+    
+    await sayInChannel(channel, finalResponse);
   } catch (error) {
     claude.logError('Error in Twitch natural conversation:', error);
     await sayInChannel(channel, `@${username} bro u just crashed me 😭`);

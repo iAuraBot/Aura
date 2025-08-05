@@ -457,6 +457,7 @@ async function createChannelConfig(channelId, channelLogin, config) {
         channel_login: channelLogin.toLowerCase(),
         display_name: config.display_name,
         email: config.email,
+        platform: config.platform || 'twitch', // Default to twitch for backward compatibility
         bot_enabled: config.bot_enabled,
         settings: config.settings,
         created_at: new Date().toISOString(),
@@ -468,7 +469,7 @@ async function createChannelConfig(channelId, channelLogin, config) {
     if (error) {
       // If channel already exists, update it instead
       if (error.code === '23505') {
-        return await updateChannelConfig(channelId, config);
+        return await updateChannelConfig(channelId, config.platform || 'twitch', config);
       }
       throw error;
     }
@@ -525,7 +526,7 @@ async function updateChannelSettings(channelId, settings) {
   }
 }
 
-async function updateChannelConfig(channelId, config) {
+async function updateChannelConfig(channelId, platform, config) {
   try {
     const { data, error } = await supabase
       .from('channel_configs')
@@ -537,6 +538,7 @@ async function updateChannelConfig(channelId, config) {
         updated_at: new Date().toISOString()
       })
       .eq('channel_id', channelId)
+      .eq('platform', platform)
       .select()
       .single();
 
