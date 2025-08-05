@@ -5,6 +5,8 @@ const claude = require('./lib/claude.js');
 
 // Twitch client instance
 let twitchClient = null;
+let isConnected = false;
+let pendingJoins = new Set(); // Queue channels to join when connected
 
 // Initialize Twitch bot
 function initializeTwitchBot() {
@@ -65,10 +67,25 @@ function setupTwitchEventListeners() {
   // Connection events
   twitchClient.on('connected', (addr, port) => {
     console.log(`💀 AuraBot connected to Twitch IRC at ${addr}:${port}`);
+    isConnected = true;
+    
+    // Process pending channel joins
+    if (pendingJoins.size > 0) {
+      console.log(`🎯 Processing ${pendingJoins.size} pending channel joins...`);
+      for (const channelName of pendingJoins) {
+        twitchClient.join(channelName).then(() => {
+          console.log(`✅ Successfully joined pending channel: #${channelName}`);
+        }).catch(error => {
+          console.error(`❌ Failed to join pending channel #${channelName}:`, error);
+        });
+      }
+      pendingJoins.clear();
+    }
   });
 
   twitchClient.on('disconnected', (reason) => {
     console.log(`💔 Disconnected from Twitch: ${reason}`);
+    isConnected = false;
   });
 
   // Authentication events
@@ -422,6 +439,12 @@ async function joinTwitchChannel(channelName) {
     return false;
   }
 
+  if (!isConnected) {
+    console.log(`📋 Twitch not connected yet. Queueing channel join: #${channelName}`);
+    pendingJoins.add(channelName);
+    return true; // Return true as it's queued successfully
+  }
+
   try {
     console.log(`🎯 Attempting to join channel: #${channelName}`);
     await twitchClient.join(channelName);
@@ -437,6 +460,18 @@ async function joinTwitchChannel(channelName) {
 async function leaveTwitchChannel(channelName) {
   if (!twitchClient) {
     console.error('❌ Twitch client not available');
+    return false;
+  }
+
+  // Remove from pending joins if it's queued but not connected yet
+  if (pendingJoins.has(channelName)) {
+    pendingJoins.delete(channelName);
+    console.log(`📋 Removed #${channelName} from pending joins queue`);
+    return true;
+  }
+
+  if (!isConnected) {
+    console.log(`⚠️ Cannot leave channel #${channelName} - not connected to Twitch`);
     return false;
   }
 
