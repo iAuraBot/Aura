@@ -42,7 +42,9 @@ const NEGATIVE_FLAVORS = [
   '😵 STOP GOONING AROUND! Your farm got absolutely COOKED!',
   '🫵😹 YOU\'RE COOKED BRO! This L hit different!',
   '🤮 ZESTY AF BEHAVIOR! Your farm was absolutely SUS!',
-  '😵 SUSSY AND ZESTY VIBES! That farm was questionable fr!'
+  '😵 SUSSY AND ZESTY VIBES! That farm was questionable fr!',
+  '🍟 PUT THE FRIES IN THE BAG! Your aura career is OVER!',
+  '🍟 TIME TO PUT THE FRIES IN THE BAG! This L was BRUTAL!'
 ];
 
 const JACKPOT_FLAVORS = [
@@ -92,7 +94,9 @@ const DUEL_WIN_FLAVORS = [
   '🔥 {winner} LOCKED IN while {loser} was just GOONING AROUND!',
   '🫵😹 {loser} got absolutely COOKED by {winner}\'s SIGMA energy!',
   '🤮 {loser}\'s ZESTY AF performance got destroyed by {winner}!',
-  '😵 {winner} called out {loser}\'s SUSSY AND ZESTY behavior!'
+  '😵 {winner} called out {loser}\'s SUSSY AND ZESTY behavior!',
+  '🍟 {winner} told {loser} to PUT THE FRIES IN THE BAG! Career ENDED!',
+  '🍟 {loser} bout to PUT THE FRIES IN THE BAG after that L from {winner}!'
 ];
 
 const BLESSING_FLAVORS = [
@@ -140,7 +144,8 @@ const SPECIAL_FAIL_FLAVORS = [
   '🫵😹 FUMBLED THE BAG! That attempt was mid af!',
   '🤡 L + RATIO! Your special command got absolutely rekt!',
   '💥 FAILED! Your technique was too weak for aura!',
-  '😭 SKILL ISSUE! Maybe try again later!'
+  '😭 SKILL ISSUE! Maybe try again later!',
+  '🍟 PUT THE FRIES IN THE BAG! That special command was WEAK!'
 ];
 
 

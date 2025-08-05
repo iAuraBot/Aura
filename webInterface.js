@@ -367,8 +367,129 @@ function setupWebInterface(app) {
     `);
   });
 
-  // Streamer OAuth - Step 1: Generate authorization URL
+  // Streamer OAuth - Step 1: Show permission explanation then redirect
   app.get('/auth/streamer', (req, res) => {
+    res.send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Connect Your Twitch Channel - AuraFarmBot</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+        <style>
+          body { 
+            font-family: 'Poppins', Arial, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            color: white;
+          }
+          .container {
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+          }
+          .permissions {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: left;
+          }
+          .permission-item {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            font-size: 16px;
+          }
+          .permission-item .icon {
+            font-size: 24px;
+            margin-right: 15px;
+            width: 30px;
+          }
+          .btn {
+            background: linear-gradient(45deg, #9146ff, #00d4ff);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            margin: 20px 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+          }
+          .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+          }
+          .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>🎮 Connect Your Twitch Channel</h1>
+          <p>AuraFarmBot needs permission to join your channel and respond to commands.</p>
+          
+          <div class="permissions">
+            <h3>📋 What We're Requesting:</h3>
+            <div class="permission-item">
+              <span class="icon">👤</span>
+              <span><strong>Channel Identity</strong> - Know your username to join the right chat</span>
+            </div>
+            <div class="permission-item">
+              <span class="icon">💬</span>
+              <span><strong>Chat Access</strong> - Read messages and respond to commands</span>
+            </div>
+            <div class="permission-item">
+              <span class="icon">🎯</span>
+              <span><strong>Command Processing</strong> - Handle aura farming, duels, and AI conversations</span>
+            </div>
+          </div>
+
+          <div class="permissions">
+            <h3>🚀 What Happens Next:</h3>
+            <div class="permission-item">
+              <span class="icon">1️⃣</span>
+              <span>You'll be redirected to Twitch to grant permissions</span>
+            </div>
+            <div class="permission-item">
+              <span class="icon">2️⃣</span>
+              <span>AuraFarmBot will automatically join your channel</span>
+            </div>
+            <div class="permission-item">
+              <span class="icon">3️⃣</span>
+              <span>You'll see the bot in your viewer list within 1-2 minutes</span>
+            </div>
+            <div class="permission-item">
+              <span class="icon">4️⃣</span>
+              <span>Your community can start using aura commands!</span>
+            </div>
+          </div>
+
+          <a href="/auth/streamer/authorize" class="btn">🔗 Connect Channel</a>
+          <a href="/" class="btn btn-secondary">← Go Back</a>
+        </div>
+      </body>
+      </html>
+    `);
+  });
+
+  // Actual authorization redirect
+  app.get('/auth/streamer/authorize', (req, res) => {
     const state = crypto.randomBytes(16).toString('hex');
     const scopes = 'user:read:email'; // We need email to identify the user
     
@@ -470,12 +591,15 @@ function setupWebInterface(app) {
         }
       });
       
-      // Add channel to active channels (this would trigger bot to join)
+      // Add channel to active channels 
       activeChannels.add(user.login);
       
-      // In a real implementation, you'd signal the bot to join this channel
-      // For now, we'll simulate it
+      // Actually join the channel!
+      const twitchBot = require('./twitchBot');
+      const joinSuccess = await twitchBot.joinTwitchChannel(user.login);
+      
       console.log(`🎮 New channel authorized: ${user.login} (${user.display_name})`);
+      console.log(`🔗 Bot join attempt: ${joinSuccess ? 'SUCCESS' : 'FAILED'}`);
       
       res.send(`
         <!DOCTYPE html>
@@ -486,52 +610,99 @@ function setupWebInterface(app) {
           <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
           <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
           <style>
-            body { 
-              font-family: 'Poppins', Arial, sans-serif; 
-              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body {
+              font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+              background: 
+                linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)),
+                url('/assets/aurafarmbot.png') center center;
+              background-size: cover;
+              background-attachment: fixed;
+              background-repeat: no-repeat;
               min-height: 100vh;
               display: flex;
               align-items: center;
               justify-content: center;
-              margin: 0;
               color: white;
+              overflow-x: hidden;
             }
             .container {
-              max-width: 500px;
-              padding: 40px;
-              background: rgba(255, 255, 255, 0.1);
-              border-radius: 20px;
+              max-width: 600px;
+              padding: 60px 40px;
               text-align: center;
+              position: relative;
+              z-index: 2;
+              background: rgba(0, 0, 0, 0.3);
+              border-radius: 20px;
               backdrop-filter: blur(10px);
+              border: 1px solid rgba(255, 255, 255, 0.1);
             }
-            .success-icon { font-size: 4rem; margin-bottom: 20px; }
-            h1 { margin-bottom: 20px; }
+            .success-icon { 
+              font-size: 4rem; 
+              margin-bottom: 20px; 
+            }
+            h1 { 
+              font-size: 3rem; 
+              margin-bottom: 20px; 
+              font-weight: 800;
+              background: linear-gradient(45deg, #ffd700, #ffeb3b, #ff9800);
+              -webkit-background-clip: text;
+              -webkit-text-fill-color: transparent;
+              background-clip: text;
+              text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+              line-height: 1.1;
+              filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.7));
+            }
             .btn {
               display: inline-block;
-              padding: 12px 24px;
-              background: #9146ff;
-              color: white;
+              padding: 18px 36px;
+              background: rgba(255, 255, 255, 0.9);
+              color: #1f2937;
               text-decoration: none;
-              border-radius: 25px;
+              border-radius: 12px;
+              font-weight: 700;
+              font-size: 1.1rem;
+              transition: all 0.3s ease;
+              cursor: pointer;
+              border: none;
+              backdrop-filter: blur(10px);
+              box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
               margin: 10px;
-              font-weight: bold;
             }
-            .btn:hover { background: #772ce8; }
+            .btn:hover { 
+              background: rgba(255, 255, 255, 1);
+              transform: translateY(-3px);
+              box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            }
+            .btn-secondary { 
+              background: rgba(255, 255, 255, 0.1);
+              color: white;
+              border: 2px solid rgba(255, 255, 255, 0.3);
+            }
+            .btn-secondary:hover { 
+              background: rgba(255, 255, 255, 0.2);
+              color: white;
+            }
             .commands {
-              background: rgba(0, 0, 0, 0.2);
-              padding: 20px;
-              border-radius: 10px;
-              margin: 20px 0;
+              background: rgba(0, 0, 0, 0.3);
+              border: 1px solid rgba(255, 255, 255, 0.1);
+              border-radius: 15px;
+              padding: 25px;
+              margin: 25px 0;
               text-align: left;
+              backdrop-filter: blur(10px);
             }
           </style>
         </head>
         <body>
           <div class="container">
-            <div class="success-icon">🎉💀</div>
-            <h1>AuraBot Successfully Added!</h1>
+            <div class="success-icon">
+              <img src="/assets/aurafarmbot.png" alt="AuraFarmBot" style="width: 120px; height: 120px; border-radius: 20px; object-fit: cover; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);">
+            </div>
+            <h1>AuraFarmBot Successfully Added!</h1>
             <p><strong>Channel:</strong> ${user.display_name}</p>
-            <p>The bot will join your channel within a few minutes.</p>
+                            <p>🔍 <strong>Look for "iaurafarmbot" in your viewer list!</strong></p>
+                <p>The bot should appear in your chat within 30-60 seconds.</p>
             
             <div class="commands">
               <h3>Available Commands:</h3>
@@ -1074,12 +1245,12 @@ function setupWebInterface(app) {
             }
 
             function removeBot() {
-              if (confirm('⚠️ Remove iAuraFarmBot from your channel?\\n\\nThis will:\\n• Stop the bot from responding to commands\\n• Delete all your settings\\n• Remove your channel from the active list\\n\\nThis action CANNOT be undone!')) {
+              if (confirm('⚠️ Remove iAuraFarmBot from your channel?\\n\\nThis will:\\n• Bot will immediately leave your channel\\n• Stop responding to all commands\\n• Delete all your settings\\n• Remove your channel from the active list\\n\\nThis action CANNOT be undone!')) {
                 fetch('/dashboard/remove', { method: 'POST' })
                   .then(response => response.json())
                   .then(data => {
                     if (data.success) {
-                      alert('💀 Bot removed successfully! Thanks for trying iAuraFarmBot!');
+                      alert('💀 Bot removed successfully!\\n\\n👋 iAuraFarmBot has left your channel.\\n\\nThanks for trying iAuraFarmBot!');
                       window.location.href = '/';
                     } else {
                       alert('Error removing bot: ' + data.error);
@@ -1148,8 +1319,19 @@ function setupWebInterface(app) {
     }
     
     try {
+      const username = req.session.user.login;
+      
+      // Remove from database and active channels
       await db.removeChannelConfig(req.session.user.id);
-      activeChannels.delete(req.session.user.login);
+      activeChannels.delete(username);
+      
+      // Actually make the bot leave the Twitch channel!
+      const twitchBot = require('./twitchBot');
+      const leaveSuccess = await twitchBot.leaveTwitchChannel(username);
+      
+      console.log(`🗑️ Bot removal requested for: ${username}`);
+      console.log(`👋 Bot leave attempt: ${leaveSuccess ? 'SUCCESS' : 'FAILED'}`);
+      
       req.session.destroy();
       
       res.json({ success: true });

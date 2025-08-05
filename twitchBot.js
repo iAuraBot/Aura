@@ -415,6 +415,42 @@ function getTwitchChannels() {
   }
 }
 
+// Function to dynamically join a new channel
+async function joinTwitchChannel(channelName) {
+  if (!twitchClient) {
+    console.error('❌ Twitch client not available');
+    return false;
+  }
+
+  try {
+    console.log(`🎯 Attempting to join channel: #${channelName}`);
+    await twitchClient.join(channelName);
+    console.log(`✅ Successfully joined Twitch channel: #${channelName}`);
+    return true;
+  } catch (error) {
+    console.error(`❌ Failed to join channel #${channelName}:`, error);
+    return false;
+  }
+}
+
+// Function to dynamically leave a channel
+async function leaveTwitchChannel(channelName) {
+  if (!twitchClient) {
+    console.error('❌ Twitch client not available');
+    return false;
+  }
+
+  try {
+    console.log(`👋 Attempting to leave channel: #${channelName}`);
+    await twitchClient.part(channelName);
+    console.log(`✅ Successfully left Twitch channel: #${channelName}`);
+    return true;
+  } catch (error) {
+    console.error(`❌ Failed to leave channel #${channelName}:`, error);
+    return false;
+  }
+}
+
 // Send daily reaction winner message to Twitch
 async function sendDailyReactionWinner(chatId, username, auraGained) {
   if (!twitchClient) return;
@@ -478,5 +514,7 @@ module.exports = {
   initializeTwitchBot,
   getTwitchChannels,
   sendDailyReactionWinner,
+  joinTwitchChannel,
+  leaveTwitchChannel,
   twitchClient: () => twitchClient
 };
