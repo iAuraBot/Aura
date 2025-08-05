@@ -160,9 +160,8 @@ async function handleTwitchMessage(channel, chatId, userId, username, message, u
 
 
 
-        case 'familymode':
-        case 'familyfriendly':
-          await handleFamilyMode(channel, chatId, userId, username, userstate, args);
+        case 'unhinge':
+          await handleUnhinge(channel, chatId, userId, username, userstate, args);
           break;
 
         case 'help':
@@ -298,10 +297,10 @@ async function handleHelp(channel) {
 ❓ **!help** (or !commands)
 • Shows this menu (you're here now, genius!)
 
-🔒 **!familymode on/off** (MODS/BROADCASTER ONLY)
-• Toggle family-friendly AI conversations
-• ON = Clean, wholesome responses
-• OFF = Full unhinged brainrot mode
+🔒 **!unhinge** (MODS/BROADCASTER ONLY)
+    • Toggle between family-friendly and unhinged mode
+    • Switches AI personality for the whole channel
+    • Use again to flip between wholesome and brainrot
 
 💀 **PRO TIPS:**
 • Each channel has its own aura ecosystem! 🏘️
@@ -409,53 +408,35 @@ async function sendDailyReactionWinner(chatId, username, auraGained) {
   await sayInChannel(channel, message);
 }
 
-// Handle family-friendly mode toggle (MODS/BROADCASTER only)
-async function handleFamilyMode(channel, chatId, userId, username, userstate, args) {
+// Handle AI mode toggle (MODS/BROADCASTER only)
+async function handleUnhinge(channel, chatId, userId, username, userstate, args) {
   try {
     // Check if user is broadcaster or mod
     const isMod = userstate.mod || userstate.badges?.broadcaster === '1' || userstate.badges?.moderator === '1';
     const isBroadcaster = userstate.badges?.broadcaster === '1';
     
     if (!isMod && !isBroadcaster) {
-      await sayInChannel(channel, `@${username} Only mods and the broadcaster can toggle family-friendly mode! 🔒`);
+      await sayInChannel(channel, `@${username} Only mods and the broadcaster can unhinge the AI! 🔒`);
       return;
     }
 
-    // Get current setting
+    // Get current setting and toggle it
     const currentSetting = await db.getFamilyFriendlySetting('twitch', chatId);
-    
-    if (args.length === 0) {
-      // Show current status
-      const status = currentSetting ? 'ON 🟢' : 'OFF 🔴';
-      await sayInChannel(channel, `@${username} Family-friendly mode is currently: ${status}\n\nUsage: !familymode on/off`);
-      return;
-    }
-
-    const setting = args[0].toLowerCase();
-    let newValue = null;
-    
-    if (setting === 'on' || setting === 'enable' || setting === 'true') {
-      newValue = true;
-    } else if (setting === 'off' || setting === 'disable' || setting === 'false') {
-      newValue = false;
-    } else {
-      await sayInChannel(channel, `@${username} Usage: !familymode on/off`);
-      return;
-    }
+    const newValue = !currentSetting; // Toggle the setting
 
     // Update the setting
     const success = await db.setFamilyFriendlySetting('twitch', chatId, channel.replace('#', ''), newValue);
     
     if (success) {
-      const statusText = newValue ? 'ON 🟢' : 'OFF 🔴';
-      const modeText = newValue ? 'FAMILY-FRIENDLY' : 'REGULAR BRAINROT';
-      await sayInChannel(channel, `✅ Family-friendly mode: ${statusText}\n\nClaude AI is now in ${modeText} mode! 🤖`);
+      const modeText = newValue ? 'FAMILY-FRIENDLY 🌸' : 'UNHINGED BRAINROT 💀';
+      const emoji = newValue ? '🌸' : '💀';
+      await sayInChannel(channel, `@${username} ${emoji} AI TOGGLED! Channel is now in ${modeText} mode! Use !unhinge again to flip it back.`);
     } else {
-      await sayInChannel(channel, `@${username} Failed to update family-friendly setting. Try again! 💀`);
+      await sayInChannel(channel, `@${username} Failed to toggle AI mode. Try again! 💀`);
     }
   } catch (error) {
-    console.error('Error in handleFamilyMode:', error);
-    await sayInChannel(channel, `@${username} Error updating family-friendly setting! 💀`);
+    console.error('Error in handleUnhinge:', error);
+    await sayInChannel(channel, `@${username} Error toggling AI mode! 💀`);
   }
 }
 

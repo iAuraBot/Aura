@@ -179,10 +179,10 @@ bot.command('help', async (ctx) => {
 ❓ **/help**
 • Shows this menu (you're here now, genius!)
 
-🔒 **/familymode on/off** (ADMINS/CHAT OWNERS ONLY)
-• Toggle family-friendly AI conversations
-• ON = Clean, wholesome responses
-• OFF = Full unhinged brainrot mode
+🔒 **/unhinge** (ADMINS/CHAT OWNERS ONLY)
+• Toggle between family-friendly and unhinged mode
+• Switches AI personality for the whole chat
+• Use again to flip between wholesome and brainrot
 
 💀 **PRO TIPS:**
 • Each chat has its own aura ecosystem! 🏘️
@@ -197,21 +197,21 @@ bot.command('help', async (ctx) => {
   });
 });
 
-// /familymode command - Toggle family-friendly mode (ADMINS/OWNERS ONLY)
-bot.command('familymode', async (ctx) => {
+// /unhinge command - Toggle family-friendly mode (ADMINS/OWNERS ONLY)
+bot.command('unhinge', async (ctx) => {
   await handleCommand(ctx, async (ctx) => {
     const message = ctx.message.text;
     const chatId = ctx.chat.id.toString();
     const userId = ctx.from.id.toString();
     const chatType = ctx.chat.type;
     
-    // Permission check: Only admins and chat owners can toggle family-friendly mode
+    // Permission check: Only admins and chat owners can toggle mode
     try {
       const chatMember = await ctx.getChatMember(userId);
       const isAdmin = ['creator', 'administrator'].includes(chatMember.status);
       
       if (!isAdmin) {
-        await ctx.reply('🔒 Only admins and chat owners can toggle family-friendly mode!');
+        await ctx.reply('🔒 Only admins and chat owners can unhinge the AI!');
         return;
       }
     } catch (error) {
@@ -219,43 +219,19 @@ bot.command('familymode', async (ctx) => {
       await ctx.reply('💀 Error checking permissions! Try again.');
       return;
     }
-
-    // Parse command arguments
-    const args = message.split(' ').slice(1);
     
-    // Get current setting
+    // Get current setting and toggle it
     const currentSetting = await db.getFamilyFriendlySetting('telegram', chatId);
-    
-    if (args.length === 0) {
-      // Show current status
-      const status = currentSetting ? 'ON 🟢' : 'OFF 🔴';
-      const chatName = ctx.chat.title || ctx.chat.first_name || 'this chat';
-      await ctx.reply(`Family-friendly mode for ${chatName} is currently: ${status}\n\nUsage: /familymode on/off`);
-      return;
-    }
-
-    const setting = args[0].toLowerCase();
-    let newValue = null;
-    
-    if (setting === 'on' || setting === 'enable' || setting === 'true') {
-      newValue = true;
-    } else if (setting === 'off' || setting === 'disable' || setting === 'false') {
-      newValue = false;
-    } else {
-      await ctx.reply('Usage: /familymode on/off');
-      return;
-    }
-
-    // Update the setting
+    const newValue = !currentSetting; // Toggle the setting
     const chatName = ctx.chat.title || ctx.chat.first_name || 'this chat';
     const success = await db.setFamilyFriendlySetting('telegram', chatId, chatName, newValue);
     
     if (success) {
-      const statusText = newValue ? 'ON 🟢' : 'OFF 🔴';
-      const modeText = newValue ? 'FAMILY-FRIENDLY' : 'UNHINGED BRAINROT';
-      await ctx.reply(`✅ Family-friendly mode: ${statusText}\n\nClaude AI is now in ${modeText} mode! 🤖`);
+      const modeText = newValue ? 'FAMILY-FRIENDLY 🌸' : 'UNHINGED BRAINROT 💀';
+      const emoji = newValue ? '🌸' : '💀';
+      await ctx.reply(`${emoji} AI TOGGLED! Chat is now in ${modeText} mode! Use /unhinge again to flip it back.`);
     } else {
-      await ctx.reply('💀 Failed to update family-friendly setting. Try again!');
+      await ctx.reply('💀 Failed to toggle AI mode. Try again!');
     }
   });
 });

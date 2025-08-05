@@ -998,10 +998,10 @@ function setupWebInterface(app) {
                 </div>
 
                 <div class="form-group">
-                  <label>Family-Friendly AI Mode</label>
+                  <label>AI Personality Mode</label>
                   <div class="toggle-group">
                     <span>Wholesome AI Vibes</span>
-                    <div class="toggle-switch ${familyFriendlySetting ? 'active' : ''}" onclick="toggleFamilyMode()"></div>
+                    <div class="toggle-switch ${familyFriendlySetting ? 'active' : ''}" onclick="toggleUnhingeMode()"></div>
                   </div>
                   <small>ON = Clean, wholesome chaos | OFF = Full unhinged brainrot mode</small>
                 </div>
@@ -1039,7 +1039,7 @@ function setupWebInterface(app) {
               toggle.classList.toggle('active');
             }
 
-            function toggleFamilyMode() {
+            function toggleUnhingeMode() {
               const toggle = document.querySelectorAll('.toggle-switch')[3];
               toggle.classList.toggle('active');
               
@@ -1054,12 +1054,12 @@ function setupWebInterface(app) {
                   if (!data.success) {
                     // Revert toggle on error
                     toggle.classList.toggle('active');
-                    alert('Error updating family-friendly mode: ' + data.error);
+                    alert('Error updating AI mode: ' + data.error);
                   }
                 }).catch(err => {
                   // Revert toggle on error
                   toggle.classList.toggle('active');
-                  alert('Error updating family-friendly mode');
+                  alert('Error updating AI mode');
                 });
             }
 
