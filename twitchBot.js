@@ -2,6 +2,7 @@ const tmi = require('tmi.js');
 const auraLogic = require('./auraLogic.js');
 const db = require('./db.js'); // Import database functions for channel settings
 const claude = require('./lib/claude-enhanced');
+const userCooldowns = require('./lib/user-cooldowns');
 
 // Twitch client instance
 let twitchClient = null;
@@ -429,6 +430,13 @@ async function handleEmote(channel, chatId, userId, username, args) {
 
 // Handle natural conversation when bot is mentioned - Much more fluid!
 async function handleNaturalConversation(channel, chatId, userId, username, message) {
+  // Check user cooldown first
+  if (userCooldowns.isOnCooldown(userId, 'twitch')) {
+    const remainingTime = userCooldowns.getRemainingCooldown(userId, 'twitch');
+    console.log(`⏰ User ${username} on cooldown, ${remainingTime}s remaining`);
+    return; // Silently ignore - don't spam chat with cooldown messages
+  }
+
   // Clean the message (remove bot mentions)
   const botName = process.env.TWITCH_BOT_USERNAME?.toLowerCase();
   let cleanMessage = message;
@@ -460,6 +468,9 @@ async function handleNaturalConversation(channel, chatId, userId, username, mess
     }
     
     await sayInChannel(channel, finalResponse);
+    
+    // Set cooldown after successful response
+    userCooldowns.setCooldown(userId, 'twitch');
   } catch (error) {
     claude.logError('Error in Twitch natural conversation:', error);
     await sayInChannel(channel, `@${username} bro u just crashed me 😭`);

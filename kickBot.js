@@ -1,6 +1,7 @@
 const auraLogic = require('./auraLogic.js');
 const db = require('./db.js');
 const claude = require('./lib/claude-enhanced');
+const userCooldowns = require('./lib/user-cooldowns');
 const { WebSocket } = require('ws');
 // Using built-in fetch instead of axios (Node.js 18+)
 
@@ -383,6 +384,13 @@ async function handleHelp(channelName) {
 
 // Handle natural conversation when bot is mentioned
 async function handleNaturalConversation(channelName, channelId, userId, username, message) {
+  // Check user cooldown first
+  if (userCooldowns.isOnCooldown(userId, 'kick')) {
+    const remainingTime = userCooldowns.getRemainingCooldown(userId, 'kick');
+    console.log(`⏰ User ${username} on cooldown, ${remainingTime}s remaining`);
+    return; // Silently ignore - don't spam chat with cooldown messages
+  }
+
   // Clean the message (remove bot mentions)
   const botName = 'iaurafarmbot';
   let cleanMessage = message.replace(new RegExp(`@?${botName}`, 'gi'), '').trim();
@@ -411,6 +419,9 @@ async function handleNaturalConversation(channelName, channelId, userId, usernam
     }
     
     await sayInChannel(channelName, finalResponse);
+    
+    // Set cooldown after successful response
+    userCooldowns.setCooldown(userId, 'kick');
   } catch (error) {
     claude.logError('Error in Kick natural conversation:', error);
     await sayInChannel(channelName, `@${username} bro u just crashed me 😭`);
