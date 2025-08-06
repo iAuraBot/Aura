@@ -498,7 +498,7 @@ async function auraDuel(challengerUserId, challengerUsername, targetUsername, ba
     loser,
     battleAmount,
     flavorText,
-    message: `💀 **mog battle result** 💀\n\n${flavorText}\n\n💰 **Stakes:** ${battleAmount} aura\n🏆 **Winner:** @${winner} (+${battleAmount})\n💀 **Got Mogged:** @${loser} (-${battleAmount})`
+    message: `🫵😹 **ABSOLUTE DOMINATION DETECTED** 🫵😹\n\n${flavorText}\n\n💰 **Stakes:** ${battleAmount} aura\n🏆 **Winner:** @${winner} (+${battleAmount})\n💀 **Got Mogged:** @${loser} (-${battleAmount})`
   };
 }
 
