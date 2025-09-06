@@ -1313,11 +1313,12 @@ function setupWebInterface(app) {
       
       try {
         // Try to use Claude AI function
-        const { generateClaudeResponse } = require('./lib/claude-enhanced');
-        reply = await generateClaudeResponse(
-          message.trim(),
+        const claude = require('./lib/claude-enhanced');
+        reply = await claude.getBrainrotReply(
           userId || 'backrooms_visitor',
+          message.trim(),
           platform || 'backrooms',
+          null, // chatId
           false // family-friendly mode off for backrooms
         );
       } catch (claudeError) {
@@ -1662,6 +1663,9 @@ function setupWebInterface(app) {
 
     res.send(generateHackerPage('AIRIC - Kick Integration', kickAuthContent));
   });
+
+  // Return the activeChannels for other modules to use
+  return { activeChannels };
 }
 
 module.exports = { setupWebInterface };

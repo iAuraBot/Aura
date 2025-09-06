@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const crypto = require('crypto');
 const { setupWebInterface } = require('./webInterface');
-const claude = require('./lib/claude');
+const claude = require('./lib/claude-enhanced');
 
 let app = null;
 let server = null;
