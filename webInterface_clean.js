@@ -1,4 +1,4 @@
-﻿// webInterface.js - Comprehensive web interface for AuraBot management
+// webInterface.js - Comprehensive web interface for AuraBot management
 require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
@@ -783,390 +783,7 @@ function setupWebInterface(app) {
           .platform-btn:hover .btn-arrow {
             transform: translateX(5px);
           }
-
-          /* BACKROOMS CHAT STYLES */
-          .backrooms-chat-container {
-            margin: 60px auto;
-            max-width: 800px;
-            background: rgba(0, 0, 0, 0.9);
-            border: 2px solid #00bfff;
-            border-radius: 15px;
-            box-shadow: 
-              0 0 30px rgba(0, 191, 255, 0.3),
-              inset 0 0 30px rgba(0, 191, 255, 0.1);
-            overflow: hidden;
-            position: relative;
-          }
-
-          .backrooms-header {
-            background: linear-gradient(45deg, rgba(0, 191, 255, 0.2), rgba(0, 0, 0, 0.8));
-            padding: 15px 20px;
-            border-bottom: 1px solid #00bfff;
-          }
-
-          .backrooms-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-          }
-
-          .glitch-text {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.2rem;
-            color: #00bfff;
-            text-shadow: 0 0 10px #00bfff;
-            animation: glitch 2s infinite;
-          }
-
-          @keyframes glitch {
-            0%, 100% { transform: translateX(0); }
-            10% { transform: translateX(-2px); }
-            20% { transform: translateX(2px); }
-            30% { transform: translateX(-1px); }
-            40% { transform: translateX(1px); }
-            50% { transform: translateX(0); }
-          }
-
-          .connection-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-            color: #888;
-          }
-
-          .status-dot {
-            width: 8px;
-            height: 8px;
-            background: #00bfff;
-            border-radius: 50%;
-            animation: pulse 1.5s infinite;
-          }
-
-          @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-          }
-
-          .backrooms-messages {
-            height: 300px;
-            overflow-y: auto;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            font-family: 'JetBrains Mono', monospace;
-          }
-
-          .backrooms-messages::-webkit-scrollbar {
-            width: 8px;
-          }
-
-          .backrooms-messages::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.3);
-          }
-
-          .backrooms-messages::-webkit-scrollbar-thumb {
-            background: #00bfff;
-            border-radius: 4px;
-          }
-
-          .system-message, .ai-message, .user-message {
-            margin-bottom: 15px;
-            line-height: 1.4;
-            animation: messageSlide 0.3s ease-out;
-          }
-
-          @keyframes messageSlide {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-          }
-
-          .timestamp {
-            color: #666;
-            font-size: 0.8rem;
-            margin-right: 8px;
-          }
-
-          .username {
-            color: #00bfff;
-            font-weight: bold;
-            margin-right: 8px;
-          }
-
-          .system-message .message-text {
-            color: #888;
-            font-style: italic;
-          }
-
-          .ai-message .message-text {
-            color: #fff;
-          }
-
-          .user-message .username {
-            color: #ffd700;
-          }
-
-          .user-message .message-text {
-            color: #ddd;
-          }
-
-          .backrooms-input-container {
-            display: flex;
-            align-items: center;
-            padding: 15px 20px;
-            background: rgba(0, 0, 0, 0.8);
-            border-top: 1px solid #00bfff;
-            gap: 10px;
-          }
-
-          .input-prompt {
-            color: #00bfff;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            white-space: nowrap;
-          }
-
-          #chatInput {
-            flex: 1;
-            background: rgba(0, 0, 0, 0.7);
-            border: 1px solid #00bfff;
-            border-radius: 8px;
-            padding: 10px 15px;
-            color: #fff;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-          }
-
-          #chatInput:focus {
-            outline: none;
-            box-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
-          }
-
-          .send-btn {
-            background: #00bfff;
-            color: #000;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-          }
-
-          .send-btn:hover {
-            background: #0099cc;
-            box-shadow: 0 0 15px rgba(0, 191, 255, 0.5);
-          }
-
-          .typing-indicator {
-            padding: 10px 20px;
-            background: rgba(0, 0, 0, 0.5);
-            border-top: 1px solid rgba(0, 191, 255, 0.3);
-          }
-
-          .typing-dots span {
-            animation: typingDots 1.4s infinite;
-            color: #00bfff;
-          }
-
-          .typing-dots span:nth-child(2) {
-            animation-delay: 0.2s;
-          }
-
-          .typing-dots span:nth-child(3) {
-            animation-delay: 0.4s;
-          }
-
-          @keyframes typingDots {
-            0%, 60%, 100% { opacity: 0.3; }
-            30% { opacity: 1; }
-          }
-
-          /* Terminal Window Styles for Demo */
-          .terminal-window {
-            background: rgba(0, 0, 0, 0.9);
-            border: 2px solid #00bfff;
-            border-radius: 8px;
-            margin: 30px 0;
-            overflow: hidden;
-            box-shadow: 0 0 20px rgba(0, 191, 255, 0.3);
-          }
-
-          .terminal-window .terminal-header {
-            background: rgba(0, 191, 255, 0.1);
-            padding: 10px 15px;
-            border-bottom: 1px solid #00bfff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0;
-          }
-
-          .terminal-controls {
-            display: flex;
-            gap: 8px;
-          }
-
-          .control {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #ff5f56;
-          }
-
-          .control.maximize { background: #ffbd2e; }
-          .control.close { background: #27ca3f; }
-
-          .terminal-content {
-            padding: 20px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
-            line-height: 1.6;
-          }
-
-          .chat-message, .bot-response {
-            margin-bottom: 15px;
-            display: flex;
-            gap: 10px;
-          }
-
-          .chat-message .username {
-            color: #ffd700;
-            font-weight: bold;
-          }
-
-          .chat-message .message {
-            color: #ccc;
-          }
-
-          .bot-response .bot-name {
-            color: #00bfff;
-            font-weight: bold;
-          }
-
-          .bot-response .response {
-            color: #fff;
-          }
-
-          .terminal-prompt {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 20px;
-          }
-
-          .prompt-symbol {
-            color: #00bfff;
-            font-weight: bold;
-          }
-
-          .typing-cursor {
-            color: #00bfff;
-            animation: cursor-blink 1s infinite;
-          }
         </style>
-        <script>
-          // BACKROOMS CHAT FUNCTIONALITY
-          document.addEventListener('DOMContentLoaded', function() {
-            const chatInput = document.getElementById('chatInput');
-            const sendButton = document.getElementById('sendButton');
-            const chatMessages = document.getElementById('chatMessages');
-            const typingIndicator = document.getElementById('typingIndicator');
-
-            if (chatInput && sendButton && chatMessages) {
-              // Send message function
-              async function sendMessage() {
-                const message = chatInput.value.trim();
-                if (!message) return;
-
-                // Add user message
-                addMessage('user', 'visitor', message);
-                chatInput.value = '';
-
-                // Show typing indicator
-                showTyping();
-
-                try {
-                  // Send to AIRIC backend
-                  const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                      message: message,
-                      platform: 'backrooms',
-                      userId: 'visitor_' + Date.now()
-                    })
-                  });
-
-                  const data = await response.json();
-                  
-                  // Hide typing indicator
-                  hideTyping();
-
-                  if (data.reply) {
-                    // Add AI response with typing effect
-                    setTimeout(() => {
-                      addMessage('ai', 'AIRIC', data.reply);
-                    }, 500);
-                  }
-                } catch (error) {
-                  hideTyping();
-                  addMessage('system', 'ERROR', 'Connection to the void failed... try again');
-                }
-              }
-
-              // Add message to chat
-              function addMessage(type, username, text) {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = type + '-message';
-                
-                const timestamp = new Date().toLocaleTimeString('en-US', { 
-                  hour12: false, 
-                  hour: '2-digit', 
-                  minute: '2-digit', 
-                  second: '2-digit' 
-                });
-
-                messageDiv.innerHTML = \`
-                  <span class="timestamp">[\${timestamp}]</span>
-                  <span class="username">\${username}:</span>
-                  <span class="message-text">\${text}</span>
-                \`;
-
-                chatMessages.appendChild(messageDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-              }
-
-              // Show typing indicator
-              function showTyping() {
-                if (typingIndicator) {
-                  typingIndicator.style.display = 'block';
-                  chatMessages.scrollTop = chatMessages.scrollHeight;
-                }
-              }
-
-              // Hide typing indicator
-              function hideTyping() {
-                if (typingIndicator) {
-                  typingIndicator.style.display = 'none';
-                }
-              }
-
-              // Event listeners
-              sendButton.addEventListener('click', sendMessage);
-              chatInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                  sendMessage();
-                }
-              });
-
-              // Auto-focus input
-              chatInput.focus();
-            }
-          });
-        </script>
       </head>
       <body>
         <div class="container">
@@ -1255,45 +872,6 @@ function setupWebInterface(app) {
               </div>
             </div>
           </div>
-
-          <!-- BACKROOMS CHAT INTERFACE -->
-          <div class="backrooms-chat-container" id="backroomsChat">
-            <div class="backrooms-header">
-              <div class="backrooms-title">
-                <span class="glitch-text">LEVEL_0_CHAT_TERMINAL</span>
-                <div class="connection-status">
-                  <span class="status-dot"></span>
-                  <span>CONNECTED_TO_THE_VOID</span>
-                </div>
-              </div>
-            </div>
-            
-            <div class="backrooms-messages" id="chatMessages">
-              <div class="system-message">
-                <span class="timestamp">[00:00:00]</span>
-                <span class="message-text">AIRIC has entered the backrooms...</span>
-              </div>
-              <div class="ai-message">
-                <span class="timestamp">[00:00:01]</span>
-                <span class="username">AIRIC:</span>
-                <span class="message-text">yo what's good? you found your way into the void huh... I'm bout that liminal space life 💀 ask me anything, I'm literally HIM when it comes to conversations</span>
-              </div>
-            </div>
-            
-            <div class="backrooms-input-container">
-              <div class="input-prompt">visitor@backrooms:~$</div>
-              <input type="text" id="chatInput" placeholder="type your message into the void..." maxlength="500">
-              <button id="sendButton" class="send-btn">TRANSMIT</button>
-            </div>
-            
-            <div class="typing-indicator" id="typingIndicator" style="display: none;">
-              <span class="timestamp">[--:--:--]</span>
-              <span class="username">AIRIC:</span>
-              <span class="typing-dots">
-                <span>.</span><span>.</span><span>.</span>
-              </span>
-            </div>
-          </div>
         </div>
       </body>
       </html>
@@ -1309,31 +887,16 @@ function setupWebInterface(app) {
         return res.status(400).json({ error: 'Message is required' });
       }
 
-      let reply;
+      // Import Claude AI function
+      const { generateClaudeResponse } = require('./lib/claude');
       
-      try {
-        // Try to use Claude AI function
-        const { generateClaudeResponse } = require('./lib/claude-enhanced');
-        reply = await generateClaudeResponse(
-          message.trim(),
-          userId || 'backrooms_visitor',
-          platform || 'backrooms',
-          false // family-friendly mode off for backrooms
-        );
-      } catch (claudeError) {
-        console.log('Claude not available for local testing, using fallback responses');
-        
-        // Fallback responses for local testing
-        const fallbackResponses = [
-          "yo what's good? I'm running in local mode rn but still got that sigma energy 💀",
-          "bruh I'm in test mode but I'm still HIM when it comes to conversations fr fr",
-          "local server vibes but the aura farming never stops 🔥",
-          "testing mode activated but the grindset remains undefeated 💯",
-          "yo I'm running offline but my personality is still unhinged as always 😤"
-        ];
-        
-        reply = fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
-      }
+      // Generate AIRIC response
+      const reply = await generateClaudeResponse(
+        message.trim(),
+        userId || 'backrooms_visitor',
+        platform || 'backrooms',
+        false // family-friendly mode off for backrooms
+      );
 
       res.json({ reply: reply || "yo my brain just glitched... try again" });
       
@@ -1397,7 +960,7 @@ function setupWebInterface(app) {
     
     const authUrl = `https://id.twitch.tv/oauth2/authorize?` +
       `client_id=${process.env.TWITCH_CLIENT_ID}&` +
-      `redirect_uri=${encodeURIComponent((process.env.TWITCH_REDIRECT_URI || 'http://localhost:3000/auth/streamer/callback'))}&` +
+      `redirect_uri=${encodeURIComponent((process.env.TWITCH_REDIRECT_URI || 'http://localhost:3000/auth/twitch/callback').replace('/auth/twitch/callback', '/auth/streamer/callback'))}&` +
       `response_type=code&` +
       `scope=${encodeURIComponent(scopes)}&` +
       `state=${state}`;
@@ -1453,7 +1016,7 @@ function setupWebInterface(app) {
           client_secret: process.env.TWITCH_CLIENT_SECRET,
           code: code,
           grant_type: 'authorization_code',
-          redirect_uri: (process.env.TWITCH_REDIRECT_URI || 'http://localhost:3000/auth/streamer/callback'),
+          redirect_uri: (process.env.TWITCH_REDIRECT_URI || 'http://localhost:3000/auth/twitch/callback').replace('/auth/twitch/callback', '/auth/streamer/callback'),
         }),
       });
       
@@ -1561,51 +1124,6 @@ function setupWebInterface(app) {
       <div class="description">
         > Simulating live chat environment<br/>
         > Status: DEMO MODE | Platform: MULTI | Security: SANDBOX
-      </div>
-
-      <div class="terminal-window">
-        <div class="terminal-header">
-          <div class="terminal-title">AIRIC_CHAT_TERMINAL_v2.1</div>
-          <div class="terminal-controls">
-            <span class="control minimize"></span>
-            <span class="control maximize"></span>
-            <span class="control close"></span>
-          </div>
-        </div>
-        
-        <div class="terminal-content">
-          <div class="chat-message">
-            <span class="username">viewer123:</span>
-            <span class="message">!farm</span>
-          </div>
-          <div class="bot-response">
-            <span class="bot-name">AIRIC:</span>
-            <span class="response">💀 viewer123 farmed 42 aura points! Total: 1,337 | Rank: Sigma Grindset</span>
-          </div>
-          
-          <div class="chat-message">
-            <span class="username">noob_gamer:</span>
-            <span class="message">@airic what's the meaning of life?</span>
-          </div>
-          <div class="bot-response typing">
-            <span class="bot-name">AIRIC:</span>
-            <span class="response">The meaning of life is to farm aura, touch grass occasionally, and maintain that sigma grindset 💀</span>
-          </div>
-          
-          <div class="chat-message">
-            <span class="username">pro_player:</span>
-            <span class="message">!duel @viewer123</span>
-          </div>
-          <div class="bot-response">
-            <span class="bot-name">AIRIC:</span>
-            <span class="response">⚔️ AURA DUEL: pro_player vs viewer123 | Winner: pro_player (+25 aura) | Loser: -10 aura</span>
-          </div>
-          
-          <div class="terminal-prompt">
-            <span class="prompt-symbol">></span>
-            <span class="typing-cursor">_</span>
-          </div>
-        </div>
       </div>
 
       <div class="info-section">
