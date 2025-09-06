@@ -197,7 +197,7 @@ async function handleKickMessage(channelName, channelId, userId, username, messa
       }
     } else {
       // Handle non-command messages for Claude (when bot is mentioned)
-      const botName = 'iaurafarmbot'; // Our bot username
+      const botName = 'airic'; // Our bot username
       if (message.toLowerCase().includes(`@${botName}`) || message.toLowerCase().includes(botName)) {
         await handleNaturalConversation(channelName, channelId, userId, username, message);
       }
@@ -365,7 +365,7 @@ async function handleHelp(channelName) {
 • Use \`!emote\` for random dance or \`!emote custom move\`
 • Example: \`!emote\` or \`!emote hit the griddy\`
 
-🤖 **@iaurafarmbot [message]**
+🤖 **@airic [message]**
 • Just mention the bot to start UNHINGED brainrot conversations!
 • Get chaotic zoomer responses and meme energy!
 
@@ -392,7 +392,7 @@ async function handleNaturalConversation(channelName, channelId, userId, usernam
   }
 
   // Clean the message (remove bot mentions)
-  const botName = 'iaurafarmbot';
+  const botName = 'airic';
   let cleanMessage = message.replace(new RegExp(`@?${botName}`, 'gi'), '').trim();
   
   // Basic filtering - ignore very short messages or obvious spam

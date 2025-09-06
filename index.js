@@ -179,7 +179,7 @@ bot.command('help', async (ctx) => {
 🤖 **@botname [message]**
 • Just mention the bot to start UNHINGED brainrot conversations!
 • Get chaotic zoomer responses and meme energy!
-• Example: \`@aurafarmbot what do you think about aura farming?\`
+• Example: \`@airic what do you think about aura farming?\`
 
 ❓ **/help**
 • Shows this menu (you're here now, genius!)
@@ -601,7 +601,7 @@ bot.catch((err, ctx) => {
 
 // Start bot
 bot.launch().then(() => {
-  console.log('🚀💀 MULTI-PLATFORM AURAFARMBOT IS RUNNING! 💀🚀');
+  console.log('🚀💀 MULTI-PLATFORM AIRIC IS RUNNING! 💀🚀');
   console.log('');
   console.log('📱 TELEGRAM PLATFORM ACTIVE!');
   console.log('🎮 TWITCH PLATFORM:', twitchClient ? 'ACTIVE! 🔥' : 'DISABLED (missing credentials)');

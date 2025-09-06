@@ -1,4 +1,4 @@
-# 🌟 AuraFarmBot
+# 🌟 AIRIC
 
 A mystical Telegram bot that rewards or removes aura points through RNG-based farming, epic duels, and social interactions in group chats. Each chat has its own separate aura ecosystem - your aura balance and cooldowns are independent per chat! Built with Node.js, Telegraf, and Supabase for persistent data storage.
 
@@ -107,7 +107,7 @@ npm start
 ## 📁 File Structure
 
 ```
-AuraFarmBot/
+AIRIC/
 ├── index.js          # Main bot file with all commands
 ├── db.js             # Supabase database helper functions
 ├── package.json      # Dependencies and scripts

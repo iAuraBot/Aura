@@ -348,7 +348,7 @@ async function handleHelp(channel) {
 🤖 **@botname [message]**
 • Just mention the bot to start UNHINGED brainrot conversations!
 • Get chaotic zoomer responses and meme energy!
-• Example: \`@aurafarmbot what do you think about aura farming?\`
+• Example: \`@airic what do you think about aura farming?\`
 
 ❓ **!help** (or !commands)
 • Shows this menu (you're here now, genius!)

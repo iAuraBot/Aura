@@ -1,5 +1,5 @@
 {
-  "name": "aurafarmbot",
+  "name": "airic",
   "version": "1.0.0",
   "description": "A multi-platform bot (Telegram + Twitch) for aura farming, duels, and social interactions",
   "main": "index.js",
@@ -16,7 +16,7 @@
     "gaming",
     "multi-platform"
   ],
-  "author": "AuraBot Team",
+  "author": "AIRIC Team",
   "license": "MIT",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.24.3",
