@@ -35,7 +35,7 @@ function setupWebInterface(app) {
       <html lang="en">
       <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <title>${title}</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -344,7 +344,7 @@ function setupWebInterface(app) {
       <html lang="en">
       <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <title>AIRIC - Terminal Interface</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -869,6 +869,95 @@ function setupWebInterface(app) {
             border-radius: 4px;
           }
 
+          /* MOBILE RESPONSIVENESS */
+          @media (max-width: 768px) {
+            body {
+              padding: 10px;
+            }
+            
+            .container {
+              max-width: 100%;
+              margin: 0;
+              border-radius: 0;
+              min-height: 100vh;
+            }
+            
+            .backrooms-chat-container {
+              margin: 20px 10px;
+              max-width: calc(100vw - 20px);
+              border-radius: 8px;
+            }
+            
+            .backrooms-messages {
+              height: 250px; /* Shorter on mobile */
+              padding: 15px;
+              font-size: 12px;
+              line-height: 1.4;
+              /* Ensure scrolling works on mobile */
+              -webkit-overflow-scrolling: touch;
+              overflow-y: scroll;
+            }
+            
+            .backrooms-input-container {
+              padding: 15px;
+              flex-direction: column;
+              gap: 10px;
+            }
+            
+            .backrooms-input {
+              font-size: 14px;
+              padding: 12px;
+              margin-bottom: 10px;
+            }
+            
+            .backrooms-send-btn {
+              width: 100%;
+              padding: 12px;
+              font-size: 14px;
+            }
+            
+            /* Fix viewport issues on mobile */
+            .terminal-window {
+              margin: 20px 0;
+              border-radius: 8px;
+            }
+            
+            .platform-card {
+              margin: 10px 0;
+              padding: 20px;
+            }
+            
+            /* Ensure text doesn't overflow */
+            .message {
+              word-wrap: break-word;
+              overflow-wrap: break-word;
+              max-width: 100%;
+            }
+          }
+
+          @media (max-width: 480px) {
+            .backrooms-chat-container {
+              margin: 10px 5px;
+              max-width: calc(100vw - 10px);
+            }
+            
+            .backrooms-messages {
+              height: 200px;
+              padding: 10px;
+              font-size: 11px;
+            }
+            
+            .backrooms-input {
+              font-size: 12px;
+              padding: 10px;
+            }
+            
+            .backrooms-send-btn {
+              padding: 10px;
+              font-size: 12px;
+            }
+          }
+
           .system-message, .ai-message, .user-message {
             margin-bottom: 15px;
             line-height: 1.4;
@@ -1152,6 +1241,37 @@ function setupWebInterface(app) {
                 if (typingIndicator) {
                   typingIndicator.style.display = 'none';
                 }
+              }
+
+              // Mobile-specific improvements
+              function handleMobileScrolling() {
+                // Prevent body scroll when scrolling in chat
+                chatMessages.addEventListener('touchstart', function(e) {
+                  e.stopPropagation();
+                });
+                
+                chatMessages.addEventListener('touchmove', function(e) {
+                  e.stopPropagation();
+                });
+
+                // Handle virtual keyboard on mobile
+                if (window.visualViewport) {
+                  window.visualViewport.addEventListener('resize', function() {
+                    const viewportHeight = window.visualViewport.height;
+                    if (viewportHeight < window.innerHeight * 0.75) {
+                      // Keyboard is likely open - adjust chat height
+                      chatMessages.style.height = Math.max(150, viewportHeight * 0.3) + 'px';
+                    } else {
+                      // Keyboard closed - restore normal height
+                      chatMessages.style.height = '';
+                    }
+                  });
+                }
+              }
+
+              // Initialize mobile improvements
+              if ('ontouchstart' in window) {
+                handleMobileScrolling();
               }
 
               // Event listeners
