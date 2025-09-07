@@ -1423,7 +1423,7 @@ function setupWebInterface(app) {
   // BACKROOMS CHAT API ENDPOINT
   app.post('/api/chat', express.json(), async (req, res) => {
     try {
-      const { message, platform, userId } = req.body;
+      const { message, platform, userId, username } = req.body;
       
       if (!message || !message.trim()) {
         return res.status(400).json({ error: 'Message is required' });
@@ -1439,7 +1439,8 @@ function setupWebInterface(app) {
           message.trim(),
           platform || 'backrooms',
           null, // chatId
-          false // family-friendly mode off for backrooms
+          false, // family-friendly mode off for backrooms
+          username || null // username for personalized responses
         );
       } catch (claudeError) {
         console.log('Claude not available for local testing, using fallback responses');
